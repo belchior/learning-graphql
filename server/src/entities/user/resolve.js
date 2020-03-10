@@ -77,6 +77,41 @@ export const User = {
       .limit(pagination.limit)
       .catch(handleError);
   },
+
+  starredRepositories: async (parent, args) => {
+    const pagination = paginationArrays(args);
+    return UserModel
+      .aggregate([
+        { $match: {
+          _id: parent._id
+        } },
+        { $project: {
+          _id: 0,
+          starred: { $slice: [
+            '$starredRepositories',
+            pagination.skip,
+            pagination.limit
+          ] },
+        } },
+        { $unwind: '$starred' },
+        { $project: {
+          _id: '$starred._id',
+        } },
+        { $lookup: {
+          from: 'repositories',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'repository'
+        } },
+        { $replaceRoot: {
+          newRoot: { $arrayElemAt: [ '$repository', 0 ] }
+        } },
+        { $set: {
+          id: { $toString: '$_id' }
+        } },
+      ])
+      .catch(handleError);
+  },
 };
 
 

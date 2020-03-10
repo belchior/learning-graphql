@@ -13,7 +13,7 @@ const getUsersByIds = async ids => {
     .then(users => (
       ids.map(id => {
         const user = users.find(user => user.id === id.toString());
-        userByLoginLoader.prime(user.login, user);
+        if (user) userByLoginLoader.prime(user.login, user);
         return user;
       })
     ))
@@ -27,7 +27,7 @@ const getUsersByLogins = async logins => {
     .then(users => (
       logins.map(login => {
         const user = users.find(user => user.login === login);
-        userByIdLoader.prime(user.id, user);
+        if (user) userByIdLoader.prime(user.id, user);
         return user;
       })
     ))

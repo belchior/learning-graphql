@@ -41,6 +41,7 @@ const userData = {
   name: 'John Doe',
   organizations: [{ name: 'Organization name' }],
   repositories: [{ name: 'Repo name' }],
+  starredRepositories: [{ name: 'Starred repo name' }],
   url: 'https://github.com/johndoe',
   websiteUrl: 'http://johndoe.com',
 };
@@ -155,6 +156,48 @@ describe('user query', () => {
         query User {
           user(login: "johndoe") {
             repositories {
+              name
+            }
+          }
+        }
+      `;
+      const error = new GraphQLError('Missing pagination boundaries');
+      const expectedData = { data: { user: null }, errors: [ error ] };
+      const receivedData = await graphql(schema, query);
+      expect(receivedData).toEqual(expectedData);
+    });
+  });
+
+  describe('starredepositories field', () => {
+    it('should execute successfully', async () => {
+      UserModel.aggregate.mockImplementationOnce(
+        () => Promise.resolve(userData.starredRepositories)
+      );
+
+      const query = `
+        query User {
+          user(login: "johndoe") {
+            name
+            starredRepositories(first: 1) {
+              name
+            }
+          }
+        }
+      `;
+      const expectedData = { data: { user: {
+        name: userData.name,
+        starredRepositories: userData.starredRepositories,
+      } } };
+      const receivedData = await graphql(schema, query);
+
+      expect(receivedData).toEqual(expectedData);
+    });
+
+    it('should return error when the pagination arguments was not provided', async () => {
+      const query = `
+        query User {
+          user(login: "johndoe") {
+            starredRepositories {
               name
             }
           }

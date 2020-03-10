@@ -49,6 +49,11 @@ const User = new GraphQLObjectType({
       args: paginationArgs(),
       resolve: resolve.User.repositories,
     },
+    starredRepositories: {
+      type: new GraphQLNonNull(new GraphQLList(Repository)),
+      args: paginationArgs(),
+      resolve: resolve.User.starredRepositories,
+    },
     url: { type: new GraphQLNonNull(GraphQLString) },
     websiteUrl: { type: GraphQLString },
   }),
