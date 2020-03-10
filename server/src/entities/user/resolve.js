@@ -28,10 +28,37 @@ const updateAttribute = async (Model, query, update, messageNotFound) => {
 
 
 export const User = {
-  followers: async parent => {
-    const ids = parent.followers.map(item => item._id);
-    const query = { _id: { $in: ids } };
-    return UserModel.find(query).catch(handleError);
+  followers: async (parent, args) => {
+    const pagination = paginationArrays(args);
+    return UserModel
+      .aggregate([
+        { $match: {
+          _id: parent._id
+        } },
+        { $project: {
+          _id: 0,
+          followers: {
+            $slice: ['$followers', pagination.skip, pagination.limit]
+          },
+        } },
+        { $unwind: '$followers' },
+        { $project: {
+          _id: '$followers._id',
+        } },
+        { $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user'
+        } },
+        { $replaceRoot: {
+          newRoot: { $arrayElemAt: [ '$user', 0 ] }
+        } },
+        { $set: {
+          id: { $toString: '$_id' }
+        } },
+      ])
+      .catch(handleError);
   },
 
   organizations: async (parent, args) => {

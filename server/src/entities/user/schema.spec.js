@@ -82,6 +82,46 @@ describe('user query', () => {
     expect(receivedData).toEqual(expectedData);
   });
 
+  describe('followers field', () => {
+    it('should execute successfully', async () => {
+      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve(userData.followers));
+
+      const query = `
+        query User {
+          user(login: "johndoe") {
+            name
+            followers(first: 1) {
+              name
+            }
+          }
+        }
+      `;
+      const expectedData = { data: { user: {
+        name: userData.name,
+        followers: userData.followers,
+      } } };
+      const receivedData = await graphql(schema, query);
+
+      expect(receivedData).toEqual(expectedData);
+    });
+
+    it('should return error when the pagination arguments was not provided', async () => {
+      const query = `
+        query User {
+          user(login: "johndoe") {
+            followers {
+              name
+            }
+          }
+        }
+      `;
+      const error = new GraphQLError('Missing pagination boundaries');
+      const expectedData = { data: { user: null }, errors: [ error ] };
+      const receivedData = await graphql(schema, query);
+      expect(receivedData).toEqual(expectedData);
+    });
+  });
+
   describe('organizations field', () => {
     it('should execute successfully', async () => {
       UserModel.aggregate.mockImplementationOnce(() => Promise.resolve(userData.organizations));
