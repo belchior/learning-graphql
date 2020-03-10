@@ -1,6 +1,5 @@
-import {
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt } from 'graphql';
+
 
 export const paginationArgs = () => ({
   first: { type: GraphQLInt },

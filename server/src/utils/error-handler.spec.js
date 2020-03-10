@@ -1,5 +1,6 @@
-import { handleError } from './error-handler';
 import { GraphQLError } from 'graphql';
+
+import { handleError } from './error-handler';
 
 
 describe('handleError', () => {

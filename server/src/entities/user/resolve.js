@@ -5,7 +5,7 @@ import { Repository as RepositoryModel } from '../repository/model';
 import { Organization as OrganizationModel } from '../organization/model';
 import { handleError } from '../../utils/error-handler';
 import { paginationArrays, paginationBoundaries } from '../../utils/pagination';
-import { userByLoginLoader } from '../../loaders/user';
+import { userByLoginLoader } from './loader';
 
 
 const handleInvalidId = fn => (...args) => {

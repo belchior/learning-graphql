@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 
+
 export const maxNumberOfItems = 50;
 export const minNumberOfItemsToSkip = 0;
 

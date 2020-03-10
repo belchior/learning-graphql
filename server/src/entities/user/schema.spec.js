@@ -5,8 +5,8 @@ import {
   graphql,
 } from 'graphql';
 
-import * as userSchema from './schema';
 import { User as UserModel } from './model';
+import * as userSchema from './schema';
 
 jest.mock('./model');
 
@@ -62,6 +62,7 @@ describe('User Schema', () => {
 
       expect(receivedData).toEqual(expectedData);
     });
+
     it('should return error when the login argument was not provided', async () => {
       const query = `
         query User {
@@ -162,6 +163,7 @@ describe('User Schema', () => {
       receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
     });
+
     it('should receive input argument representing FollowerInput', async () => {
       const query = `
         mutation {
@@ -299,6 +301,7 @@ describe('User Schema', () => {
       receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
     });
+
     it('should receive input argument representing user name', async () => {
       const query = `
         mutation {

@@ -1,8 +1,7 @@
 
 import { Repository as RepositoryModel } from './model';
 import { handleError } from '../../utils/error-handler';
-import { userByIdLoader } from '../../loaders/user';
-
+import { userByIdLoader } from '../user/loader';
 
 
 export const Repository = {
@@ -10,7 +9,6 @@ export const Repository = {
     return userByIdLoader.load(parent.ownerId.toString());
   },
 };
-
 
 export const Mutation = {
   createRepository: async (parent, args) => {
