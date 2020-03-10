@@ -26,4 +26,4 @@ export const RepositorySchema = new Schema(
 );
 
 
-export const Repository = model('repository', RepositorySchema);
+export const Repository = model('repositories', RepositorySchema);
