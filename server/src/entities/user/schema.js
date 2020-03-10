@@ -35,6 +35,11 @@ const User = new GraphQLObjectType({
       args: paginationArgs(),
       resolve: resolve.User.followers,
     },
+    following: {
+      type: new GraphQLNonNull(new GraphQLList(User)),
+      args: paginationArgs(),
+      resolve: resolve.User.following,
+    },
     id: { type: new GraphQLNonNull(GraphQLID) },
     location: { type: GraphQLString },
     login: { type: new GraphQLNonNull(GraphQLString) },

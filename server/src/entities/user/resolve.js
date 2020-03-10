@@ -61,6 +61,39 @@ export const User = {
       .catch(handleError);
   },
 
+  following: async (parent, args) => {
+    const pagination = paginationArrays(args);
+    return UserModel
+      .aggregate([
+        { $match: {
+          _id: parent._id
+        } },
+        { $project: {
+          _id: 0,
+          following: {
+            $slice: ['$following', pagination.skip, pagination.limit]
+          },
+        } },
+        { $unwind: '$following' },
+        { $project: {
+          _id: '$following._id',
+        } },
+        { $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user'
+        } },
+        { $replaceRoot: {
+          newRoot: { $arrayElemAt: [ '$user', 0 ] }
+        } },
+        { $set: {
+          id: { $toString: '$_id' }
+        } },
+      ])
+      .catch(handleError);
+  },
+
   organizations: async (parent, args) => {
     const pagination = paginationArrays(args);
     return UserModel

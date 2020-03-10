@@ -35,6 +35,7 @@ const userData = {
   company: 'Company',
   email: 'johndoe@email.com',
   followers: [{ name: 'Richard Roe', }],
+  following: [{ name: 'Charly Doe', }],
   id: '5e5580d6f72291487ec648ce',
   location: 'Brazil',
   login: 'johndoe',
@@ -110,6 +111,46 @@ describe('user query', () => {
         query User {
           user(login: "johndoe") {
             followers {
+              name
+            }
+          }
+        }
+      `;
+      const error = new GraphQLError('Missing pagination boundaries');
+      const expectedData = { data: { user: null }, errors: [ error ] };
+      const receivedData = await graphql(schema, query);
+      expect(receivedData).toEqual(expectedData);
+    });
+  });
+
+  describe('following field', () => {
+    it('should execute successfully', async () => {
+      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve(userData.following));
+
+      const query = `
+        query User {
+          user(login: "johndoe") {
+            name
+            following(first: 1) {
+              name
+            }
+          }
+        }
+      `;
+      const expectedData = { data: { user: {
+        name: userData.name,
+        following: userData.following,
+      } } };
+      const receivedData = await graphql(schema, query);
+
+      expect(receivedData).toEqual(expectedData);
+    });
+
+    it('should return error when the pagination arguments was not provided', async () => {
+      const query = `
+        query User {
+          user(login: "johndoe") {
+            following {
               name
             }
           }
