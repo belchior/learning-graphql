@@ -7,11 +7,21 @@ import {
   GraphQLString,
 } from 'graphql';
 
-import * as resolve from './resolve';
-import { Organization as OrganizationType } from '../organization/schema';
-import { Repository as RepositoryType } from '../repository/schema';
 import { paginationArgs } from '../../utils/schema';
+import { Repository } from '../repository/schema';
+import * as resolve from './resolve';
 
+
+const Organization = new GraphQLObjectType({
+  name: 'Organization',
+  fields: () => ({
+    avatarUrl: { type: GraphQLString },
+    id: { type: new GraphQLNonNull(GraphQLID) },
+    login: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    url: { type: new GraphQLNonNull(GraphQLString) },
+  }),
+});
 
 const User = new GraphQLObjectType({
   name: 'User',
@@ -30,12 +40,12 @@ const User = new GraphQLObjectType({
     login: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     organizations: {
-      type: new GraphQLNonNull(new GraphQLList(OrganizationType)),
+      type: new GraphQLNonNull(new GraphQLList(Organization)),
       args: paginationArgs(),
       resolve: resolve.User.organizations,
     },
     repositories: {
-      type: new GraphQLNonNull(new GraphQLList(RepositoryType)),
+      type: new GraphQLNonNull(new GraphQLList(Repository)),
       args: paginationArgs(),
       resolve: resolve.User.repositories,
     },
@@ -58,6 +68,7 @@ const UserInput = new GraphQLInputObjectType({
     websiteUrl: { type: GraphQLString },
   }),
 });
+
 const FollowerInput = new GraphQLInputObjectType({
   name: 'FollowerInput',
   fields: () => ({

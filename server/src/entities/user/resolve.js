@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 import { User as UserModel } from './model';
 import { Repository as RepositoryModel } from '../repository/model';
-import { Organization as OrganizationModel } from '../organization/model';
 import { handleError } from '../../utils/error-handler';
 import { paginationArrays, paginationBoundaries } from '../../utils/pagination';
 import { userByLoginLoader } from './loader';
@@ -39,18 +38,32 @@ export const User = {
     const pagination = paginationArrays(args);
     return UserModel
       .aggregate([
-        { $match: { _id: parent._id } },
-        { $project: {
-          organizations: { $slice: ['$organizations', pagination.skip, pagination.limit] },
+        { $match: {
+          _id: parent._id
         } },
         { $project: {
-          ids: { $map: { input: '$organizations', as: 'item', in: '$$item._id' } },
+          _id: 0,
+          organizations: {
+            $slice: ['$organizations', pagination.skip, pagination.limit]
+          },
+        } },
+        { $unwind: '$organizations' },
+        { $project: {
+          _id: '$organizations._id',
+        } },
+        { $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user'
+        } },
+        { $replaceRoot: {
+          newRoot: { $arrayElemAt: [ '$user', 0 ] }
+        } },
+        { $set: {
+          id: { $toString: '$_id' }
         } },
       ])
-      .then(data => {
-        const query = { _id: { $in: data[0].ids } };
-        return OrganizationModel.find(query);
-      })
       .catch(handleError);
   },
 
