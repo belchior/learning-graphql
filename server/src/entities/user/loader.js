@@ -4,10 +4,15 @@ import { User as UserModel } from './model';
 import { handleError } from '../../utils/error-handler';
 
 
-const projection = { followers: 0, organizations: 0, starredRepositories: 0 };
+const projection = {
+  followers: 0,
+  following: 0,
+  organizations: 0,
+  starredRepositories: 0
+};
 
 const getUsersByIds = async ids => {
-  const query = { _id: { $in: ids }, isOrganization: false };
+  const query = { _id: { $in: ids } };
   return UserModel
     .find(query, projection)
     .then(users => (
@@ -21,7 +26,7 @@ const getUsersByIds = async ids => {
 };
 
 const getUsersByLogins = async logins => {
-  const query = { login: { $in: logins }, isOrganization: false };
+  const query = { login: { $in: logins } };
   return UserModel
     .find(query, projection)
     .then(users => (
