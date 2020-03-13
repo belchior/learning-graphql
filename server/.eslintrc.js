@@ -5,7 +5,8 @@ module.exports = {
     'jest/globals': true
   },
   'plugins': [
-    'jest'
+    'jest',
+    'no-null',
   ],
   'extends': [
     'eslint:recommended',
@@ -20,10 +21,11 @@ module.exports = {
     'sourceType': 'module'
   },
   'rules': {
-    'indent': [ 'error', 2 ],
+    'indent': ["error", 2, { "SwitchCase": 1 }],
     'linebreak-style': [ 'error', 'unix' ],
+    'no-null/no-null': 2,
+    'object-curly-spacing': [ 'error', 'always' ],
     'quotes': [ 'error', 'single' ],
     'semi': [ 'error', 'always' ],
-    'object-curly-spacing': [ 'error', 'always' ],
   }
 };
