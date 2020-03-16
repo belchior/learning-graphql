@@ -10,14 +10,14 @@ import {
 import * as resolve from './resolve';
 
 
-const Language = new GraphQLObjectType({
+const LanguageType = new GraphQLObjectType({
   name: 'Language',
   fields: () => ({
     color: { type: GraphQLString },
     name: { type: GraphQLString },
   }),
 });
-const LanguageInput = new GraphQLInputObjectType({
+const LanguageInputType = new GraphQLInputObjectType({
   name: 'LanguageInput',
   fields: () => ({
     color: { type: GraphQLString },
@@ -25,20 +25,20 @@ const LanguageInput = new GraphQLInputObjectType({
   }),
 });
 
-const License = new GraphQLObjectType({
+const LicenseType = new GraphQLObjectType({
   name: 'License',
   fields: () => ({
     name: { type: GraphQLString },
   }),
 });
-const LicenseInput = new GraphQLInputObjectType({
+const LicenseInputType = new GraphQLInputObjectType({
   name: 'LicenseInput',
   fields: () => ({
     name: { type: GraphQLString },
   }),
 });
 
-const Owner = new GraphQLObjectType({
+const OwnerType = new GraphQLObjectType({
   name: 'Owner',
   fields: () => ({
     avatarUrl: { type: GraphQLString },
@@ -47,31 +47,31 @@ const Owner = new GraphQLObjectType({
   }),
 });
 
-export const Repository = new GraphQLObjectType({
+export const RepositoryType = new GraphQLObjectType({
   name: 'Repository',
   fields: () => ({
     description: { type: GraphQLString },
     forkCount: { type: GraphQLInt },
     id: { type: new GraphQLNonNull(GraphQLID) },
-    licenseInfo: { type: License },
+    licenseInfo: { type: LicenseType },
     name: { type: new GraphQLNonNull(GraphQLString) },
     owner: {
-      type: new GraphQLNonNull(Owner),
+      type: new GraphQLNonNull(OwnerType),
       resolve: resolve.Repository.owner,
     },
-    primaryLanguage: { type: Language },
+    primaryLanguage: { type: LanguageType },
     url: { type: new GraphQLNonNull(GraphQLString) },
   }),
 });
-export const RepositoryInput = new GraphQLInputObjectType({
+export const RepositoryInputType = new GraphQLInputObjectType({
   name: 'RepositoryInput',
   fields: () => ({
     description: { type: GraphQLString },
     forkCount: { type: GraphQLInt },
-    licenseInfo: { type: LicenseInput },
+    licenseInfo: { type: LicenseInputType },
     name: { type: GraphQLString },
     ownerLogin: { type: GraphQLString },
-    primaryLanguage: { type: LanguageInput },
+    primaryLanguage: { type: LanguageInputType },
     url: { type: GraphQLString },
   }),
 });
@@ -81,9 +81,9 @@ export const queryFields = {};
 
 export const mutationFields = {
   createRepository: {
-    type: Repository,
+    type: RepositoryType,
     args: {
-      input: { type: new GraphQLNonNull(RepositoryInput) }
+      input: { type: new GraphQLNonNull(RepositoryInputType) }
     },
     resolve: resolve.Mutation.createRepository
   }

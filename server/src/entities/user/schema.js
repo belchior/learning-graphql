@@ -8,23 +8,13 @@ import {
 } from 'graphql';
 
 import * as resolve from './resolve';
-import { Repository } from '../repository/schema';
+import { RepositoryType } from '../repository/schema';
+import { OrganizationType } from '../organization/schema';
 import { connectionType, connectionTypeArgs } from '../../cursor-connection/schema';
 import { paginationArgs } from '../../utils/schema';
 
 
-const Organization = new GraphQLObjectType({
-  name: 'Organization',
-  fields: () => ({
-    avatarUrl: { type: GraphQLString },
-    id: { type: new GraphQLNonNull(GraphQLID) },
-    login: { type: new GraphQLNonNull(GraphQLString) },
-    name: { type: new GraphQLNonNull(GraphQLString) },
-    url: { type: new GraphQLNonNull(GraphQLString) },
-  }),
-});
-
-const User = new GraphQLObjectType({
+const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
     avatarUrl: { type: GraphQLString },
@@ -32,12 +22,12 @@ const User = new GraphQLObjectType({
     company: { type: GraphQLString },
     email: { type: new GraphQLNonNull(GraphQLString) },
     followers: {
-      type: new GraphQLNonNull(new GraphQLList(User)),
+      type: new GraphQLNonNull(new GraphQLList(UserType)),
       args: paginationArgs(),
       resolve: resolve.User.followers,
     },
     following: {
-      type: new GraphQLNonNull(new GraphQLList(User)),
+      type: new GraphQLNonNull(new GraphQLList(UserType)),
       args: paginationArgs(),
       resolve: resolve.User.following,
     },
@@ -46,17 +36,17 @@ const User = new GraphQLObjectType({
     login: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     organizations: {
-      type: connectionType(Organization),
+      type: connectionType(OrganizationType),
       args: connectionTypeArgs(),
       resolve: resolve.User.organizations,
     },
     repositories: {
-      type: new GraphQLNonNull(new GraphQLList(Repository)),
+      type: new GraphQLNonNull(new GraphQLList(RepositoryType)),
       args: paginationArgs(),
       resolve: resolve.User.repositories,
     },
     starredRepositories: {
-      type: new GraphQLNonNull(new GraphQLList(Repository)),
+      type: new GraphQLNonNull(new GraphQLList(RepositoryType)),
       args: paginationArgs(),
       resolve: resolve.User.starredRepositories,
     },
@@ -65,7 +55,7 @@ const User = new GraphQLObjectType({
   }),
 });
 
-const UserInput = new GraphQLInputObjectType({
+const UserInputType = new GraphQLInputObjectType({
   name: 'UserInput',
   fields: () => ({
     avatarUrl: { type: GraphQLString },
@@ -80,7 +70,7 @@ const UserInput = new GraphQLInputObjectType({
   }),
 });
 
-const FollowerInput = new GraphQLInputObjectType({
+const FollowerInputType = new GraphQLInputObjectType({
   name: 'FollowerInput',
   fields: () => ({
     id: { type: GraphQLID },
@@ -91,7 +81,7 @@ const FollowerInput = new GraphQLInputObjectType({
 
 export const queryFields = {
   user: {
-    type: User,
+    type: UserType,
     args: { login: { type: new GraphQLNonNull(GraphQLString) } },
     resolve: resolve.Query.user
   }
@@ -99,29 +89,29 @@ export const queryFields = {
 
 export const mutationFields = {
   addUserFollower: {
-    type: User,
+    type: UserType,
     args: {
       id: { type: new GraphQLNonNull(GraphQLID) },
-      input: { type: new GraphQLNonNull(FollowerInput) },
+      input: { type: new GraphQLNonNull(FollowerInputType) },
     },
     resolve: resolve.Mutation.addUserFollower,
   },
   createUser: {
-    type: User,
+    type: UserType,
     args: {
-      input: { type: new GraphQLNonNull(UserInput) }
+      input: { type: new GraphQLNonNull(UserInputType) }
     },
     resolve: resolve.Mutation.createUser,
   },
   removeUserFollower: {
-    type: User,
+    type: UserType,
     args: {
       id: { type: new GraphQLNonNull(GraphQLID) },
     },
     resolve: resolve.Mutation.removeUserFollower,
   },
   updateUserName: {
-    type: User,
+    type: UserType,
     args: {
       id: { type: new GraphQLNonNull(GraphQLID) },
       input: { type: new GraphQLNonNull(GraphQLString) }

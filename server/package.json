@@ -1,7 +1,10 @@
 {
-  "name": "back",
-  "version": "1.0.0",
+  "name": "server",
   "description": "",
+  "version": "0.1.0",
+  "author": "Belchior Oliveira",
+  "license": "MIT",
+  "keywords": [],
   "main": "src/server.js",
   "scripts": {
     "start": "nodemon -r esm src/server.js",
@@ -10,9 +13,6 @@
     "lint": "eslint src",
     "test:ci": "jest --coverage --ci"
   },
-  "keywords": [],
-  "author": "Belchior Oliveira",
-  "license": "ISC",
   "dependencies": {
     "dataloader": "^2.0.0",
     "esm": "^3.2.25",

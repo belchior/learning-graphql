@@ -143,16 +143,16 @@ export const User = {
           }
         } },
         { $lookup: {
-          from: 'users',
+          from: 'organizations',
           localField: '_id',
           foreignField: '_id',
-          as: 'user'
+          as: 'orgs'
         } },
         { $replaceRoot: {
           newRoot: {
             $mergeObjects: [
               { key: '$key', size: '$size' },
-              { $arrayElemAt: ['$user', 0] }
+              { $arrayElemAt: ['$orgs', 0] }
             ]
           }
         } },
@@ -218,7 +218,7 @@ export const Query = {
 
 
 export const Mutation = {
-  addUserFollower: handleInvalidId((parent, args) => {
+  addUserFollower: handleInvalidId(async (parent, args) => {
     const query = { _id: args.id };
     const update = { $addToSet: { followers: args.input } };
     return updateAttribute(UserModel, query, update, 'User not found');
@@ -229,13 +229,13 @@ export const Mutation = {
     return user.save().catch(handleError);
   },
 
-  removeUserFollower: handleInvalidId((parent, args) => {
+  removeUserFollower: handleInvalidId(async (parent, args) => {
     const query = { _id: args.id };
     const update = { $pull: { followers: { login: args.input } } };
     return updateAttribute(UserModel, query, update, 'User not found');
   }),
 
-  updateUserName: handleInvalidId((parent, args) => {
+  updateUserName: handleInvalidId(async (parent, args) => {
     const query = { _id: args.id };
     const update = { $set: { name: args.input } };
     return updateAttribute(UserModel, query, update, 'User not found');
