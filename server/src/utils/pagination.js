@@ -5,10 +5,10 @@ export const maxNumberOfItems = 50;
 export const minNumberOfItemsToSkip = 0;
 
 const validateArgs = args => {
-  if (args.first == null && args.last == null) {
+  if (args.first == undefined && args.last == undefined) {
     throw new GraphQLError('Missing pagination boundaries');
   }
-  if (args.first != null && args.last != null) {
+  if (args.first != undefined && args.last != undefined) {
     throw new GraphQLError('first and last must not be specified at the same time');
   }
   if (Number.isInteger(args.skip) && args.skip < minNumberOfItemsToSkip) {

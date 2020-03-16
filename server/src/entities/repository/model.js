@@ -15,7 +15,7 @@ const LanguageSchema = new Schema({
 export const RepositorySchema = new Schema(
   {
     description: { type: String, trim: true, maxlength: 500, minlength: 3  },
-    forkCount: { type: Number, min: 0 },
+    forkCount: { type: Number, required: true, min: 0 },
     licenseInfo: LiceseSchema,
     name: { type: String, trim: true, required: true, maxlength: 120, minlength: 3 },
     ownerId: { type: Schema.Types.ObjectId, required: true },

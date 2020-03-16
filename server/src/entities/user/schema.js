@@ -7,9 +7,10 @@ import {
   GraphQLString,
 } from 'graphql';
 
-import { paginationArgs } from '../../utils/schema';
-import { Repository } from '../repository/schema';
 import * as resolve from './resolve';
+import { Repository } from '../repository/schema';
+import { connectionType, connectionTypeArgs } from '../../cursor-connection/schema';
+import { paginationArgs } from '../../utils/schema';
 
 
 const Organization = new GraphQLObjectType({
@@ -45,8 +46,8 @@ const User = new GraphQLObjectType({
     login: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     organizations: {
-      type: new GraphQLNonNull(new GraphQLList(Organization)),
-      args: paginationArgs(),
+      type: connectionType(Organization),
+      args: connectionTypeArgs(),
       resolve: resolve.User.organizations,
     },
     repositories: {

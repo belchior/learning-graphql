@@ -1,10 +1,14 @@
 import mongoose from 'mongoose';
 
-import { User as UserModel } from './model';
 import { Repository as RepositoryModel } from '../repository/model';
-import { handleError } from '../../utils/error-handler';
-import { paginationArrays, paginationBoundaries } from '../../utils/pagination';
+import { User as UserModel } from './model';
+import { handleError, handleNotFound } from '../../utils/error-handler';
+import { paginationArrays, paginationBoundaries, } from '../../utils/pagination';
 import { userByLoginLoader } from './loader';
+import {
+  valuesToCursorConnection,
+  arrayIndexPagination,
+} from '../../cursor-connection/indexPagination';
 
 
 const handleInvalidId = fn => (...args) => {
@@ -15,17 +19,12 @@ const handleInvalidId = fn => (...args) => {
 
 const updateAttribute = async (Model, query, update, messageNotFound) => {
   const options = { new: true, runValidators: true };
-  const handleNotFound = async data => {
-    if (!data) return handleError(new Error(messageNotFound));
-    return data;
-  };
 
   return Model
     .findOneAndUpdate(query, update, options)
-    .then(handleNotFound)
+    .then(handleNotFound(messageNotFound))
     .catch(handleError);
 };
-
 
 export const User = {
   followers: async (parent, args) => {
@@ -95,21 +94,53 @@ export const User = {
   },
 
   organizations: async (parent, args) => {
-    const pagination = paginationArrays(args);
+    const pagination = arrayIndexPagination(args);
     return UserModel
       .aggregate([
-        { $match: {
-          _id: parent._id
-        } },
+        { $match: { _id: parent._id } },
         { $project: {
           _id: 0,
-          organizations: {
+          organizations: 1,
+          size: { $size: '$organizations' },
+          orgs: {
             $slice: ['$organizations', pagination.skip, pagination.limit]
-          },
+          }
         } },
-        { $unwind: '$organizations' },
         { $project: {
-          _id: '$organizations._id',
+          size: 1,
+          items: {
+            $map: {
+              input: '$orgs',
+              as: 'item',
+              in: {
+                _id: '$$item._id',
+                key: {
+                  $concat: [
+                    {
+                      $toString: {
+                        $indexOfArray: ['$organizations', '$$item']
+                      }
+                    },
+                    '|',
+                    {
+                      $toString: {
+                        $subtract: [
+                          { $indexOfArray: ['$organizations', '$$item'] },
+                          '$size'
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        } },
+        { $unwind: '$items' },
+        { $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [{ size: '$size' }, '$items']
+          }
         } },
         { $lookup: {
           from: 'users',
@@ -118,12 +149,16 @@ export const User = {
           as: 'user'
         } },
         { $replaceRoot: {
-          newRoot: { $arrayElemAt: [ '$user', 0 ] }
+          newRoot: {
+            $mergeObjects: [
+              { key: '$key', size: '$size' },
+              { $arrayElemAt: ['$user', 0] }
+            ]
+          }
         } },
-        { $set: {
-          id: { $toString: '$_id' }
-        } },
+        { $set: { id: { $toString: '$_id' } } },
       ])
+      .then(values => valuesToCursorConnection(values, args))
       .catch(handleError);
   },
 

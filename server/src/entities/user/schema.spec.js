@@ -40,7 +40,7 @@ const userData = {
   location: 'Brazil',
   login: 'johndoe',
   name: 'John Doe',
-  organizations: [{ name: 'Organization name' }],
+  organizations: [{ key: '0|-1', size: 1, name: 'Organization name' }],
   repositories: [{ name: 'Repo name' }],
   starredRepositories: [{ name: 'Starred repo name' }],
   url: 'https://github.com/johndoe',
@@ -117,6 +117,7 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
+      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -157,6 +158,7 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
+      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -172,14 +174,22 @@ describe('user query', () => {
           user(login: "johndoe") {
             name
             organizations(first: 1) {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }
       `;
       const expectedData = { data: { user: {
         name: userData.name,
-        organizations: userData.organizations,
+        organizations: {
+          edges: [
+            { node: { name: userData.organizations[0].name } }
+          ]
+        },
       } } };
       const receivedData = await graphql(schema, query);
 
@@ -191,12 +201,17 @@ describe('user query', () => {
         query User {
           user(login: "johndoe") {
             organizations {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
+      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -243,6 +258,7 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
+      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -285,6 +301,7 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
+      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -321,6 +338,7 @@ describe('addUserFollower mutation', () => {
       }
     `;
     error = new GraphQLError('Invalid args.: invalid id');
+    // eslint-disable-next-line no-null/no-null
     expectedData = { data: { addUserFollower: null }, errors: [ error ] };
     receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);
@@ -413,6 +431,7 @@ describe('removeUserFollower mutation', () => {
       }
     `;
     error = new GraphQLError('Invalid args.: invalid id');
+    // eslint-disable-next-line no-null/no-null
     expectedData = { data: { removeUserFollower: null }, errors: [ error ] };
     receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);
@@ -459,6 +478,7 @@ describe('updateUserName mutation', () => {
       }
     `;
     error = new GraphQLError('Invalid args.: invalid id');
+    // eslint-disable-next-line no-null/no-null
     expectedData = { data: { updateUserName: null }, errors: [ error ] };
     receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);

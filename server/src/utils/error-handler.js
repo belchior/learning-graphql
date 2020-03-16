@@ -20,3 +20,10 @@ export const handleError = error => {
   }
   return Promise.reject(new GraphQLError(message));
 };
+
+export const handleNotFound = message => async data => {
+  if (!data || (Array.isArray(data) && data.length === 0)) {
+    return handleError(new Error(message));
+  }
+  return data;
+};
