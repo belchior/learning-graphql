@@ -34,8 +34,8 @@ const userData = {
   bio: 'bio description',
   company: 'Company',
   email: 'johndoe@email.com',
-  followers: [{ name: 'Richard Roe', }],
-  following: [{ name: 'Charly Doe', }],
+  followers: [{ key: '0|-1', size: 1, name: 'Richard Roe', }],
+  following: [{ key: '0|-1', size: 1, name: 'Charly Doe', }],
   id: '5e5580d6f72291487ec648ce',
   location: 'Brazil',
   login: 'johndoe',
@@ -92,14 +92,22 @@ describe('user query', () => {
           user(login: "johndoe") {
             name
             followers(first: 1) {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }
       `;
       const expectedData = { data: { user: {
         name: userData.name,
-        followers: userData.followers,
+        followers: {
+          edges: [
+            { node: { name: userData.followers[0].name } }
+          ]
+        },
       } } };
       const receivedData = await graphql(schema, query);
 
@@ -111,7 +119,11 @@ describe('user query', () => {
         query User {
           user(login: "johndoe") {
             followers {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }
@@ -133,14 +145,22 @@ describe('user query', () => {
           user(login: "johndoe") {
             name
             following(first: 1) {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }
       `;
       const expectedData = { data: { user: {
         name: userData.name,
-        following: userData.following,
+        following: {
+          edges:[
+            { node: { name: userData.following[0].name } }
+          ]
+        },
       } } };
       const receivedData = await graphql(schema, query);
 
@@ -152,7 +172,11 @@ describe('user query', () => {
         query User {
           user(login: "johndoe") {
             following {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }

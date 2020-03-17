@@ -26,9 +26,15 @@ const updateAttribute = async (Model, query, update, messageNotFound) => {
     .catch(handleError);
 };
 
+const userProject = {
+  followers: 0,
+  following: 0,
+  organizations: 0,
+};
+
 export const User = {
   followers: async (parent, args) => {
-    const pagination = paginationArrays(args);
+    const pagination = arrayIndexPagination(args);
     return UserModel
       .aggregate([
         { $match: {
@@ -36,13 +42,47 @@ export const User = {
         } },
         { $project: {
           _id: 0,
-          followers: {
+          followers: 1,
+          totalItems: { $size: '$followers' },
+          sliceOfFollowers: {
             $slice: ['$followers', pagination.skip, pagination.limit]
           },
         } },
-        { $unwind: '$followers' },
         { $project: {
-          _id: '$followers._id',
+          totalItems: 1,
+          items: {
+            $map: {
+              input: '$sliceOfFollowers',
+              as: 'item',
+              in: {
+                _id: '$$item._id',
+                key: {
+                  $concat: [
+                    {
+                      $toString: {
+                        $indexOfArray: ['$followers', '$$item']
+                      }
+                    },
+                    '|',
+                    {
+                      $toString: {
+                        $subtract: [
+                          { $indexOfArray: ['$followers', '$$item'] },
+                          '$totalItems'
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        } },
+        { $unwind: '$items' },
+        { $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [{ totalItems: '$totalItems' }, '$items']
+          }
         } },
         { $lookup: {
           from: 'users',
@@ -51,17 +91,22 @@ export const User = {
           as: 'user'
         } },
         { $replaceRoot: {
-          newRoot: { $arrayElemAt: [ '$user', 0 ] }
+          newRoot: {
+            $mergeObjects: [
+              { key: '$key', totalItems: '$totalItems' },
+              { $arrayElemAt: ['$user', 0] }
+            ]
+          }
         } },
-        { $set: {
-          id: { $toString: '$_id' }
-        } },
+        { $project: userProject },
+        { $set: { id: { $toString: '$_id' } } },
       ])
+      .then(values => valuesToCursorConnection(values, args))
       .catch(handleError);
   },
 
   following: async (parent, args) => {
-    const pagination = paginationArrays(args);
+    const pagination = arrayIndexPagination(args);
     return UserModel
       .aggregate([
         { $match: {
@@ -69,13 +114,47 @@ export const User = {
         } },
         { $project: {
           _id: 0,
-          following: {
+          followers: 1,
+          totalItems: { $size: '$following' },
+          sliceOfFollowing: {
             $slice: ['$following', pagination.skip, pagination.limit]
           },
         } },
-        { $unwind: '$following' },
         { $project: {
-          _id: '$following._id',
+          totalItems: 1,
+          items: {
+            $map: {
+              input: '$sliceOfFollowing',
+              as: 'item',
+              in: {
+                _id: '$$item._id',
+                key: {
+                  $concat: [
+                    {
+                      $toString: {
+                        $indexOfArray: ['$following', '$$item']
+                      }
+                    },
+                    '|',
+                    {
+                      $toString: {
+                        $subtract: [
+                          { $indexOfArray: ['$following', '$$item'] },
+                          '$totalItems'
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        } },
+        { $unwind: '$items' },
+        { $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [{ totalItems: '$totalItems' }, '$items']
+          }
         } },
         { $lookup: {
           from: 'users',
@@ -84,12 +163,17 @@ export const User = {
           as: 'user'
         } },
         { $replaceRoot: {
-          newRoot: { $arrayElemAt: [ '$user', 0 ] }
+          newRoot: {
+            $mergeObjects: [
+              { key: '$key', totalItems: '$totalItems' },
+              { $arrayElemAt: ['$user', 0] }
+            ]
+          }
         } },
-        { $set: {
-          id: { $toString: '$_id' }
-        } },
+        { $project: userProject },
+        { $set: { id: { $toString: '$_id' } } },
       ])
+      .then(values => valuesToCursorConnection(values, args))
       .catch(handleError);
   },
 
@@ -101,13 +185,13 @@ export const User = {
         { $project: {
           _id: 0,
           organizations: 1,
-          size: { $size: '$organizations' },
+          totalItems: { $size: '$organizations' },
           orgs: {
             $slice: ['$organizations', pagination.skip, pagination.limit]
           }
         } },
         { $project: {
-          size: 1,
+          totalItems: 1,
           items: {
             $map: {
               input: '$orgs',
@@ -126,7 +210,7 @@ export const User = {
                       $toString: {
                         $subtract: [
                           { $indexOfArray: ['$organizations', '$$item'] },
-                          '$size'
+                          '$totalItems'
                         ]
                       }
                     }
@@ -139,7 +223,7 @@ export const User = {
         { $unwind: '$items' },
         { $replaceRoot: {
           newRoot: {
-            $mergeObjects: [{ size: '$size' }, '$items']
+            $mergeObjects: [{ totalItems: '$totalItems' }, '$items']
           }
         } },
         { $lookup: {
@@ -151,7 +235,7 @@ export const User = {
         { $replaceRoot: {
           newRoot: {
             $mergeObjects: [
-              { key: '$key', size: '$size' },
+              { key: '$key', totalItems: '$totalItems' },
               { $arrayElemAt: ['$orgs', 0] }
             ]
           }

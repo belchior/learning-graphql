@@ -209,7 +209,7 @@ describe('Cursor connection Index Pagination', () => {
 
     it('should return a valid cursor connection when a forward pagination argument is provided', () => {
       const values = [
-        { key: '0|-1', size: 1, name: 'item 1' },
+        { key: '0|-1', totalItems: 1, name: 'item 1' },
       ];
       const args = { first: 10 };
       const receivedConnection = valuesToCursorConnection(values, args);
@@ -228,7 +228,7 @@ describe('Cursor connection Index Pagination', () => {
     it('should return a valid cursor connection when a backward pagination argument is provided', () => {
       const args = { last: 5 };
       let values = [
-        { key: '0|-1', size: 1, name: 'item 1' },
+        { key: '0|-1', totalItems: 1, name: 'item 1' },
       ];
       let receivedConnection = valuesToCursorConnection(values, args);
       let expectedConnection = {
@@ -243,7 +243,7 @@ describe('Cursor connection Index Pagination', () => {
       expect(receivedConnection).toEqual(expectedConnection);
 
       values = [
-        { key: '0|-23', size: 23, name: 'item 1' },
+        { key: '0|-23', totalItems: 23, name: 'item 1' },
       ];
       receivedConnection = valuesToCursorConnection(values, args);
       expectedConnection = {

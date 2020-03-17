@@ -22,13 +22,13 @@ const UserType = new GraphQLObjectType({
     company: { type: GraphQLString },
     email: { type: new GraphQLNonNull(GraphQLString) },
     followers: {
-      type: new GraphQLNonNull(new GraphQLList(UserType)),
-      args: paginationArgs(),
+      type: UserConnectionType,
+      args: connectionTypeArgs(),
       resolve: resolve.User.followers,
     },
     following: {
-      type: new GraphQLNonNull(new GraphQLList(UserType)),
-      args: paginationArgs(),
+      type: UserConnectionType,
+      args: connectionTypeArgs(),
       resolve: resolve.User.following,
     },
     id: { type: new GraphQLNonNull(GraphQLID) },
@@ -54,6 +54,8 @@ const UserType = new GraphQLObjectType({
     websiteUrl: { type: GraphQLString },
   }),
 });
+
+const UserConnectionType = connectionType(UserType);
 
 const UserInputType = new GraphQLInputObjectType({
   name: 'UserInput',

@@ -107,7 +107,7 @@ const forwardPageInfo = items => {
   let keys;
   const firstItem = items[0];
   const lastItem = items[items.length -1];
-  const totalItems = firstItem.size;
+  const totalItems = firstItem.totalItems;
 
   keys = parseKey(firstItem.key);
   const hasPreviousPage = keys.after > 0;
@@ -122,7 +122,7 @@ const backwardPageInfo = items => {
   let keys;
   const firstItem = items[0];
   const lastItem = items[items.length -1];
-  const totalItems = firstItem.size;
+  const totalItems = firstItem.totalItems;
 
   if (items.length === totalItems) {
     return { hasNextPage: false, hasPreviousPage: false };
