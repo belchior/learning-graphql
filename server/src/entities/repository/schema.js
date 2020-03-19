@@ -8,6 +8,7 @@ import {
 } from 'graphql';
 
 import * as resolve from './resolve';
+import { NodeType } from '../../utils/schema';
 
 
 const LanguageType = new GraphQLObjectType({
@@ -48,11 +49,15 @@ const OwnerType = new GraphQLObjectType({
 });
 
 export const RepositoryType = new GraphQLObjectType({
+  interfaces: [NodeType],
   name: 'Repository',
   fields: () => ({
     description: { type: GraphQLString },
     forkCount: { type: GraphQLInt },
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+      resolve: parent => parent._id.toString(),
+    },
     licenseInfo: { type: LicenseType },
     name: { type: new GraphQLNonNull(GraphQLString) },
     owner: {

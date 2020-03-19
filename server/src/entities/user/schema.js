@@ -5,16 +5,18 @@ import {
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
+
 } from 'graphql';
 
 import * as resolve from './resolve';
-import { RepositoryType } from '../repository/schema';
+import { NodeType, paginationArgs } from '../../utils/schema';
 import { OrganizationType } from '../organization/schema';
+import { RepositoryType } from '../repository/schema';
 import { connectionType, connectionTypeArgs } from '../../cursor-connection/schema';
-import { paginationArgs } from '../../utils/schema';
 
 
 const UserType = new GraphQLObjectType({
+  interfaces: [NodeType],
   name: 'User',
   fields: () => ({
     avatarUrl: { type: GraphQLString },
@@ -31,7 +33,10 @@ const UserType = new GraphQLObjectType({
       args: connectionTypeArgs(),
       resolve: resolve.User.following,
     },
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+      resolve: parent => parent._id.toString(),
+    },
     location: { type: GraphQLString },
     login: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
@@ -41,8 +46,8 @@ const UserType = new GraphQLObjectType({
       resolve: resolve.User.organizations,
     },
     repositories: {
-      type: new GraphQLNonNull(new GraphQLList(RepositoryType)),
-      args: paginationArgs(),
+      type: connectionType(RepositoryType),
+      args: connectionTypeArgs(),
       resolve: resolve.User.repositories,
     },
     starredRepositories: {
