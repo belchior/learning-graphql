@@ -1,22 +1,20 @@
 import {
   GraphQLID,
   GraphQLInputObjectType,
-  GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
-
 } from 'graphql';
 
 import * as resolve from './resolve';
-import { NodeType, paginationArgs } from '../../utils/schema';
 import { OrganizationType } from '../organization/schema';
-import { RepositoryType } from '../repository/schema';
+import { RepositoryType, RepositoryOwnerInterface } from '../repository/schema';
 import { connectionType, connectionTypeArgs } from '../../cursor-connection/schema';
+import { idType, NodeInterface } from '../../utils/schema';
 
 
-const UserType = new GraphQLObjectType({
-  interfaces: [NodeType],
+export const UserType = new GraphQLObjectType({
+  interfaces: [NodeInterface, RepositoryOwnerInterface],
   name: 'User',
   fields: () => ({
     avatarUrl: { type: GraphQLString },
@@ -33,26 +31,23 @@ const UserType = new GraphQLObjectType({
       args: connectionTypeArgs(),
       resolve: resolve.User.following,
     },
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-      resolve: parent => parent._id.toString(),
-    },
+    id: idType(),
     location: { type: GraphQLString },
     login: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     organizations: {
-      type: connectionType(OrganizationType),
+      type: OrganizationConnectionType,
       args: connectionTypeArgs(),
       resolve: resolve.User.organizations,
     },
     repositories: {
-      type: connectionType(RepositoryType),
+      type: RepositoryConnectionType,
       args: connectionTypeArgs(),
       resolve: resolve.User.repositories,
     },
     starredRepositories: {
-      type: new GraphQLNonNull(new GraphQLList(RepositoryType)),
-      args: paginationArgs(),
+      type: RepositoryConnectionType,
+      args: connectionTypeArgs(),
       resolve: resolve.User.starredRepositories,
     },
     url: { type: new GraphQLNonNull(GraphQLString) },
@@ -61,6 +56,8 @@ const UserType = new GraphQLObjectType({
 });
 
 const UserConnectionType = connectionType(UserType);
+const RepositoryConnectionType = connectionType(RepositoryType);
+const OrganizationConnectionType = connectionType(OrganizationType);
 
 const UserInputType = new GraphQLInputObjectType({
   name: 'UserInput',

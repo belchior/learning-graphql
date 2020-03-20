@@ -1,14 +1,14 @@
 import {
-  GraphQLID,
   GraphQLInt,
   GraphQLInputObjectType,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
+  GraphQLInterfaceType,
 } from 'graphql';
 
 import * as resolve from './resolve';
-import { NodeType } from '../../utils/schema';
+import { idType, NodeInterface } from '../../utils/schema';
 
 
 const LanguageType = new GraphQLObjectType({
@@ -39,35 +39,35 @@ const LicenseInputType = new GraphQLInputObjectType({
   }),
 });
 
-const OwnerType = new GraphQLObjectType({
-  name: 'Owner',
+export const RepositoryOwnerInterface = new GraphQLInterfaceType({
+  name: 'RepositoryOwner',
   fields: () => ({
     avatarUrl: { type: GraphQLString },
+    id: idType(),
     login: { type: GraphQLString },
     url: { type: GraphQLString },
   }),
 });
 
+
 export const RepositoryType = new GraphQLObjectType({
-  interfaces: [NodeType],
+  interfaces: [NodeInterface],
   name: 'Repository',
   fields: () => ({
     description: { type: GraphQLString },
     forkCount: { type: GraphQLInt },
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-      resolve: parent => parent._id.toString(),
-    },
+    id: idType(),
     licenseInfo: { type: LicenseType },
     name: { type: new GraphQLNonNull(GraphQLString) },
     owner: {
-      type: new GraphQLNonNull(OwnerType),
+      type: new GraphQLNonNull(RepositoryOwnerInterface),
       resolve: resolve.Repository.owner,
     },
     primaryLanguage: { type: LanguageType },
     url: { type: new GraphQLNonNull(GraphQLString) },
   }),
 });
+
 export const RepositoryInputType = new GraphQLInputObjectType({
   name: 'RepositoryInput',
   fields: () => ({

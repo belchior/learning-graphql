@@ -1,22 +1,19 @@
 import {
-  GraphQLID,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { NodeType } from '../../utils/schema';
+import { idType, NodeInterface } from '../../utils/schema';
+import { RepositoryOwnerInterface } from '../repository/schema';
 
 
 export const OrganizationType = new GraphQLObjectType({
-  interfaces: [NodeType],
+  interfaces: [NodeInterface, RepositoryOwnerInterface],
   name: 'Organization',
   fields: () => ({
     avatarUrl: { type: GraphQLString },
     email: { type: GraphQLString },
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-      resolve: parent => parent._id.toString(),
-    },
+    id: idType(),
     location: { type: GraphQLString },
     login: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
