@@ -21,8 +21,9 @@ module.exports = {
     'sourceType': 'module'
   },
   'rules': {
-    'indent': ["error", 2, { "SwitchCase": 1 }],
+    'indent': ["error", 2, { SwitchCase: 1 }],
     'linebreak-style': [ 'error', 'unix' ],
+    'max-len': ['error', { code: 120, ignoreComments: true }],
     'no-null/no-null': 2,
     'object-curly-spacing': [ 'error', 'always' ],
     'quotes': [ 'error', 'single' ],
