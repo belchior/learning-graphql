@@ -1,6 +1,27 @@
-import { GraphQLError } from 'graphql';
 
-import { stringToBase64, base64ToString } from '../utils/converter';
+import { base64ToString, stringToBase64 } from '../utils/converter';
+import { validateArgs } from './arguments';
+
+
+/*
+  forward pagination argument
+  first = 3
+  after = 2
+  returned = [02, 03, 04]
+
+            2             3
+            |`````````````|
+  |----|----|----|----|----|----|----|----|----|----
+  | 00 | 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 | 09
+  |----|----|----|----|----|----|----|----|----|----
+                           |,,,,,,,,,,,,,|
+                          -5             3
+
+  backward pagination argument
+  last   = 3
+  before = 2 (-last - before = -5)
+  returned = [05, 06, 07]
+*/
 
 
 const emptyCursorConnection = {
@@ -10,47 +31,14 @@ const emptyCursorConnection = {
     hasNextPage: false,
   }
 };
-const keyToCursor = stringToBase64;
 const cursorToKey = base64ToString;
+const keyToCursor = stringToBase64;
 
 export const parseKey = key => {
   const result = key.match(/^(?<after>-?\d+)\|(?<before>-?\d+)$/);
   if (!result) throw new Error(`Unable to parse key: ${key}`);
   const { groups: { after, before } } = result;
   return { after: Number(after), before: Number(before) };
-};
-
-export const validateArgs = args => {
-  if (
-    typeof args != 'object' ||
-    (args.first == undefined && args.last == undefined)
-  ) {
-    throw new GraphQLError('Missing pagination boundaries');
-  }
-  if (args.first != undefined && args.last != undefined) throw new GraphQLError(
-    'first and last must not be specified at the same time'
-  );
-  if (args.before != undefined && args.after != undefined) throw new GraphQLError(
-    'before and after must not be specified at the same time'
-  );
-  if (args.first != undefined && args.before != undefined) throw new GraphQLError(
-    'first must be used with after but receive before instead'
-  );
-  if (args.last != undefined && args.after != undefined) throw new GraphQLError(
-    'last must be used with before but receive after instead'
-  );
-
-  const limit = args.first || args.last;
-  if (Number.isInteger(limit) === false || limit <= 0) throw new GraphQLError(
-    'first and last must be a positive integer'
-  );
-
-  const cursor = args.before || args.after;
-  if ( cursor != undefined && (typeof cursor !== 'string' || cursor === '')) throw new GraphQLError(
-    'before and after must be non empty string'
-  );
-
-  return true;
 };
 
 const forwardPagination = args => {
@@ -78,29 +66,11 @@ const backwardPagination = args => {
 };
 
 
-/*
-  forward pagination argument
-  first = 3
-  after = 2
-  returned = [02, 03, 04]
-
-            2             3
-            |`````````````|
-  |----|----|----|----|----|----|----|----|----|----
-  | 00 | 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 | 09
-  |----|----|----|----|----|----|----|----|----|----
-                           |,,,,,,,,,,,,,|
-                          -5             3
-
-  backward pagination argument
-  last   = 3
-  before = 2 (-last - before = -5)
-  returned = [05, 06, 07]
-*/
-export const arrayIndexPagination = args => {
-  validateArgs(args);
-  return args.first ? forwardPagination(args) : backwardPagination(args);
-};
+export const arrayIndexPagination = validateArgs(args => {
+  return args.first
+    ? forwardPagination(args)
+    : backwardPagination(args);
+});
 
 
 const forwardPageInfo = items => {
