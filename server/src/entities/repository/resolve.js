@@ -1,12 +1,12 @@
 
 import { Repository as RepositoryModel } from './model';
 import { handleError } from '../../utils/error-handler';
-import { userByIdLoader } from '../user/loader';
+import { repositoryOwnerLoader } from './loader';
 
 
 export const Repository = {
   owner: async parent => {
-    return userByIdLoader.load(parent.ownerId.toString());
+    return repositoryOwnerLoader.load(JSON.stringify(parent.owner));
   },
 };
 

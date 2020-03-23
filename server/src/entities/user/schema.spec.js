@@ -34,18 +34,20 @@ const userData = {
   bio: 'bio description',
   company: 'Company',
   email: 'johndoe@email.com',
-  followers: [{ key: '0|-1', size: 1, name: 'Richard Roe', }],
-  following: [{ key: '0|-1', size: 1, name: 'Charly Doe', }],
+  followers: [{ _id: '5e5580d6f72291487ec648ce', name: 'Richard Roe', }],
+  following: [{ _id: '5e5580d6f72291487ec648ce', name: 'Charly Doe', }],
   id: '5e5580d6f72291487ec648ce',
   location: 'Brazil',
   login: 'johndoe',
   name: 'John Doe',
-  organizations: [{ key: '0|-1', size: 1, name: 'Organization name' }],
-  repositories: [{ name: 'Repo name' }],
-  starredRepositories: [{ name: 'Starred repo name' }],
+  organizations: [{ _id: '5e5580d6f72291487ec648ce', size: 1, name: 'Organization name' }],
+  repositories: [{ _id: '5e5580d6f72291487ec648ce', name: 'Repo name' }],
+  starredRepositories: [{ _id: '5e5580d6f72291487ec648ce', name: 'Starred repo name' }],
   url: 'https://github.com/johndoe',
   websiteUrl: 'http://johndoe.com',
 };
+const pageInfo = { hasPreviousPage: false, hasNextPage: false };
+
 UserModel.findOne.mockImplementation(() => Promise.resolve(userData));
 UserModel.findOneAndUpdate.mockImplementation(() => Promise.resolve(userData));
 
@@ -85,7 +87,9 @@ describe('user query', () => {
 
   describe('followers field', () => {
     it('should execute successfully', async () => {
-      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve(userData.followers));
+      UserModel.aggregate
+        .mockImplementationOnce(() => Promise.resolve(userData.followers))
+        .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
       const query = `
         query User {
@@ -138,7 +142,9 @@ describe('user query', () => {
 
   describe('following field', () => {
     it('should execute successfully', async () => {
-      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve(userData.following));
+      UserModel.aggregate
+        .mockImplementationOnce(() => Promise.resolve(userData.following))
+        .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
       const query = `
         query User {
@@ -191,7 +197,9 @@ describe('user query', () => {
 
   describe('organizations field', () => {
     it('should execute successfully', async () => {
-      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve(userData.organizations));
+      UserModel.aggregate
+        .mockImplementationOnce(() => Promise.resolve(userData.organizations))
+        .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
       const query = `
         query User {
@@ -244,27 +252,31 @@ describe('user query', () => {
 
   describe('repositories field', () => {
     it('should execute successfully', async () => {
-      RepositoryModel.find.mockImplementationOnce(() => {
-        const promise = Promise.resolve(userData.repositories);
-        promise.sort = function(){return this;};
-        promise.skip = function(){return this;};
-        promise.limit = function(){return this;};
-        return promise;
-      });
+      RepositoryModel.aggregate
+        .mockImplementationOnce(() => Promise.resolve(userData.repositories))
+        .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
       const query = `
         query User {
           user(login: "johndoe") {
             name
             repositories(first: 1) {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }
       `;
       const expectedData = { data: { user: {
         name: userData.name,
-        repositories: userData.repositories,
+        repositories: {
+          edges: [
+            { node: { name: userData.repositories[0].name } }
+          ]
+        },
       } } };
       const receivedData = await graphql(schema, query);
 
@@ -276,7 +288,11 @@ describe('user query', () => {
         query User {
           user(login: "johndoe") {
             repositories {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }
@@ -291,23 +307,31 @@ describe('user query', () => {
 
   describe('starredepositories field', () => {
     it('should execute successfully', async () => {
-      UserModel.aggregate.mockImplementationOnce(
-        () => Promise.resolve(userData.starredRepositories)
-      );
+      UserModel.aggregate
+        .mockImplementationOnce(() => Promise.resolve(userData.starredRepositories))
+        .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
       const query = `
         query User {
           user(login: "johndoe") {
             name
             starredRepositories(first: 1) {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }
       `;
       const expectedData = { data: { user: {
         name: userData.name,
-        starredRepositories: userData.starredRepositories,
+        starredRepositories: {
+          edges: [
+            { node: { name: userData.starredRepositories[0].name } }
+          ]
+        },
       } } };
       const receivedData = await graphql(schema, query);
 
@@ -319,7 +343,11 @@ describe('user query', () => {
         query User {
           user(login: "johndoe") {
             starredRepositories {
-              name
+              edges {
+                node {
+                  name
+                }
+              }
             }
           }
         }

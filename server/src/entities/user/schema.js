@@ -13,6 +13,9 @@ import { connectionType, connectionTypeArgs } from '../../cursor-connection/sche
 import { idType, NodeInterface } from '../../utils/schema';
 
 
+const RepositoryConnectionType = connectionType(RepositoryType);
+const OrganizationConnectionType = connectionType(OrganizationType);
+
 export const UserType = new GraphQLObjectType({
   interfaces: [NodeInterface, RepositoryOwnerInterface],
   name: 'User',
@@ -56,8 +59,6 @@ export const UserType = new GraphQLObjectType({
 });
 
 const UserConnectionType = connectionType(UserType);
-const RepositoryConnectionType = connectionType(RepositoryType);
-const OrganizationConnectionType = connectionType(OrganizationType);
 
 const UserInputType = new GraphQLInputObjectType({
   name: 'UserInput',

@@ -18,6 +18,6 @@ export const OrganizationType = new GraphQLObjectType({
     login: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     url: { type: new GraphQLNonNull(GraphQLString) },
-    websiteUrl: { type: new GraphQLNonNull(GraphQLString) },
+    websiteUrl: { type: GraphQLString },
   }),
 });

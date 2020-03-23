@@ -15,11 +15,13 @@ describe('Pagination Helper', () => {
       expect(() => paginationBoundaries({ skip: 2 })).toThrow(error);
       expect(() => paginationArrays({ skip: 2 })).toThrow(error);
     });
+
     it('should throw an error when first and last was provided at the same time', () => {
       const error = new GraphQLError('first and last must not be specified at the same time');
       expect(() => paginationBoundaries({ first: 5, last: 5 })).toThrow(error);
       expect(() => paginationArrays({ first: 5, last: 5 })).toThrow(error);
     });
+
     it('should throw an error when first and last was not a positive integer', () => {
       const error = new GraphQLError('first and last must be a positive integer');
       const args = [
@@ -33,6 +35,7 @@ describe('Pagination Helper', () => {
         expect(() => paginationArrays(arg)).toThrow(error);
       });
     });
+
     it('should throw an error when skip is not a positive integer', () => {
       const error = new GraphQLError('skip must be a positive interger');
       expect(() => paginationBoundaries({ first: 10, skip: -10 })).toThrow(error);
@@ -42,10 +45,11 @@ describe('Pagination Helper', () => {
 
 
   describe('paginationBoundaries', () => {
-    it('the skip attribute returned should be equal to minNumberOfItemsToSkip when the skip arg was not provided', () => {
+    it('the skip attribute returned should be equal to minNumberOfItemsToSkip when skip arg was not provided', () => {
       const pagination = paginationBoundaries({ first: 10 });
       expect(pagination.skip).toEqual(minNumberOfItemsToSkip);
     });
+
     it('the limit attribute returned should not be more than maxNumberOfItems', () => {
       const args = [
         { first: 1000 },
@@ -56,6 +60,7 @@ describe('Pagination Helper', () => {
         expect(pagination.limit).toEqual(maxNumberOfItems);
       });
     });
+
     it('the sort attribute returned should match the specified structure', () => {
       let structure = { _id: 1 };
       let pagination = paginationBoundaries({ first: 10 });
@@ -78,11 +83,13 @@ describe('Pagination Helper', () => {
       result = paginationArrays(args);
       expect(result.limit).toEqual(maxNumberOfItems);
     });
+
     it('should return the minNumberOfItemsToSkip when the skip attribute was not provided', () => {
       let args = { first: 5 };
       let result = paginationArrays(args);
       expect(result.skip).toEqual(minNumberOfItemsToSkip);
     });
+
     it('when the last attribute was provided it should be added to the skip returning a negative integer', () => {
       /*
         <------ order

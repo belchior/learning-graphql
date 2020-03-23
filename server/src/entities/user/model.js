@@ -6,7 +6,7 @@ const UserSchema = new Schema(
     avatarUrl: { type: String, trim: true },
     bio: { type: String, trim: true, maxlength: 500, minlength: 3  },
     company: { type: String, trim: true, maxlength: 120, minlength: 3 },
-    email: { type: String, trim: true, maxlength: 120, minlength: 3 },
+    email: { type: String, trim: true, required: true, maxlength: 120, minlength: 3 },
     followers: [{ _id: Schema.Types.ObjectId }],
     location: { type: String, trim: true, maxlength: 120, minlength: 3 },
     login: { type: String, trim: true, required: true, unique: true, maxlength: 120, minlength: 3 },

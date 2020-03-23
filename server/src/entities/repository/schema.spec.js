@@ -5,7 +5,9 @@ import {
   graphql,
 } from 'graphql';
 
-import * as repositorySchema from './schema';
+// eslint-disable-next-line no-unused-vars
+import { UserType } from '../user/schema';
+import { mutationFields } from './schema';
 import { Repository as RepositoryModel } from './model';
 
 jest.mock('./model');
@@ -25,7 +27,7 @@ const schema = new GraphQLSchema({
   mutation: new GraphQLObjectType({
     name: 'Mutation',
     fields: () => ({
-      ...repositorySchema.mutationFields,
+      ...mutationFields,
     }),
   }),
 });

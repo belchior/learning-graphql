@@ -8,6 +8,7 @@ import {
 } from 'graphql';
 
 import * as resolve from './resolve';
+import { UserType } from '../user/schema';
 import { idType, NodeInterface } from '../../utils/schema';
 
 
@@ -44,9 +45,10 @@ export const RepositoryOwnerInterface = new GraphQLInterfaceType({
   fields: () => ({
     avatarUrl: { type: GraphQLString },
     id: idType(),
-    login: { type: GraphQLString },
-    url: { type: GraphQLString },
+    login: { type: new GraphQLNonNull(GraphQLString) },
+    url: { type: new GraphQLNonNull(GraphQLString) },
   }),
+  resolveType: () => UserType,
 });
 
 

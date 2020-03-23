@@ -4,7 +4,7 @@ import { User as UserModel } from './model';
 import { handleError } from '../../utils/error-handler';
 
 
-const projection = {
+export const projection = {
   followers: 0,
   following: 0,
   organizations: 0,

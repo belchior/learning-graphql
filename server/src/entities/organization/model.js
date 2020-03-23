@@ -3,7 +3,7 @@ import { model, Schema } from 'mongoose';
 
 const OrganizationSchema = new Schema(
   {
-    avatarUrl: { type: String, trim: true , required: true },
+    avatarUrl: { type: String, trim: true },
     description: { type: String, trim: true, maxlength: 500, minlength: 3  },
     email: { type: String, trim: true, maxlength: 120, minlength: 3 },
     location: { type: String, trim: true, maxlength: 120, minlength: 3 },

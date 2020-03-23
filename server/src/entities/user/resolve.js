@@ -2,13 +2,13 @@ import mongoose from 'mongoose';
 
 import { Repository as RepositoryModel } from '../repository/model';
 import { User as UserModel } from './model';
-import { handleError, handleNotFound } from '../../utils/error-handler';
-import { paginationArrays, paginationBoundaries, } from '../../utils/pagination';
-import { userByLoginLoader } from './loader';
 import {
-  valuesToCursorConnection,
-  arrayIndexPagination,
-} from '../../cursor-connection/indexPagination';
+  emptyCursorConnection,
+  itemsToCursorConnection,
+  paginationArgs,
+} from '../../cursor-connection/referencePagination';
+import { handleError, handleNotFound } from '../../utils/error-handler';
+import { userByLoginLoader } from './loader';
 
 
 const handleInvalidId = fn => (...args) => {
@@ -26,270 +26,135 @@ const updateAttribute = async (Model, query, update, messageNotFound) => {
     .catch(handleError);
 };
 
-const userProject = {
-  followers: 0,
-  following: 0,
-  organizations: 0,
+const paginatedQueryUserField = async (parent, args, fieldName, collectionName) => {
+  const pagination = paginationArgs(args);
+  const items = await UserModel.aggregate([
+    { $match: { _id: parent._id } },
+    { $unwind: `$${fieldName}` },
+    { $project: { _id: `$${fieldName}._id`, } },
+    { $sort: pagination.sort },
+    ...(pagination.key
+      ? [ { $match: { _id: { [pagination.operator]: pagination.key } } } ]
+      : []
+    ),
+    { $limit: pagination.limit },
+    { $sort: { _id: 1 } },
+    { $lookup: {
+      from: collectionName,
+      localField: '_id',
+      foreignField: '_id',
+      as: 'item'
+    } },
+    { $replaceRoot: {
+      newRoot: {
+        $arrayElemAt: [ '$item', 0 ]
+      }
+    } },
+  ]);
+
+  if (items.length === 0) return emptyCursorConnection;
+
+  const firstItem = items[0];
+  const lastItem = items[items.length -1];
+
+  const getQuery = (operator, key) => ([
+    { $match: { _id: parent._id } },
+    { $project: { [fieldName]: 1 } },
+    { $unwind: `$${fieldName}` },
+    { $project: { _id: `$${fieldName}._id`, } },
+    { $sort: pagination.sort },
+    { $match: { _id: { [operator]: key } } },
+  ]);
+
+  const greaterThanStages = getQuery('$gt', lastItem._id);
+  const lessThanStages = getQuery('$lt', firstItem._id);
+
+  const cursorConnectionArgs = {
+    Model: UserModel,
+    greaterThanStages,
+    lessThanStages,
+    args,
+    items,
+  };
+  return itemsToCursorConnection(cursorConnectionArgs);
 };
 
 export const User = {
   followers: async (parent, args) => {
-    const pagination = arrayIndexPagination(args);
-    return UserModel
-      .aggregate([
-        { $match: {
-          _id: parent._id
-        } },
-        { $project: {
-          _id: 0,
-          followers: 1,
-          totalItems: { $size: '$followers' },
-          sliceOfFollowers: {
-            $slice: ['$followers', pagination.skip, pagination.limit]
-          },
-        } },
-        { $project: {
-          totalItems: 1,
-          items: {
-            $map: {
-              input: '$sliceOfFollowers',
-              as: 'item',
-              in: {
-                _id: '$$item._id',
-                key: {
-                  $concat: [
-                    {
-                      $toString: {
-                        $indexOfArray: ['$followers', '$$item']
-                      }
-                    },
-                    '|',
-                    {
-                      $toString: {
-                        $subtract: [
-                          { $indexOfArray: ['$followers', '$$item'] },
-                          '$totalItems'
-                        ]
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        } },
-        { $unwind: '$items' },
-        { $replaceRoot: {
-          newRoot: {
-            $mergeObjects: [{ totalItems: '$totalItems' }, '$items']
-          }
-        } },
-        { $lookup: {
-          from: 'users',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'user'
-        } },
-        { $replaceRoot: {
-          newRoot: {
-            $mergeObjects: [
-              { key: '$key', totalItems: '$totalItems' },
-              { $arrayElemAt: ['$user', 0] }
-            ]
-          }
-        } },
-        { $project: userProject },
-        { $set: { id: { $toString: '$_id' } } },
-      ])
-      .then(values => valuesToCursorConnection(values, args))
-      .catch(handleError);
+    try {
+      return paginatedQueryUserField(parent, args, 'followers', 'users');
+    } catch (error) {
+      return handleError(error);
+    }
   },
 
   following: async (parent, args) => {
-    const pagination = arrayIndexPagination(args);
-    return UserModel
-      .aggregate([
-        { $match: {
-          _id: parent._id
-        } },
-        { $project: {
-          _id: 0,
-          followers: 1,
-          totalItems: { $size: '$following' },
-          sliceOfFollowing: {
-            $slice: ['$following', pagination.skip, pagination.limit]
-          },
-        } },
-        { $project: {
-          totalItems: 1,
-          items: {
-            $map: {
-              input: '$sliceOfFollowing',
-              as: 'item',
-              in: {
-                _id: '$$item._id',
-                key: {
-                  $concat: [
-                    {
-                      $toString: {
-                        $indexOfArray: ['$following', '$$item']
-                      }
-                    },
-                    '|',
-                    {
-                      $toString: {
-                        $subtract: [
-                          { $indexOfArray: ['$following', '$$item'] },
-                          '$totalItems'
-                        ]
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        } },
-        { $unwind: '$items' },
-        { $replaceRoot: {
-          newRoot: {
-            $mergeObjects: [{ totalItems: '$totalItems' }, '$items']
-          }
-        } },
-        { $lookup: {
-          from: 'users',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'user'
-        } },
-        { $replaceRoot: {
-          newRoot: {
-            $mergeObjects: [
-              { key: '$key', totalItems: '$totalItems' },
-              { $arrayElemAt: ['$user', 0] }
-            ]
-          }
-        } },
-        { $project: userProject },
-        { $set: { id: { $toString: '$_id' } } },
-      ])
-      .then(values => valuesToCursorConnection(values, args))
-      .catch(handleError);
+    try {
+      return paginatedQueryUserField(parent, args, 'following', 'users');
+    } catch (error) {
+      return handleError(error);
+    }
   },
 
   organizations: async (parent, args) => {
-    const pagination = arrayIndexPagination(args);
-    return UserModel
-      .aggregate([
-        { $match: { _id: parent._id } },
-        { $project: {
-          _id: 0,
-          organizations: 1,
-          totalItems: { $size: '$organizations' },
-          orgs: {
-            $slice: ['$organizations', pagination.skip, pagination.limit]
-          }
-        } },
-        { $project: {
-          totalItems: 1,
-          items: {
-            $map: {
-              input: '$orgs',
-              as: 'item',
-              in: {
-                _id: '$$item._id',
-                key: {
-                  $concat: [
-                    {
-                      $toString: {
-                        $indexOfArray: ['$organizations', '$$item']
-                      }
-                    },
-                    '|',
-                    {
-                      $toString: {
-                        $subtract: [
-                          { $indexOfArray: ['$organizations', '$$item'] },
-                          '$totalItems'
-                        ]
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        } },
-        { $unwind: '$items' },
-        { $replaceRoot: {
-          newRoot: {
-            $mergeObjects: [{ totalItems: '$totalItems' }, '$items']
-          }
-        } },
-        { $lookup: {
-          from: 'organizations',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'orgs'
-        } },
-        { $replaceRoot: {
-          newRoot: {
-            $mergeObjects: [
-              { key: '$key', totalItems: '$totalItems' },
-              { $arrayElemAt: ['$orgs', 0] }
-            ]
-          }
-        } },
-        { $set: { id: { $toString: '$_id' } } },
-      ])
-      .then(values => valuesToCursorConnection(values, args))
-      .catch(handleError);
+    try {
+      return paginatedQueryUserField(parent, args, 'organizations', 'organizations');
+    } catch (error) {
+      return handleError(error);
+    }
   },
 
   repositories: async (parent, args) => {
-    const pagination = paginationBoundaries(args);
-    const query = { ownerId: parent._id };
-    return RepositoryModel
-      .find(query)
-      .sort(pagination.sort)
-      .skip(pagination.skip)
-      .limit(pagination.limit)
-      .catch(handleError);
+    try {
+      const pagination = paginationArgs(args);
+      const items = await RepositoryModel.aggregate([
+        { $match: {
+          'owner.ref': 'users',
+          'owner._id': parent._id,
+          ...(pagination.key
+            ? { _id: { [pagination.operator]: pagination.key } }
+            : {}
+          )
+        } },
+        { $sort : pagination.sort },
+        { $limit : pagination.limit },
+        { $sort : { _id: 1 } },
+      ]);
+
+      if (items.length === 0) return emptyCursorConnection;
+
+      const firstItem = items[0];
+      const lastItem = items[items.length -1];
+
+      const getStages = (operator, key) => ([
+        { $match: {
+          'owner.ref': 'users',
+          'owner._id': parent._id,
+          _id: { [operator]: key },
+        } }
+      ]);
+      const greaterThanStages = getStages('$gt', lastItem._id);
+      const lessThanStages = getStages('$lt', firstItem._id);
+
+      const cursorConnectionArgs = {
+        Model: RepositoryModel,
+        greaterThanStages,
+        lessThanStages,
+        args,
+        items,
+      };
+      return itemsToCursorConnection(cursorConnectionArgs);
+    } catch (error) {
+      return handleError(error);
+    }
   },
 
   starredRepositories: async (parent, args) => {
-    const pagination = paginationArrays(args);
-    return UserModel
-      .aggregate([
-        { $match: {
-          _id: parent._id
-        } },
-        { $project: {
-          _id: 0,
-          starred: { $slice: [
-            '$starredRepositories',
-            pagination.skip,
-            pagination.limit
-          ] },
-        } },
-        { $unwind: '$starred' },
-        { $project: {
-          _id: '$starred._id',
-        } },
-        { $lookup: {
-          from: 'repositories',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'repository'
-        } },
-        { $replaceRoot: {
-          newRoot: { $arrayElemAt: [ '$repository', 0 ] }
-        } },
-        { $set: {
-          id: { $toString: '$_id' }
-        } },
-      ])
-      .catch(handleError);
+    try {
+      return paginatedQueryUserField(parent, args, 'starredRepositories', 'repositories');
+    } catch (error) {
+      return handleError(error);
+    }
   },
 };
 
