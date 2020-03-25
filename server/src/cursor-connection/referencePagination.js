@@ -51,12 +51,14 @@ export const paginationArgs = validateArgs(args => {
 export const emptyCursorConnection = {
   edges: [],
   pageInfo: {
+    endCursor: '',
     hasPreviousPage: false,
     hasNextPage: false,
+    startCursor: '',
   }
 };
 
-export const getPageInfo = async (Model, aggregationPrev, aggregationNext) => {
+export const getPageInfo = async (Model, items, aggregationPrev, aggregationNext) => {
   return Model
     .aggregate([
       { $facet: {
@@ -86,15 +88,20 @@ export const getPageInfo = async (Model, aggregationPrev, aggregationNext) => {
         }
       } }
     ])
-    .then(([pageInfo]) => pageInfo);
+    .then(([data]) => ({
+      endCursor: keyToCursor(items[items.length -1]._id),
+      hasNextPage: data.hasNextPage,
+      hasPreviousPage: data.hasPreviousPage,
+      startCursor: keyToCursor(items[0]._id),
+    }));
 };
 
 export const itemsToCursorConnection = async cursorConnectionArgs => {
   const { Model, args, items, greaterThanStages, lessThanStages } = cursorConnectionArgs;
 
   const pageInfo = args.first
-    ? await getPageInfo(Model, lessThanStages, greaterThanStages)
-    : await getPageInfo(Model, greaterThanStages, lessThanStages);
+    ? await getPageInfo(Model, items, lessThanStages, greaterThanStages)
+    : await getPageInfo(Model, items, greaterThanStages, lessThanStages);
 
   const cursorConnection = {
     edges: items.map(value => ({

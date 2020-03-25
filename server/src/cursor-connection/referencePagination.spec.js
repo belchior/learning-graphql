@@ -93,8 +93,10 @@ describe('Reference Pagination', () => {
       expect(emptyCursorConnection).toEqual({
         edges: [],
         pageInfo: {
+          endCursor: '',
           hasPreviousPage: false,
           hasNextPage: false,
+          startCursor: '',
         }
       });
     });
@@ -102,7 +104,12 @@ describe('Reference Pagination', () => {
 
   describe('itemsToCursorConnection', () => {
     it('should return a valid connection structure when forward pagination is provided', async () => {
-      const pageInfo = { hasPreviousPage: true, hasNextPage: false };
+      const pageInfo = {
+        endCursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNl',
+        hasPreviousPage: true,
+        hasNextPage: false,
+        startCursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNl',
+      };
       const MockModel = Promise.resolve([pageInfo]);
       MockModel.aggregate = function(){return this;};
 
@@ -130,7 +137,12 @@ describe('Reference Pagination', () => {
     });
 
     it('should return a valid connection structure when backward pagination is provided', async () => {
-      const pageInfo = { hasPreviousPage: false, hasNextPage: true };
+      const pageInfo = {
+        endCursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNl',
+        hasNextPage: true,
+        hasPreviousPage: false,
+        startCursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNl',
+      };
       const MockModel = Promise.resolve([pageInfo]);
       MockModel.aggregate = function(){return this;};
 

@@ -11,8 +11,10 @@ import {
 export const PageInfoType = new GraphQLObjectType({
   name: 'PageInfo',
   fields: () => ({
-    hasPreviousPage: { type: new GraphQLNonNull(GraphQLBoolean) },
+    endCursor: { type: new GraphQLNonNull(GraphQLString) },
     hasNextPage: { type: new GraphQLNonNull(GraphQLBoolean) },
+    hasPreviousPage: { type: new GraphQLNonNull(GraphQLBoolean) },
+    startCursor: { type: new GraphQLNonNull(GraphQLString) },
   }),
 });
 
