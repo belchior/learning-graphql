@@ -1,9 +1,8 @@
 import React from 'react';
-import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 
 import Header from 'components/Header/Header';
-import { resource } from 'utils/fakeData';
 
 
 const useStyles = makeStyles(theme => ({
@@ -18,21 +17,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export const GlobalContext = React.createContext();
-
-const AppRoute = props => {
+const App = props => {
   const { children } = props;
   const classes = useStyles();
+
   return (
     <div className={classes.root}>
-      <GlobalContext.Provider value={resource.data.user}>
-        <Header />
-        <Container maxWidth="xl">
-          {children}
-        </Container>
-      </GlobalContext.Provider>
+      <Header />
+      <Container maxWidth="xl">
+        {children}
+      </Container>
     </div>
   );
 };
 
-export default AppRoute;
+
+export default App;

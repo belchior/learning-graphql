@@ -12,19 +12,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const UserList = props => {
-  const { title, users } = props;
+const OwnerList = props => {
+  const { title, owners } = props;
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <Title component="h2" gutterBottom>{title}</Title>
-      {users.map(org => (
-        <a href={org.url} key={org.login}>
-          <img src={org.avatarUrl} alt={org.name} width="32" height="32" />
+      {owners.map(owner => (
+        <a href={owner.url} key={owner.login}>
+          <img src={owner.avatarUrl} alt={owner.name} width="32" height="32" />
         </a>
       ))}
     </div>
   );
 };
 
-export default UserList;
+export default OwnerList;

@@ -1,13 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { GlobalContext } from 'components/App/App';
 import { makeStyles } from '@material-ui/core/styles';
+import { createPaginationContainer } from 'react-relay';
+import graphql from 'babel-plugin-relay/macro';
 
 import Anchor from 'components/Anchor/Anchor';
 import EmailIcon from 'components/Icons/Email';
 import LinkIcon from 'components/Icons/Link';
 import Title from 'components/Title/Title';
-import UserList from './components/UserList/UserList';
+import OwnerList from './components/OwnerList/OwnerList';
 import { edgesToArray } from 'utils/array';
 
 
@@ -39,28 +40,60 @@ const useStyles = makeStyles(theme => ({
 
 const Sidebar = props => {
   const classes = useStyles();
-  const user = useContext(GlobalContext);
+  const { user } = props;
+
   const organizations = edgesToArray(user.organizations);
   return (
     <div className={classes.root}>
-      <img className={classes.avatar} src={user.avatarUrl} alt={user.name} />
+      <img className={classes.avatar} src={user.avatarUrl} alt={user.name} width="288" height="288" />
       <Title className={classes.vcard} variant="h1">
         <Typography className={classes.name}>{user.name}</Typography>
         <Typography className={classes.login}>{user.login}</Typography>
       </Title>
       <Typography className={classes.bio} variant="body2">{user.bio}</Typography>
-      <Anchor variant="body2">
+      <Anchor href={`mailto:${user.email}`} variant="body2">
         <EmailIcon />
         <span>{user.email}</span>
       </Anchor>
-      <Anchor variant="body2">
+      <Anchor href={user.websiteUrl} variant="body2">
         <LinkIcon />
         {user.websiteUrl}
       </Anchor>
 
-      <UserList title="Organizations" users={organizations} />
+      { organizations.length > 0 && <OwnerList title="Organizations" owners={organizations} /> }
     </div>
   );
 };
 
-export default Sidebar;
+export default createPaginationContainer(
+  Sidebar,
+  {
+    user: graphql`
+      fragment Sidebar_user on User @argumentDefinitions(cursor: { type: "String" }) {
+        avatarUrl
+        name
+        bio
+        login
+        email
+        websiteUrl
+        organizations(first: 10 after: $cursor) @connection(key: "Sidebar_organizations") {
+          edges {
+            node {
+              id
+              login
+              name
+              avatarUrl
+              url
+            }
+          }
+        }
+      }
+    `
+  },
+  {
+    getFragmentVariables: (prevVars, cursor) => ({
+      ...prevVars,
+      cursor: cursor,
+    }),
+  }
+);

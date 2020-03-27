@@ -1,18 +1,21 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-import App from '../App/App';
-import Profile from 'pages/profile/Profile';
+import App from 'components/App/App';
+import Home from 'pages/home/Home';
 import NotFound from 'pages/notfound/NotFound';
+import Profile from 'pages/profile/Profile';
 
 const AppRoute = props => {
-  const { children, ...routeProps } = props;
+  const { children, component, ...routeProps } = props;
+  const Page = children ? () => children : component;
+
   return (
-    <App>
-      <Route {...routeProps}>
-        {children}
-      </Route>
-    </App>
+    <Route {...routeProps}>
+      <App>
+        <Page />
+      </App>
+    </Route>
   );
 };
 
@@ -20,6 +23,8 @@ const Router = props => {
   return (
     <BrowserRouter>
       <Switch>
+        <AppRoute path="/" exact component={Home} />
+        <AppRoute path="/404" component={NotFound} />
         <AppRoute path="/:login([a-zA-Z]+[\w]+)" component={Profile} />
         <AppRoute path="*" component={NotFound} />
       </Switch>

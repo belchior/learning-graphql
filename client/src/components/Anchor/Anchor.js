@@ -1,6 +1,7 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
+import MuiLink from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 
 
 const useStyles = makeStyles(theme => ({
@@ -48,15 +49,16 @@ const Anchor = props => {
   const classes = useStyles();
   const classNames = `${classes.root} ${classes[decoration]} ${className}`;
   return (
-    <Typography
-      variant="inherit"
-      {...other}
-      className={classNames}
-      href={href}
-      component="a"
-    >
-      {children}
-    </Typography>
+    <Link to={href}>
+      <MuiLink
+        variant="inherit"
+        component="span"
+        {...other}
+        className={classNames}
+      >
+        {children}
+      </MuiLink>
+    </Link>
   );
 };
 

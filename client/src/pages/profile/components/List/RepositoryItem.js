@@ -1,5 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import graphql from 'babel-plugin-relay/macro';
+import { createFragmentContainer } from 'react-relay';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Anchor from 'components/Anchor/Anchor';
@@ -7,7 +9,6 @@ import ForkIcon from 'components/Icons/Fork';
 import Language from '../Language/Language';
 import LicenseIcon from 'components/Icons/License';
 import Title from 'components/Title/Title';
-import { edgesToArray } from 'utils/array';
 
 
 const useStyles = makeStyles(theme => ({
@@ -45,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 const RepositoryItem = props => {
   const { repository } = props;
   const classes = useStyles();
-  const topics = edgesToArray(repository.repositoryTopics).map(item => item.topic);
+  const topics = []; // edgesToArray(repository.repositoryTopics).map(item => item.topic);
   const language = repository.primaryLanguage;
   const forkCountUrl = `/${repository.owner.login}/${repository.name}/network/members`;
   return (
@@ -63,7 +64,7 @@ const RepositoryItem = props => {
         ))}
       </div>
       <div className={classes.details}>
-        <Language color={language.color}>{language.name}</Language>
+        {language && <Language color={language.color}>{language.name}</Language> }
         { repository.forkCount > 0 &&
           <Anchor href={forkCountUrl} decoration="secondary">
             <ForkIcon />
@@ -81,4 +82,30 @@ const RepositoryItem = props => {
   );
 };
 
-export default RepositoryItem;
+export default createFragmentContainer(
+  RepositoryItem,
+  {
+    repository: graphql`
+      fragment RepositoryItem_repository on Repository {
+        description
+        forkCount
+        id
+        licenseInfo {
+          name
+        }
+        name
+        owner {
+          avatarUrl
+          login
+          url
+        }
+        primaryLanguage {
+          color
+          name
+        }
+        url
+      }
+    `
+  },
+);
+

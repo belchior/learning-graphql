@@ -1,5 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import graphql from 'babel-plugin-relay/macro';
+import { createFragmentContainer } from 'react-relay';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Anchor from 'components/Anchor/Anchor';
@@ -87,4 +89,19 @@ const UserItem = props => {
   );
 };
 
-export default UserItem;
+export default createFragmentContainer(
+  UserItem,
+  {
+    user: graphql`
+      fragment UserItem_user on User {
+        avatarUrl
+        bio
+        company
+        location
+        login
+        name
+        url
+      }
+    `
+  },
+);
