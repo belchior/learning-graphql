@@ -11,7 +11,7 @@ export const OrganizationType = new GraphQLObjectType({
   interfaces: [NodeInterface, RepositoryOwnerInterface],
   name: 'Organization',
   fields: () => ({
-    avatarUrl: { type: GraphQLString },
+    avatarUrl: { type: new GraphQLNonNull(GraphQLString) },
     email: { type: GraphQLString },
     id: idType(),
     location: { type: GraphQLString },

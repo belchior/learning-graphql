@@ -43,9 +43,10 @@ const LicenseInputType = new GraphQLInputObjectType({
 export const RepositoryOwnerInterface = new GraphQLInterfaceType({
   name: 'RepositoryOwner',
   fields: () => ({
-    avatarUrl: { type: GraphQLString },
+    avatarUrl: { type: new GraphQLNonNull(GraphQLString) },
     id: idType(),
     login: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
     url: { type: new GraphQLNonNull(GraphQLString) },
   }),
   resolveType: () => UserType,

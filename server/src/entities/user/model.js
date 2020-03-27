@@ -3,7 +3,7 @@ import { model, Schema } from 'mongoose';
 
 const UserSchema = new Schema(
   {
-    avatarUrl: { type: String, trim: true },
+    avatarUrl: { type: String, trim: true, required: true },
     bio: { type: String, trim: true, maxlength: 500, minlength: 3  },
     company: { type: String, trim: true, maxlength: 120, minlength: 3 },
     email: { type: String, trim: true, required: true, maxlength: 120, minlength: 3 },

@@ -20,7 +20,7 @@ export const UserType = new GraphQLObjectType({
   interfaces: [NodeInterface, RepositoryOwnerInterface],
   name: 'User',
   fields: () => ({
-    avatarUrl: { type: GraphQLString },
+    avatarUrl: { type: new GraphQLNonNull(GraphQLString) },
     bio: { type: GraphQLString },
     company: { type: GraphQLString },
     email: { type: new GraphQLNonNull(GraphQLString) },
