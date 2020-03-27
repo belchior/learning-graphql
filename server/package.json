@@ -4,16 +4,18 @@
   "version": "0.1.0",
   "author": "Belchior Oliveira",
   "license": "MIT",
-  "keywords": [],
+  "keywords": ["JavaScript", "Node.js", "GraphQL", "MongoDB", "Relay Modern", "React"],
   "main": "src/server.js",
   "scripts": {
+    "lint": "eslint src",
     "start": "nodemon -r esm src/server.js",
     "start:debug": "cross-env DEBUG='*' npm run start",
     "test": "jest --watch",
-    "lint": "eslint src",
-    "test:ci": "jest --coverage --ci"
+    "test:ci": "jest --coverage --ci",
+    "write-schema": "node -r esm scripts/write-schema"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dataloader": "^2.0.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
