@@ -6,7 +6,9 @@ import Title from 'components/Title/Title';
 
 
 const useStyles = makeStyles(theme => ({
-  root: {},
+  root: {
+    flexDirection: 'column',
+  },
   title: {
     fontSize: '2rem',
   }

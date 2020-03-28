@@ -7,8 +7,8 @@ import { QueryRenderer } from 'react-relay';
 import { makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
 
-import RepositoryItem from '../List/RepositoryItem';
-import UserItem from '../List/UserItem';
+import RepositoryItem from './components/RepositoryItem';
+import UserItem from './components/UserItem';
 import { edgesToArray } from 'utils/array';
 import { useQueryString } from 'utils/hooks';
 import { environment } from 'utils/environment';

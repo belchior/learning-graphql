@@ -6,13 +6,20 @@ import Header from 'components/Header/Header';
 
 
 const useStyles = makeStyles(theme => ({
-  root: {
-  },
   '@global': {
     'html, body': {
       backgroundColor: '#24292e',
       color: '#fff',
     }
+  },
+  root: {
+    '& main': {
+      display: 'flex',
+      flex: 1,
+    }
+  },
+  container: {
+    paddingBottom: '2rem',
   }
 }));
 
@@ -24,7 +31,7 @@ const App = props => {
   return (
     <div className={classes.root}>
       <Header />
-      <Container maxWidth="xl">
+      <Container className={classes.container} maxWidth="xl">
         {children}
       </Container>
     </div>

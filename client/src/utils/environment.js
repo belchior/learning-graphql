@@ -1,15 +1,9 @@
-import {
-  Environment,
-  Network,
-  RecordSource,
-  Store,
-} from 'relay-runtime';
+import { Environment, Network, RecordSource, Store, } from 'relay-runtime';
 
-function fetchQuery(
-  operation,
-  variables,
-) {
-  return fetch('http://localhost:4000/graphql', {
+const endpoint = 'http://localhost:4000';
+
+const fetchQuery = (operation, variables) => {
+  return fetch(`${endpoint}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -18,10 +12,8 @@ function fetchQuery(
       query: operation.text,
       variables,
     }),
-  }).then(response => {
-    return response.json();
-  });
-}
+  }).then(response => response.json());
+};
 
 export const environment = new Environment({
   network: Network.create(fetchQuery),

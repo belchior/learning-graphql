@@ -17,7 +17,6 @@ const useStyles = makeStyles(theme => ({
     }
   },
   primary: {
-    color: '#0366d6',
     '&:hover': {
       textDecoration: 'underline',
     }
@@ -25,13 +24,14 @@ const useStyles = makeStyles(theme => ({
   secondary: {
     color: 'inherit',
     '&:hover': {
-      color: '#0366d6',
+      color: theme.palette.primary.main,
+      textDecoration: 'none',
     }
   },
   contained: {
     backgroundColor: '#f1f8ff',
     borderRadius: '3px',
-    color: '#0366d6',
+    color: theme.palette.primary.main,
     fontSize: '12px',
     margin: '4px 6px',
     marginLeft: 0,
@@ -45,20 +45,21 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Anchor = props => {
-  const { children, className = '', href, decoration = 'primary', ...other } = props;
+  const { children, className = '', href, external = false, decoration = 'primary', ...other } = props;
   const classes = useStyles();
   const classNames = `${classes.root} ${classes[decoration]} ${className}`;
+
   return (
-    <Link to={href}>
-      <MuiLink
-        variant="inherit"
-        component="span"
-        {...other}
-        className={classNames}
-      >
-        {children}
-      </MuiLink>
-    </Link>
+    <MuiLink
+      to={external ? null : href}
+      href={external ? href : null}
+      component={external ? 'a' : Link}
+      className={classNames}
+      variant="inherit"
+      {...other}
+    >
+      {children}
+    </MuiLink>
   );
 };
 

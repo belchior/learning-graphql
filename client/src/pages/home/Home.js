@@ -8,6 +8,7 @@ import Anchor from 'components/Anchor/Anchor';
 
 const useStyles = makeStyles(theme => ({
   root: {
+    flexDirection: 'column',
     textAlign: 'center',
   },
   title: {

@@ -1,4 +1,5 @@
 import React from 'react';
+import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import graphql from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay';
@@ -20,8 +21,15 @@ const useStyles = makeStyles(theme => ({
     }
   },
   avatar: {
+    alignSelf: 'flex-start',
     borderRadius: '3px',
+    height: 'inherit',
     marginRight: '1rem',
+    width: 'inherit',
+  },
+  avatarImg: {
+    width: '50px',
+    height: '50px',
   },
   title: {
     display: 'flex',
@@ -54,16 +62,25 @@ const useStyles = makeStyles(theme => ({
 const UserItem = props => {
   const { user } = props;
   const classes = useStyles();
-
+  const overrides = {
+    img: classes.avatarImg
+  };
+  const localUrl = user.url.replace(/https?:\/\/github\.com/, '');
   return (
     <div className={classes.root}>
-      <img className={classes.avatar} src={user.avatarUrl} alt={user.name} width="50" height="50" />
+      <Avatar
+        classes={overrides}
+        className={classes.avatar}
+        src={user.avatarUrl}
+        alt={user.name}
+        imgProps={{ height: '50', width: '50' }}
+      />
       <div>
         <Title className={classes.title} variant="h3">
-          <Anchor className={classes.name} href={user.url} decoration="secondary" variant="body1">
+          <Anchor className={classes.name} href={localUrl} decoration="secondary" variant="body1">
             {user.name}
           </Anchor>
-          <Anchor className={classes.login} href={user.url} decoration="secondary" variant="body2">
+          <Anchor className={classes.login} href={localUrl} decoration="secondary" variant="body2">
             {user.login}
           </Anchor>
         </Title>

@@ -4,9 +4,8 @@ import graphql from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay';
 import { makeStyles } from '@material-ui/core/styles';
 
-import Anchor from 'components/Anchor/Anchor';
 import ForkIcon from 'components/Icons/Fork';
-import Language from '../Language/Language';
+import Language from '../../Language/Language';
 import LicenseIcon from 'components/Icons/License';
 import Title from 'components/Title/Title';
 
@@ -48,28 +47,28 @@ const RepositoryItem = props => {
   const classes = useStyles();
   const topics = []; // edgesToArray(repository.repositoryTopics).map(item => item.topic);
   const language = repository.primaryLanguage;
-  const forkCountUrl = `/${repository.owner.login}/${repository.name}/network/members`;
+
   return (
     <div className={classes.root}>
       <Title className={classes.name} variant="h3">
-        <Anchor href={repository.url}>{repository.name}</Anchor>
+        {repository.name}
       </Title>
 
       <Typography className={classes.description} variant="body2">{repository.description}</Typography>
       <div>
         {topics.map(topic => (
-          <Anchor href={`/topics/${topic.name}`} decoration="contained" key={topic.name}>
+          <Typography key={topic.name}>
             {topic.name}
-          </Anchor>
+          </Typography>
         ))}
       </div>
       <div className={classes.details}>
-        {language && <Language color={language.color}>{language.name}</Language> }
+        { language && <Language color={language.color}>{language.name}</Language> }
         { repository.forkCount > 0 &&
-          <Anchor href={forkCountUrl} decoration="secondary">
+          <Typography>
             <ForkIcon />
             {repository.forkCount}
-          </Anchor>
+          </Typography>
         }
         { repository.licenseInfo &&
           <Typography component="span">

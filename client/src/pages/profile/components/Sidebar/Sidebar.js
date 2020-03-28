@@ -1,14 +1,15 @@
 import React from 'react';
+import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { createPaginationContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
+import { createPaginationContainer } from 'react-relay';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Anchor from 'components/Anchor/Anchor';
 import EmailIcon from 'components/Icons/Email';
 import LinkIcon from 'components/Icons/Link';
+import OwnerList from './components/OwnerList';
 import Title from 'components/Title/Title';
-import OwnerList from './components/OwnerList/OwnerList';
 import { edgesToArray } from 'utils/array';
 
 
@@ -20,6 +21,8 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     maxWidth: '100%',
     borderRadius: '6px',
+    width: 'inherit',
+    height: 'inherit',
   },
   vcard: {
     padding: '1rem 0',
@@ -30,8 +33,6 @@ const useStyles = makeStyles(theme => ({
   },
   login: {
     fontSize: '1.25rem',
-    fontWeight: '300',
-    color: '#666',
   },
   bio: {
     marginBottom: '1rem',
@@ -45,20 +46,28 @@ const Sidebar = props => {
   const organizations = edgesToArray(user.organizations);
   return (
     <div className={classes.root}>
-      <img className={classes.avatar} src={user.avatarUrl} alt={user.name} width="288" height="288" />
+      <Avatar
+        alt={user.name}
+        className={classes.avatar}
+        imgProps={{ height: '288', width: '288' }}
+        src={user.avatarUrl}
+        variant="rounded"
+      />
       <Title className={classes.vcard} variant="h1">
         <Typography className={classes.name}>{user.name}</Typography>
         <Typography className={classes.login}>{user.login}</Typography>
       </Title>
       <Typography className={classes.bio} variant="body2">{user.bio}</Typography>
-      <Anchor href={`mailto:${user.email}`} variant="body2">
+      <Anchor href={`mailto:${user.email}`} external>
         <EmailIcon />
         <span>{user.email}</span>
       </Anchor>
-      <Anchor href={user.websiteUrl} variant="body2">
-        <LinkIcon />
-        {user.websiteUrl}
-      </Anchor>
+      { user.websiteUrl &&
+        <Anchor href={user.websiteUrl} external>
+          <LinkIcon />
+          {user.websiteUrl}
+        </Anchor>
+      }
 
       { organizations.length > 0 && <OwnerList title="Organizations" owners={organizations} /> }
     </div>

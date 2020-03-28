@@ -1,26 +1,19 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import graphql from 'babel-plugin-relay/macro';
 import { QueryRenderer } from 'react-relay';
 import { useParams } from 'react-router-dom';
-import graphql from 'babel-plugin-relay/macro';
 
-import { environment } from 'utils/environment';
+import NotFound from 'pages/notfound/NotFound';
 import Navigator from './components/Navigator/Navigator';
-import Sidebar from 'components/Sidebar/Sidebar';
+import Sidebar from './components/Sidebar/Sidebar';
+import { environment } from 'utils/environment';
 
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-  },
-}));
 
 const ProfileView = props => {
-  const classes = useStyles();
   const { user } = props;
 
   return (
-    <main className={classes.root}>
+    <main>
       <Sidebar user={user} />
       <Navigator />
     </main>
@@ -28,7 +21,6 @@ const ProfileView = props => {
 };
 
 const Profile = props => {
-  const classes = useStyles();
   const params = useParams();
   const variables = { login: params.login };
   const query = graphql`
@@ -41,18 +33,17 @@ const Profile = props => {
   `;
 
   return (
-    <div className={classes.root}>
-      <QueryRenderer
-        environment={environment}
-        query={query}
-        variables={variables}
-        render={({ error, props }) => {
-          if (error) return <div>Error!</div>;
-          if (!props) return <div>Loading...</div>;
-          return <ProfileView {...props} />;
-        }}
-      />
-    </div>
+    <QueryRenderer
+      environment={environment}
+      query={query}
+      variables={variables}
+      render={({ error, props }) => {
+        if (error) return <div>Error!</div>;
+        if (!props) return <div>Loading...</div>;
+        if (!props.user) return <NotFound />;
+        return <ProfileView {...props} />;
+      }}
+    />
   );
 };
 
