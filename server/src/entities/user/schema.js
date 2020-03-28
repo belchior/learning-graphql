@@ -8,7 +8,8 @@ import {
 
 import * as resolve from './resolve';
 import { OrganizationType } from '../organization/schema';
-import { RepositoryType, RepositoryOwnerInterface } from '../repository/schema';
+import { RepositoryOwnerInterface } from '../owner/schema';
+import { RepositoryType } from '../repository/schema';
 import { connectionType, connectionTypeArgs } from '../../cursor-connection/schema';
 import { idType, NodeInterface } from '../../utils/schema';
 

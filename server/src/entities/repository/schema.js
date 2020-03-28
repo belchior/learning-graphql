@@ -4,11 +4,10 @@ import {
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLInterfaceType,
 } from 'graphql';
 
 import * as resolve from './resolve';
-import { UserType } from '../user/schema';
+import { RepositoryOwnerInterface } from '../owner/schema';
 import { idType, NodeInterface } from '../../utils/schema';
 
 
@@ -39,19 +38,6 @@ const LicenseInputType = new GraphQLInputObjectType({
     name: { type: GraphQLString },
   }),
 });
-
-export const RepositoryOwnerInterface = new GraphQLInterfaceType({
-  name: 'RepositoryOwner',
-  fields: () => ({
-    avatarUrl: { type: new GraphQLNonNull(GraphQLString) },
-    id: idType(),
-    login: { type: new GraphQLNonNull(GraphQLString) },
-    name: { type: new GraphQLNonNull(GraphQLString) },
-    url: { type: new GraphQLNonNull(GraphQLString) },
-  }),
-  resolveType: () => UserType,
-});
-
 
 export const RepositoryType = new GraphQLObjectType({
   interfaces: [NodeInterface],

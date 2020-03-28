@@ -4,7 +4,7 @@ import {
   GraphQLString,
 } from 'graphql';
 import { idType, NodeInterface } from '../../utils/schema';
-import { RepositoryOwnerInterface } from '../repository/schema';
+import { RepositoryOwnerInterface } from '../owner/schema';
 
 
 export const OrganizationType = new GraphQLObjectType({
