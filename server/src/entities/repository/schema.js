@@ -71,8 +71,6 @@ export const RepositoryInputType = new GraphQLInputObjectType({
 });
 
 
-export const queryFields = {};
-
 export const mutationFields = {
   createRepository: {
     type: RepositoryType,

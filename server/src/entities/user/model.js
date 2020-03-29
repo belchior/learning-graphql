@@ -14,6 +14,7 @@ const UserSchema = new Schema(
     organizations: [{ _id: Schema.Types.ObjectId }],
     url: { type: String, trim: true, required: true, maxlength: 500, minlength: 5 },
     websiteUrl: { type: String, trim: true, maxlength: 500, minlength: 5 },
+    __typename: { type: String, default: 'User' },
   },
   { timestamps: true }
 );

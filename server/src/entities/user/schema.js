@@ -8,8 +8,8 @@ import {
 
 import * as resolve from './resolve';
 import { OrganizationType } from '../organization/schema';
-import { RepositoryOwnerInterface } from '../owner/schema';
 import { RepositoryType } from '../repository/schema';
+import { ProfileOwnerInterface, RepositoryOwnerInterface } from '../owner/schema';
 import { connectionType, connectionTypeArgs } from '../../cursor-connection/schema';
 import { idType, NodeInterface } from '../../utils/schema';
 
@@ -18,7 +18,7 @@ const RepositoryConnectionType = connectionType(RepositoryType);
 const OrganizationConnectionType = connectionType(OrganizationType);
 
 export const UserType = new GraphQLObjectType({
-  interfaces: [NodeInterface, RepositoryOwnerInterface],
+  interfaces: [NodeInterface, ProfileOwnerInterface, RepositoryOwnerInterface],
   name: 'User',
   fields: () => ({
     avatarUrl: { type: new GraphQLNonNull(GraphQLString) },

@@ -11,6 +11,7 @@ const OrganizationSchema = new Schema(
     name: { type: String, trim: true, required: true, maxlength: 120, minlength: 3 },
     url: { type: String, trim: true, required: true, maxlength: 500, minlength: 5 },
     websiteUrl: { type: String, trim: true, maxlength: 500, minlength: 5 },
+    __typename: { type: String, default: 'Organization' },
   },
   { timestamps: true }
 );

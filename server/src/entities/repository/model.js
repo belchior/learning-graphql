@@ -23,6 +23,7 @@ export const RepositorySchema = new Schema(
     owner: { type: RepositoryOwnerSchema, required: true },
     primaryLanguage: LanguageSchema,
     url: { type: String, trim: true, required: true, maxlength: 500, minlength: 5 },
+    __typename: { type: String, default: 'Repository' },
   },
   { timestamps: true }
 );

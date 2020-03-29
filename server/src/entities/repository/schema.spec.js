@@ -36,13 +36,11 @@ const schema = new GraphQLSchema({
 describe('Repository Schema', () => {
   describe('createRepository', () => {
     it('should receive input argument representing RepositoryInput', async () => {
-      const query = `
-        mutation m($repo: RepositoryInput!) {
-          createRepository(input: $repo) {
-            name
-          }
-        }
-      `;
+      RepositoryModel.mockImplementationOnce(arg => {
+        const promise = Promise.resolve(arg);
+        promise.save = function(){return this;};
+        return promise;
+      });
       const repo = {
         description: 'repo description',
         forkCount: 2,
@@ -57,11 +55,13 @@ describe('Repository Schema', () => {
         },
         url: 'https://github.com/userLogin/repo-name',
       };
-      RepositoryModel.mockImplementationOnce(arg => {
-        const promise = Promise.resolve(arg);
-        promise.save = function () { return this; };
-        return promise;
-      });
+      const query = `
+        mutation m($repo: RepositoryInput!) {
+          createRepository(input: $repo) {
+            name
+          }
+        }
+      `;
 
       const variableValues = { repo };
       const expectedData = { data: { createRepository: { name: repo.name } } };

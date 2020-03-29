@@ -1,22 +1,28 @@
 import { GraphQLObjectType, GraphQLSchema, } from 'graphql';
 
-import * as user from './entities/user/schema';
-import * as repository from './entities/repository/schema';
+import {
+  queryFields as userQueryFields,
+  mutationFields as userMutationFields,
+} from './entities/user/schema';
+import { queryFields as organizationQueryFields, } from './entities/organization/schema';
+import { queryFields as ownerQueryFields, } from './entities/owner/schema';
+import { mutationFields as repositoryMutationFields, } from './entities/repository/schema';
 
 
 export const query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
-    ...user.queryFields,
-    ...repository.queryFields,
+    ...organizationQueryFields,
+    ...ownerQueryFields,
+    ...userQueryFields,
   }),
 });
 
 export const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    ...user.mutationFields,
-    ...repository.mutationFields,
+    ...repositoryMutationFields,
+    ...userMutationFields,
   }),
 });
 

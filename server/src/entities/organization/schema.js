@@ -1,14 +1,12 @@
-import {
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLString,
-} from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLString, } from 'graphql';
+
+import * as resolve from './resolve';
+import { ProfileOwnerInterface, RepositoryOwnerInterface } from '../owner/schema';
 import { idType, NodeInterface } from '../../utils/schema';
-import { RepositoryOwnerInterface } from '../owner/schema';
 
 
 export const OrganizationType = new GraphQLObjectType({
-  interfaces: [NodeInterface, RepositoryOwnerInterface],
+  interfaces: [NodeInterface, ProfileOwnerInterface, RepositoryOwnerInterface],
   name: 'Organization',
   fields: () => ({
     avatarUrl: { type: new GraphQLNonNull(GraphQLString) },
@@ -21,3 +19,11 @@ export const OrganizationType = new GraphQLObjectType({
     websiteUrl: { type: GraphQLString },
   }),
 });
+
+export const queryFields = {
+  organization: {
+    type: OrganizationType,
+    args: { login: { type: new GraphQLNonNull(GraphQLString) } },
+    resolve: resolve.Query.organization
+  }
+};
