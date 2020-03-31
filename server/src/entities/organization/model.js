@@ -8,7 +8,7 @@ const OrganizationSchema = new Schema(
     email: { type: String, trim: true, maxlength: 120, minlength: 3 },
     location: { type: String, trim: true, maxlength: 120, minlength: 3 },
     login: { type: String, trim: true, required: true, unique: true, maxlength: 120, minlength: 3 },
-    name: { type: String, trim: true, required: true, maxlength: 120, minlength: 3 },
+    name: { type: String, trim: true, maxlength: 120, minlength: 3 },
     url: { type: String, trim: true, required: true, maxlength: 500, minlength: 5 },
     websiteUrl: { type: String, trim: true, maxlength: 500, minlength: 5 },
     __typename: { type: String, default: 'Organization' },

@@ -10,11 +10,12 @@ export const OrganizationType = new GraphQLObjectType({
   name: 'Organization',
   fields: () => ({
     avatarUrl: { type: new GraphQLNonNull(GraphQLString) },
+    description: { type: GraphQLString },
     email: { type: GraphQLString },
     id: idType(),
     location: { type: GraphQLString },
     login: { type: new GraphQLNonNull(GraphQLString) },
-    name: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: GraphQLString },
     url: { type: new GraphQLNonNull(GraphQLString) },
     websiteUrl: { type: GraphQLString },
   }),

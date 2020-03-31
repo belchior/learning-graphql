@@ -38,7 +38,7 @@ export const UserType = new GraphQLObjectType({
     id: idType(),
     location: { type: GraphQLString },
     login: { type: new GraphQLNonNull(GraphQLString) },
-    name: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: GraphQLString },
     organizations: {
       type: OrganizationConnectionType,
       args: connectionTypeArgs(),

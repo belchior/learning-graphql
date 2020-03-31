@@ -16,7 +16,7 @@ export const RepositoryOwnerInterface = new GraphQLInterfaceType({
     avatarUrl: { type: new GraphQLNonNull(GraphQLString) },
     id: idType(),
     login: { type: new GraphQLNonNull(GraphQLString) },
-    name: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: GraphQLString },
     url: { type: new GraphQLNonNull(GraphQLString) },
   }),
   resolveType: value => (value.__typename === 'User' ? UserType : OrganizationType),
