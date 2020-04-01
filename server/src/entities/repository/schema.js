@@ -9,6 +9,7 @@ import {
 import * as resolve from './resolve';
 import { RepositoryOwnerInterface } from '../owner/schema';
 import { idType, NodeInterface } from '../../utils/schema';
+import { connectionType } from '../../cursor-connection/schema';
 
 
 const LanguageType = new GraphQLObjectType({
@@ -69,6 +70,8 @@ export const RepositoryInputType = new GraphQLInputObjectType({
     url: { type: GraphQLString },
   }),
 });
+
+export const RepositoryConnectionType = connectionType(RepositoryType);
 
 
 export const mutationFields = {

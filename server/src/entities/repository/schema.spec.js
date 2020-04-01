@@ -13,6 +13,22 @@ import { Repository as RepositoryModel } from './model';
 jest.mock('./model');
 
 
+const repo = {
+  description: 'repo description',
+  forkCount: 2,
+  licenseInfo: {
+    name: 'MIT License'
+  },
+  name: 'Repo Name',
+  ownerLogin: 'userLogin',
+  primaryLanguage: {
+    name: 'JavaScript',
+    color: '#f1e05a',
+  },
+  url: 'https://github.com/userLogin/repo-name',
+};
+
+
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
@@ -41,20 +57,7 @@ describe('Repository Schema', () => {
         promise.save = function(){return this;};
         return promise;
       });
-      const repo = {
-        description: 'repo description',
-        forkCount: 2,
-        licenseInfo: {
-          name: 'MIT License'
-        },
-        name: 'repo-name',
-        ownerLogin: 'userLogin',
-        primaryLanguage: {
-          name: 'JavaScript',
-          color: '#f1e05a',
-        },
-        url: 'https://github.com/userLogin/repo-name',
-      };
+
       const query = `
         mutation m($repo: RepositoryInput!) {
           createRepository(input: $repo) {

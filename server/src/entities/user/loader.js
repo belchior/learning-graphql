@@ -4,7 +4,7 @@ import { User as UserModel } from './model';
 import { handleError } from '../../utils/error-handler';
 
 
-export const projection = {
+export const userProjection = {
   followers: 0,
   following: 0,
   organizations: 0,
@@ -14,7 +14,7 @@ export const projection = {
 const getUsersByIds = async ids => {
   const query = { _id: { $in: ids } };
   return UserModel
-    .find(query, projection)
+    .find(query, userProjection)
     .then(users => (
       ids.map(id => {
         const user = users.find(user => user.id === id.toString());
@@ -28,7 +28,7 @@ const getUsersByIds = async ids => {
 const getUsersByLogins = async logins => {
   const query = { login: { $in: logins } };
   return UserModel
-    .find(query, projection)
+    .find(query, userProjection)
     .then(users => (
       logins.map(login => {
         const user = users.find(user => user.login === login);
