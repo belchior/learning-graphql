@@ -9,5 +9,19 @@ export const theme = createMuiTheme({
   },
   shape: {
     borderRadius: '3px',
+  },
+  overrides: {
+    MuiTypography: {
+      h1: {
+        fontSize: '2rem',
+        fontWeight: 400,
+        lineHeight: '3rem'
+      },
+      h2: {
+        fontSize: '1.5rem',
+        fontWeight: 400,
+        lineHeight: '2rem'
+      },
+    },
   }
 });
