@@ -2,8 +2,8 @@ import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
 
-import { theme } from 'utils/theme';
 import Route from 'components/Route/Route';
+import { theme } from 'utils/theme';
 
 
 const AppProvider = props => {

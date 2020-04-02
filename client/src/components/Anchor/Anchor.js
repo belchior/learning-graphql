@@ -1,7 +1,8 @@
 import React from 'react';
 import MuiLink from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 
 
 const useStyles = makeStyles(theme => ({
@@ -51,8 +52,8 @@ const Anchor = props => {
 
   return (
     <MuiLink
-      to={external ? null : href}
-      href={external ? href : null}
+      to={external ? undefined : href}
+      href={external ? href : undefined}
       component={external ? 'a' : Link}
       className={classNames}
       variant="inherit"
@@ -61,6 +62,13 @@ const Anchor = props => {
       {children}
     </MuiLink>
   );
+};
+Anchor.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  decoration: PropTypes.oneOf(['primary', 'secondary', 'contained']),
+  external: PropTypes.bool,
+  href: PropTypes.string,
 };
 
 export default Anchor;
