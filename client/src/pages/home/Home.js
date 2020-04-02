@@ -10,9 +10,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexDirection: 'column',
     textAlign: 'center',
-  },
-  title: {
-    fontSize: '2rem',
   }
 }));
 
@@ -20,7 +17,7 @@ const Home = props => {
   const classes = useStyles();
   return (
     <main className={classes.root}>
-      <Title className={classes.title} variant="h1">
+      <Title>
         Hi <span role="img" aria-label="hi">👋</span> friend!
       </Title>
       <Typography>

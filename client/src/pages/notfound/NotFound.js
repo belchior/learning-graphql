@@ -9,16 +9,13 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexDirection: 'column',
   },
-  title: {
-    fontSize: '2rem',
-  }
 }));
 
 const NotFound = props => {
   const classes = useStyles();
   return (
     <main className={classes.root}>
-      <Title className={classes.title} variant="h1">404 - Not found</Title>
+      <Title>404 - Not found</Title>
       <Typography>
         This is not the web page you are looking for.
       </Typography>
