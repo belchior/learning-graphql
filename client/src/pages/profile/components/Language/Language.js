@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -26,6 +27,10 @@ const Language = props => {
       <span>{children}</span>
     </Typography>
   );
+};
+Language.propTypes = {
+  children: PropTypes.node.isRequired,
+  color: PropTypes.string.isRequired,
 };
 
 export default Language;

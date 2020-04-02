@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash c2dc3c90ebadc5e33054236bd62416c0
+ * @relayHash 0ca3cf420a7497b6e01a1b815a35b1eb
  */
 
 /* eslint-disable */
@@ -11,14 +11,14 @@
 import type { ConcreteRequest } from 'relay-runtime';
 type RepositoryItem_repository$ref = any;
 type UserItem_user$ref = any;
-export type NavigatorQueryVariables = {|
+export type UserNavigatorQueryVariables = {|
   login: string,
   repositories: boolean,
   starredRepositories: boolean,
   followers: boolean,
   following: boolean,
 |};
-export type NavigatorQueryResponse = {|
+export type UserNavigatorQueryResponse = {|
   +user: ?{|
     +repositories?: {|
       +edges: $ReadOnlyArray<?{|
@@ -54,15 +54,15 @@ export type NavigatorQueryResponse = {|
     |},
   |}
 |};
-export type NavigatorQuery = {|
-  variables: NavigatorQueryVariables,
-  response: NavigatorQueryResponse,
+export type UserNavigatorQuery = {|
+  variables: UserNavigatorQueryVariables,
+  response: UserNavigatorQueryResponse,
 |};
 */
 
 
 /*
-query NavigatorQuery(
+query UserNavigatorQuery(
   $login: String!
   $repositories: Boolean!
   $starredRepositories: Boolean!
@@ -70,7 +70,7 @@ query NavigatorQuery(
   $following: Boolean!
 ) {
   user(login: $login) {
-    repositories(first: 5) @include(if: $repositories) {
+    repositories(last: 20) @include(if: $repositories) {
       edges {
         node {
           id
@@ -78,7 +78,7 @@ query NavigatorQuery(
         }
       }
     }
-    starredRepositories(first: 5) @include(if: $starredRepositories) {
+    starredRepositories(last: 20) @include(if: $starredRepositories) {
       edges {
         node {
           id
@@ -86,7 +86,7 @@ query NavigatorQuery(
         }
       }
     }
-    followers(first: 5) @include(if: $followers) {
+    followers(last: 20) @include(if: $followers) {
       edges {
         node {
           id
@@ -94,7 +94,7 @@ query NavigatorQuery(
         }
       }
     }
-    following(first: 5) @include(if: $following) {
+    following(last: 20) @include(if: $following) {
       edges {
         node {
           id
@@ -182,8 +182,8 @@ v1 = [
 v2 = [
   {
     "kind": "Literal",
-    "name": "first",
-    "value": 5
+    "name": "last",
+    "value": 20
   }
 ],
 v3 = {
@@ -429,7 +429,7 @@ return {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "NavigatorQuery",
+    "name": "UserNavigatorQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
@@ -452,7 +452,7 @@ return {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "repositories",
-                "storageKey": "repositories(first:5)",
+                "storageKey": "repositories(last:20)",
                 "args": (v2/*: any*/),
                 "concreteType": "RepositoryConnection",
                 "plural": false,
@@ -469,7 +469,7 @@ return {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "starredRepositories",
-                "storageKey": "starredRepositories(first:5)",
+                "storageKey": "starredRepositories(last:20)",
                 "args": (v2/*: any*/),
                 "concreteType": "RepositoryConnection",
                 "plural": false,
@@ -486,7 +486,7 @@ return {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "followers",
-                "storageKey": "followers(first:5)",
+                "storageKey": "followers(last:20)",
                 "args": (v2/*: any*/),
                 "concreteType": "UserConnection",
                 "plural": false,
@@ -503,7 +503,7 @@ return {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "following",
-                "storageKey": "following(first:5)",
+                "storageKey": "following(last:20)",
                 "args": (v2/*: any*/),
                 "concreteType": "UserConnection",
                 "plural": false,
@@ -517,7 +517,7 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "NavigatorQuery",
+    "name": "UserNavigatorQuery",
     "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
@@ -539,7 +539,7 @@ return {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "repositories",
-                "storageKey": "repositories(first:5)",
+                "storageKey": "repositories(last:20)",
                 "args": (v2/*: any*/),
                 "concreteType": "RepositoryConnection",
                 "plural": false,
@@ -556,7 +556,7 @@ return {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "starredRepositories",
-                "storageKey": "starredRepositories(first:5)",
+                "storageKey": "starredRepositories(last:20)",
                 "args": (v2/*: any*/),
                 "concreteType": "RepositoryConnection",
                 "plural": false,
@@ -573,7 +573,7 @@ return {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "followers",
-                "storageKey": "followers(first:5)",
+                "storageKey": "followers(last:20)",
                 "args": (v2/*: any*/),
                 "concreteType": "UserConnection",
                 "plural": false,
@@ -590,7 +590,7 @@ return {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "following",
-                "storageKey": "following(first:5)",
+                "storageKey": "following(last:20)",
                 "args": (v2/*: any*/),
                 "concreteType": "UserConnection",
                 "plural": false,
@@ -604,14 +604,14 @@ return {
   },
   "params": {
     "operationKind": "query",
-    "name": "NavigatorQuery",
+    "name": "UserNavigatorQuery",
     "id": null,
-    "text": "query NavigatorQuery(\n  $login: String!\n  $repositories: Boolean!\n  $starredRepositories: Boolean!\n  $followers: Boolean!\n  $following: Boolean!\n) {\n  user(login: $login) {\n    repositories(first: 5) @include(if: $repositories) {\n      edges {\n        node {\n          id\n          ...RepositoryItem_repository\n        }\n      }\n    }\n    starredRepositories(first: 5) @include(if: $starredRepositories) {\n      edges {\n        node {\n          id\n          ...RepositoryItem_repository\n        }\n      }\n    }\n    followers(first: 5) @include(if: $followers) {\n      edges {\n        node {\n          id\n          ...UserItem_user\n        }\n      }\n    }\n    following(first: 5) @include(if: $following) {\n      edges {\n        node {\n          id\n          ...UserItem_user\n        }\n      }\n    }\n    id\n  }\n}\n\nfragment RepositoryItem_repository on Repository {\n  description\n  forkCount\n  id\n  licenseInfo {\n    name\n  }\n  name\n  owner {\n    __typename\n    avatarUrl\n    login\n    url\n    id\n  }\n  primaryLanguage {\n    color\n    name\n  }\n  url\n}\n\nfragment UserItem_user on User {\n  avatarUrl\n  bio\n  company\n  location\n  login\n  name\n  url\n}\n",
+    "text": "query UserNavigatorQuery(\n  $login: String!\n  $repositories: Boolean!\n  $starredRepositories: Boolean!\n  $followers: Boolean!\n  $following: Boolean!\n) {\n  user(login: $login) {\n    repositories(last: 20) @include(if: $repositories) {\n      edges {\n        node {\n          id\n          ...RepositoryItem_repository\n        }\n      }\n    }\n    starredRepositories(last: 20) @include(if: $starredRepositories) {\n      edges {\n        node {\n          id\n          ...RepositoryItem_repository\n        }\n      }\n    }\n    followers(last: 20) @include(if: $followers) {\n      edges {\n        node {\n          id\n          ...UserItem_user\n        }\n      }\n    }\n    following(last: 20) @include(if: $following) {\n      edges {\n        node {\n          id\n          ...UserItem_user\n        }\n      }\n    }\n    id\n  }\n}\n\nfragment RepositoryItem_repository on Repository {\n  description\n  forkCount\n  id\n  licenseInfo {\n    name\n  }\n  name\n  owner {\n    __typename\n    avatarUrl\n    login\n    url\n    id\n  }\n  primaryLanguage {\n    color\n    name\n  }\n  url\n}\n\nfragment UserItem_user on User {\n  avatarUrl\n  bio\n  company\n  location\n  login\n  name\n  url\n}\n",
     "metadata": {}
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'b2ce013e809ebd1de6e66d9f9666aa27';
+(node/*: any*/).hash = '42182b29a8f782037ca86b967e3596b5';
 
 module.exports = node;

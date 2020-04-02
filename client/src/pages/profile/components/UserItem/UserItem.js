@@ -1,18 +1,19 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import graphql from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Anchor from 'components/Anchor/Anchor';
+import Image from 'components/Image/Image';
 import OrganizationIcon from 'components/Icons/Organization';
 import LocationIcon from 'components/Icons/Location';
 import Title from 'components/Title/Title';
 
 
 const useStyles = makeStyles(theme => ({
-  root: {
+  userItem: {
     borderBottom: '1px solid rgb(85, 85, 85)',
     display: 'flex',
     padding: '2rem 0',
@@ -22,14 +23,9 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {
     alignSelf: 'flex-start',
-    borderRadius: '3px',
-    height: 'inherit',
+    borderRadius: theme.shape.borderRadius,
+    flex: '0 0 auto',
     marginRight: '1rem',
-    width: 'inherit',
-  },
-  avatarImg: {
-    width: '50px',
-    height: '50px',
   },
   title: {
     display: 'flex',
@@ -62,24 +58,23 @@ const useStyles = makeStyles(theme => ({
 const UserItem = props => {
   const { user } = props;
   const classes = useStyles();
-  const overrides = {
-    img: classes.avatarImg
-  };
   const localUrl = user.url.replace(/https?:\/\/github\.com/, '');
   return (
-    <div className={classes.root}>
-      <Avatar
-        classes={overrides}
+    <div className={classes.userItem}>
+      <Image
         className={classes.avatar}
         src={user.avatarUrl}
-        alt={user.name}
-        imgProps={{ height: '50', width: '50' }}
+        alt={user.login}
+        height={50}
+        width={50}
       />
       <div>
         <Title className={classes.title} variant="h3">
-          <Anchor className={classes.name} href={localUrl} decoration="secondary" variant="body1">
-            {user.name}
-          </Anchor>
+          { user.name &&
+            <Anchor className={classes.name} href={localUrl} decoration="secondary" variant="body1">
+              {user.name}
+            </Anchor>
+          }
           <Anchor className={classes.login} href={localUrl} decoration="secondary" variant="body2">
             {user.login}
           </Anchor>
@@ -104,6 +99,17 @@ const UserItem = props => {
       </div>
     </div>
   );
+};
+UserItem.propTypes = {
+  user: PropTypes.shape({
+    avatarUrl: PropTypes.string.isRequired,
+    bio: PropTypes.string,
+    company: PropTypes.string,
+    location: PropTypes.string,
+    login: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default createFragmentContainer(

@@ -20,7 +20,7 @@ export type RepositoryItem_repository = {|
   |},
   +name: string,
   +owner: {|
-    +avatarUrl: ?string,
+    +avatarUrl: string,
     +login: string,
     +url: string,
   |},

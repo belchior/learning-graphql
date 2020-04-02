@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 58736c347687f82796729134907e8826
+ * @relayHash f75483599d83278e1158caee1bf331fe
  */
 
 /* eslint-disable */
@@ -9,14 +9,16 @@
 
 /*::
 import type { ConcreteRequest } from 'relay-runtime';
-type Sidebar_user$ref = any;
+type OrganizationHeader_profile$ref = any;
+type UserSidebar_profile$ref = any;
 export type ProfileQueryVariables = {|
   login: string
 |};
 export type ProfileQueryResponse = {|
-  +user: ?{|
+  +profile: ?{|
     +id: string,
-    +$fragmentRefs: Sidebar_user$ref,
+    +__typename: string,
+    +$fragmentRefs: UserSidebar_profile$ref & OrganizationHeader_profile$ref,
   |}
 |};
 export type ProfileQuery = {|
@@ -30,34 +32,50 @@ export type ProfileQuery = {|
 query ProfileQuery(
   $login: String!
 ) {
-  user(login: $login) {
+  profile(login: $login) {
     id
-    ...Sidebar_user
+    __typename
+    ... on User {
+      ...UserSidebar_profile
+    }
+    ... on Organization {
+      ...OrganizationHeader_profile
+    }
   }
 }
 
-fragment Sidebar_user on User {
+fragment OrganizationHeader_profile on Organization {
   avatarUrl
-  name
-  bio
+  description
+  location
   login
-  email
+  name
+  url
   websiteUrl
-  organizations(first: 10) {
+}
+
+fragment UserSidebar_profile on User {
+  avatarUrl
+  bio
+  email
+  login
+  name
+  websiteUrl
+  organizations(last: 10) {
     edges {
       node {
+        avatarUrl
         id
         login
         name
-        avatarUrl
         url
         __typename
       }
       cursor
     }
     pageInfo {
-      endCursor
-      hasNextPage
+      hasPreviousPage
+      startCursor
     }
   }
 }
@@ -89,14 +107,14 @@ v2 = {
 v3 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "avatarUrl",
+  "name": "__typename",
   "args": null,
   "storageKey": null
 },
 v4 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "name",
+  "name": "avatarUrl",
   "args": null,
   "storageKey": null
 },
@@ -107,13 +125,34 @@ v5 = {
   "args": null,
   "storageKey": null
 },
-v6 = [
+v6 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "name",
+  "args": null,
+  "storageKey": null
+},
+v7 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "websiteUrl",
+  "args": null,
+  "storageKey": null
+},
+v8 = [
   {
     "kind": "Literal",
-    "name": "first",
+    "name": "last",
     "value": 10
   }
-];
+],
+v9 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "url",
+  "args": null,
+  "storageKey": null
+};
 return {
   "kind": "Request",
   "fragment": {
@@ -126,17 +165,35 @@ return {
       {
         "kind": "LinkedField",
         "alias": null,
-        "name": "user",
+        "name": "profile",
         "storageKey": null,
         "args": (v1/*: any*/),
-        "concreteType": "User",
+        "concreteType": null,
         "plural": false,
         "selections": [
           (v2/*: any*/),
+          (v3/*: any*/),
           {
-            "kind": "FragmentSpread",
-            "name": "Sidebar_user",
-            "args": null
+            "kind": "InlineFragment",
+            "type": "User",
+            "selections": [
+              {
+                "kind": "FragmentSpread",
+                "name": "UserSidebar_profile",
+                "args": null
+              }
+            ]
+          },
+          {
+            "kind": "InlineFragment",
+            "type": "Organization",
+            "selections": [
+              {
+                "kind": "FragmentSpread",
+                "name": "OrganizationHeader_profile",
+                "args": null
+              }
+            ]
           }
         ]
       }
@@ -150,128 +207,142 @@ return {
       {
         "kind": "LinkedField",
         "alias": null,
-        "name": "user",
+        "name": "profile",
         "storageKey": null,
         "args": (v1/*: any*/),
-        "concreteType": "User",
+        "concreteType": null,
         "plural": false,
         "selections": [
           (v2/*: any*/),
           (v3/*: any*/),
-          (v4/*: any*/),
           {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "bio",
-            "args": null,
-            "storageKey": null
-          },
-          (v5/*: any*/),
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "email",
-            "args": null,
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "websiteUrl",
-            "args": null,
-            "storageKey": null
-          },
-          {
-            "kind": "LinkedField",
-            "alias": null,
-            "name": "organizations",
-            "storageKey": "organizations(first:10)",
-            "args": (v6/*: any*/),
-            "concreteType": "OrganizationConnection",
-            "plural": false,
+            "kind": "InlineFragment",
+            "type": "User",
             "selections": [
+              (v4/*: any*/),
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "bio",
+                "args": null,
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "email",
+                "args": null,
+                "storageKey": null
+              },
+              (v5/*: any*/),
+              (v6/*: any*/),
+              (v7/*: any*/),
               {
                 "kind": "LinkedField",
                 "alias": null,
-                "name": "edges",
-                "storageKey": null,
-                "args": null,
-                "concreteType": "OrganizationEdge",
-                "plural": true,
+                "name": "organizations",
+                "storageKey": "organizations(last:10)",
+                "args": (v8/*: any*/),
+                "concreteType": "OrganizationConnection",
+                "plural": false,
                 "selections": [
                   {
                     "kind": "LinkedField",
                     "alias": null,
-                    "name": "node",
+                    "name": "edges",
                     "storageKey": null,
                     "args": null,
-                    "concreteType": "Organization",
-                    "plural": false,
+                    "concreteType": "OrganizationEdge",
+                    "plural": true,
                     "selections": [
-                      (v2/*: any*/),
-                      (v5/*: any*/),
-                      (v4/*: any*/),
-                      (v3/*: any*/),
                       {
-                        "kind": "ScalarField",
+                        "kind": "LinkedField",
                         "alias": null,
-                        "name": "url",
+                        "name": "node",
+                        "storageKey": null,
                         "args": null,
-                        "storageKey": null
+                        "concreteType": "Organization",
+                        "plural": false,
+                        "selections": [
+                          (v4/*: any*/),
+                          (v2/*: any*/),
+                          (v5/*: any*/),
+                          (v6/*: any*/),
+                          (v9/*: any*/),
+                          (v3/*: any*/)
+                        ]
                       },
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "__typename",
+                        "name": "cursor",
                         "args": null,
                         "storageKey": null
                       }
                     ]
                   },
                   {
-                    "kind": "ScalarField",
+                    "kind": "LinkedField",
                     "alias": null,
-                    "name": "cursor",
+                    "name": "pageInfo",
+                    "storageKey": null,
                     "args": null,
-                    "storageKey": null
+                    "concreteType": "PageInfo",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "hasPreviousPage",
+                        "args": null,
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "startCursor",
+                        "args": null,
+                        "storageKey": null
+                      }
+                    ]
                   }
                 ]
               },
               {
-                "kind": "LinkedField",
+                "kind": "LinkedHandle",
                 "alias": null,
-                "name": "pageInfo",
-                "storageKey": null,
-                "args": null,
-                "concreteType": "PageInfo",
-                "plural": false,
-                "selections": [
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "name": "endCursor",
-                    "args": null,
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "name": "hasNextPage",
-                    "args": null,
-                    "storageKey": null
-                  }
-                ]
+                "name": "organizations",
+                "args": (v8/*: any*/),
+                "handle": "connection",
+                "key": "UserSidebar_organizations",
+                "filters": null
               }
             ]
           },
           {
-            "kind": "LinkedHandle",
-            "alias": null,
-            "name": "organizations",
-            "args": (v6/*: any*/),
-            "handle": "connection",
-            "key": "Sidebar_organizations",
-            "filters": null
+            "kind": "InlineFragment",
+            "type": "Organization",
+            "selections": [
+              (v4/*: any*/),
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "description",
+                "args": null,
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "location",
+                "args": null,
+                "storageKey": null
+              },
+              (v5/*: any*/),
+              (v6/*: any*/),
+              (v9/*: any*/),
+              (v7/*: any*/)
+            ]
           }
         ]
       }
@@ -281,12 +352,12 @@ return {
     "operationKind": "query",
     "name": "ProfileQuery",
     "id": null,
-    "text": "query ProfileQuery(\n  $login: String!\n) {\n  user(login: $login) {\n    id\n    ...Sidebar_user\n  }\n}\n\nfragment Sidebar_user on User {\n  avatarUrl\n  name\n  bio\n  login\n  email\n  websiteUrl\n  organizations(first: 10) {\n    edges {\n      node {\n        id\n        login\n        name\n        avatarUrl\n        url\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
+    "text": "query ProfileQuery(\n  $login: String!\n) {\n  profile(login: $login) {\n    id\n    __typename\n    ... on User {\n      ...UserSidebar_profile\n    }\n    ... on Organization {\n      ...OrganizationHeader_profile\n    }\n  }\n}\n\nfragment OrganizationHeader_profile on Organization {\n  avatarUrl\n  description\n  location\n  login\n  name\n  url\n  websiteUrl\n}\n\nfragment UserSidebar_profile on User {\n  avatarUrl\n  bio\n  email\n  login\n  name\n  websiteUrl\n  organizations(last: 10) {\n    edges {\n      node {\n        avatarUrl\n        id\n        login\n        name\n        url\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n",
     "metadata": {}
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'ec3990bc0d6d5bcdb7a36fb8f4522248';
+(node/*: any*/).hash = '8c05a83503958da940807859883a7027';
 
 module.exports = node;

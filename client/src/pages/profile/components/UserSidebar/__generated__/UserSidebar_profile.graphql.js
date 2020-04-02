@@ -9,32 +9,32 @@
 /*::
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentReference } from "relay-runtime";
-declare export opaque type Sidebar_user$ref: FragmentReference;
-declare export opaque type Sidebar_user$fragmentType: Sidebar_user$ref;
-export type Sidebar_user = {|
-  +avatarUrl: ?string,
-  +name: string,
+declare export opaque type UserSidebar_profile$ref: FragmentReference;
+declare export opaque type UserSidebar_profile$fragmentType: UserSidebar_profile$ref;
+export type UserSidebar_profile = {|
+  +avatarUrl: string,
   +bio: ?string,
-  +login: string,
   +email: string,
+  +login: string,
+  +name: ?string,
   +websiteUrl: ?string,
   +organizations: {|
     +edges: $ReadOnlyArray<?{|
       +node: ?{|
+        +avatarUrl: string,
         +id: string,
         +login: string,
-        +name: string,
-        +avatarUrl: ?string,
+        +name: ?string,
         +url: string,
       |}
     |}>
   |},
-  +$refType: Sidebar_user$ref,
+  +$refType: UserSidebar_profile$ref,
 |};
-export type Sidebar_user$data = Sidebar_user;
-export type Sidebar_user$key = {
-  +$data?: Sidebar_user$data,
-  +$fragmentRefs: Sidebar_user$ref,
+export type UserSidebar_profile$data = UserSidebar_profile;
+export type UserSidebar_profile$key = {
+  +$data?: UserSidebar_profile$data,
+  +$fragmentRefs: UserSidebar_profile$ref,
   ...
 };
 */
@@ -51,27 +51,27 @@ var v0 = {
 v1 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "name",
+  "name": "login",
   "args": null,
   "storageKey": null
 },
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "login",
+  "name": "name",
   "args": null,
   "storageKey": null
 };
 return {
   "kind": "Fragment",
-  "name": "Sidebar_user",
+  "name": "UserSidebar_profile",
   "type": "User",
   "metadata": {
     "connection": [
       {
         "count": null,
-        "cursor": "cursor",
-        "direction": "forward",
+        "cursor": null,
+        "direction": "backward",
         "path": [
           "organizations"
         ]
@@ -88,7 +88,6 @@ return {
   ],
   "selections": [
     (v0/*: any*/),
-    (v1/*: any*/),
     {
       "kind": "ScalarField",
       "alias": null,
@@ -96,7 +95,6 @@ return {
       "args": null,
       "storageKey": null
     },
-    (v2/*: any*/),
     {
       "kind": "ScalarField",
       "alias": null,
@@ -104,6 +102,8 @@ return {
       "args": null,
       "storageKey": null
     },
+    (v1/*: any*/),
+    (v2/*: any*/),
     {
       "kind": "ScalarField",
       "alias": null,
@@ -114,7 +114,7 @@ return {
     {
       "kind": "LinkedField",
       "alias": "organizations",
-      "name": "__Sidebar_organizations_connection",
+      "name": "__UserSidebar_organizations_connection",
       "storageKey": null,
       "args": null,
       "concreteType": "OrganizationConnection",
@@ -138,6 +138,7 @@ return {
               "concreteType": "Organization",
               "plural": false,
               "selections": [
+                (v0/*: any*/),
                 {
                   "kind": "ScalarField",
                   "alias": null,
@@ -145,9 +146,8 @@ return {
                   "args": null,
                   "storageKey": null
                 },
-                (v2/*: any*/),
                 (v1/*: any*/),
-                (v0/*: any*/),
+                (v2/*: any*/),
                 {
                   "kind": "ScalarField",
                   "alias": null,
@@ -185,14 +185,14 @@ return {
             {
               "kind": "ScalarField",
               "alias": null,
-              "name": "endCursor",
+              "name": "hasPreviousPage",
               "args": null,
               "storageKey": null
             },
             {
               "kind": "ScalarField",
               "alias": null,
-              "name": "hasNextPage",
+              "name": "startCursor",
               "args": null,
               "storageKey": null
             }
@@ -204,6 +204,6 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '712c1c89e4bf24c8bbcef7024e155cdd';
+(node/*: any*/).hash = '4a07713b28fef23a303b5e5330ada434';
 
 module.exports = node;

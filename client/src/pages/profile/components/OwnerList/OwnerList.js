@@ -1,9 +1,10 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Anchor from 'components/Anchor/Anchor';
 import Title from 'components/Title/Title';
+import Image from 'components/Image/Image';
 
 
 const useStyles = makeStyles(theme => ({
@@ -18,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const OwnerList = props => {
-  const { title, owners } = props;
+  const { owners, title } = props;
   const classes = useStyles();
 
   return (
@@ -27,18 +28,22 @@ const OwnerList = props => {
       {owners.map(owner => {
         const localUrl = owner.url.replace(/https?:\/\/github\.com/, '');
         return (
-          <Anchor className={classes.anchor} href={localUrl} key={owner.login} external>
-            <Avatar
-              alt={owner.name}
-              imgProps={{ height: '32', width: '32' }}
-              src={owner.avatarUrl}
-              variant="rounded"
-            />
+          <Anchor className={classes.anchor} href={localUrl} key={owner.login}>
+            <Image alt={owner.login} src={owner.avatarUrl} height={32} width={32} />
           </Anchor>
         );
       })}
     </div>
   );
+};
+OwnerList.propTypes = {
+  owners: PropTypes.arrayOf(PropTypes.shape({
+    avatarUrl: PropTypes.string.isRequired,
+    login: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    url: PropTypes.string.isRequired,
+  })).isRequired,
+  title: PropTypes.node.isRequired,
 };
 
 export default OwnerList;

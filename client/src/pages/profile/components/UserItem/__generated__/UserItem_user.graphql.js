@@ -12,12 +12,12 @@ import type { FragmentReference } from "relay-runtime";
 declare export opaque type UserItem_user$ref: FragmentReference;
 declare export opaque type UserItem_user$fragmentType: UserItem_user$ref;
 export type UserItem_user = {|
-  +avatarUrl: ?string,
+  +avatarUrl: string,
   +bio: ?string,
   +company: ?string,
   +location: ?string,
   +login: string,
-  +name: string,
+  +name: ?string,
   +url: string,
   +$refType: UserItem_user$ref,
 |};
