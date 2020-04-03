@@ -20,6 +20,7 @@ const startServer = () => {
   });
   app.listen(PORT, () => {
     console.log(`Running a GraphQL API server at ${SERVER_URL}/graphql`);
+    console.log(`Accepting request from ${CLIENT_URL}`);
   });
 };
 
