@@ -3,7 +3,7 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 
-import { DB_CONNECTION, DEBUG, FRONTEND_ORIGIN, NODE_ENV, ORIGIN, PORT } from './enviroment';
+import { DATABASE_URL, DEBUG, FRONTEND_ORIGIN, NODE_ENV, ORIGIN, PORT } from './enviroment';
 import { schema } from './schema';
 
 
@@ -28,6 +28,6 @@ const connectionOptions = {
 };
 
 mongoose.set('debug', DEBUG === 'db' || DEBUG === '*');
-mongoose.connect(DB_CONNECTION, connectionOptions);
+mongoose.connect(DATABASE_URL, connectionOptions);
 mongoose.connection.once('open', startServer);
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));

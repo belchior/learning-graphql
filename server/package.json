@@ -6,6 +6,9 @@
   "license": "MIT",
   "keywords": ["JavaScript", "Node.js", "GraphQL", "MongoDB", "Relay Modern", "React"],
   "main": "src/server.js",
+  "engines" : {
+    "node" : "12.x"
+  },
   "scripts": {
     "lint": "eslint src",
     "start": "nodemon -r esm src/server.js",
