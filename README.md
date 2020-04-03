@@ -26,7 +26,7 @@ After clone this repo you should install the dependencies of the `client` and `s
 ### Server
 At this moment you must have installed and configured MongoDB on your machine or in a cloud provider, you can use the environment variable `DB_CONNECTION` to specify the database connection, the data used by this server is strongly based on the [GraphQL API of Github](https://developer.github.com/v4/explorer/), I don't know if I have legal right to share the data that I scraping to develop this project, so you must provide your on data.
 
-install dependnecies
+install dependencies
 ```shell
 cd ./server;
 npm install
