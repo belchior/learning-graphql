@@ -4,4 +4,4 @@ export const DATABASE_URL = process.env.DATABASE_URL || 'mongodb://localhost:270
 export const DEBUG = process.env.DEBUG;
 export const PORT = process.env.PORT || 4000;
 export const SERVER_URL = process.env.SERVER_URL || `http://localhost:${PORT}`;
-export const CLIENT_URL = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
+export const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
