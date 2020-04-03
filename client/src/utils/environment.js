@@ -1,6 +1,6 @@
 import { Environment, Network, RecordSource, Store, } from 'relay-runtime';
 
-const endpoint = 'http://localhost:4000';
+const endpoint = process.env.REACT_APP_SERVER_URL;
 
 const fetchQuery = (operation, variables) => {
   return fetch(`${endpoint}/graphql`, {

@@ -5,6 +5,7 @@ build/
 coverage/
 node_modules/
 logs
+.env
 *.log
 npm-debug.log*
 /package-lock.json
