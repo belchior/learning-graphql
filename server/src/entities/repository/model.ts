@@ -1,4 +1,4 @@
-import { Document, model, Schema } from 'mongoose';
+import { Document, model, Model, Schema } from 'mongoose';
 
 import { RepositoryOwnerSchema } from '../owner/model';
 import { IDBRef } from '../../utils/interfaces';
@@ -11,7 +11,7 @@ interface ILanguage extends Document {
   color: string
   name: string
 }
-interface IRepository extends Document {
+interface IRepositoryDocument extends Document {
   description: string
   forkCount: number
   licenseInfo: ILicese,
@@ -20,6 +20,9 @@ interface IRepository extends Document {
   primaryLanguage: ILanguage,
   url: string
   __typename: 'Repository'
+}
+interface IRepositoryModel extends Model<IRepositoryDocument> {
+  save: () => Promise<IRepositoryDocument>;
 }
 
 const LiceseSchema = new Schema({
@@ -46,4 +49,4 @@ export const RepositorySchema = new Schema(
 );
 
 
-export const Repository = model<IRepository>('repositories', RepositorySchema);
+export const Repository = model<IRepositoryDocument, IRepositoryModel>('repositories', RepositorySchema);

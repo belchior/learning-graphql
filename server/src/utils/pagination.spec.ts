@@ -5,6 +5,7 @@ import {
   minNumberOfItemsToSkip,
   paginationArrays,
   paginationBoundaries,
+  IPaginationArgs,
 } from './pagination';
 
 
@@ -24,7 +25,7 @@ describe('Pagination Helper', () => {
 
     it('should throw an error when first and last was not a positive integer', () => {
       const error = new GraphQLError('first and last must be a positive integer');
-      const args = [
+      const args: IPaginationArgs[] = [
         { first: -42 },
         { first: 0 },
         { last: -42 },
@@ -51,7 +52,7 @@ describe('Pagination Helper', () => {
     });
 
     it('the limit attribute returned should not be more than maxNumberOfItems', () => {
-      const args = [
+      const args: IPaginationArgs[] = [
         { first: 1000 },
         { last: 1000 },
       ];
@@ -75,7 +76,7 @@ describe('Pagination Helper', () => {
 
   describe('paginationArrays', () => {
     it('should return the maxNumberOfItems when first or last attribute are more than that it', () => {
-      let args = { first: maxNumberOfItems + 1 };
+      let args: IPaginationArgs = { first: maxNumberOfItems + 1 };
       let result = paginationArrays(args);
       expect(result.limit).toEqual(maxNumberOfItems);
 
@@ -103,7 +104,7 @@ describe('Pagination Helper', () => {
                                            ^__________________________________^
                                                        result.limit 5
       */
-      let args = { last: 5 };
+      let args: IPaginationArgs = { last: 5 };
       let result = paginationArrays(args);
       let expectedValue = -args.last - minNumberOfItemsToSkip;
       expect(result.skip).toEqual(expectedValue);

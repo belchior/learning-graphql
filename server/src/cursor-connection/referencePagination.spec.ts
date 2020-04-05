@@ -110,7 +110,7 @@ describe('Reference Pagination', () => {
         hasNextPage: false,
         startCursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNl',
       };
-      const MockModel = Promise.resolve([pageInfo]);
+      const MockModel: any = Promise.resolve([pageInfo]);
       MockModel.aggregate = function(){return this;};
 
       const args = { first: 10 };
@@ -143,7 +143,7 @@ describe('Reference Pagination', () => {
         hasPreviousPage: false,
         startCursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNl',
       };
-      const MockModel = Promise.resolve([pageInfo]);
+      const MockModel:any = Promise.resolve([pageInfo]);
       MockModel.aggregate = function(){return this;};
 
       const args = { last: 10 };

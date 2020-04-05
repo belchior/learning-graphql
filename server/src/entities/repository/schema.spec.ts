@@ -5,10 +5,11 @@ import {
   graphql,
 } from 'graphql';
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UserType } from '../user/schema';
 import { mutationFields } from './schema';
 import { Repository as RepositoryModel } from './model';
+import { IPaginationArgs } from '../../cursor-connection/arguments';
 
 jest.mock('./model');
 
@@ -52,8 +53,8 @@ const schema = new GraphQLSchema({
 describe('Repository Schema', () => {
   describe('createRepository', () => {
     it('should receive input argument representing RepositoryInput', async () => {
-      RepositoryModel.mockImplementationOnce(arg => {
-        const promise = Promise.resolve(arg);
+      (RepositoryModel as unknown as jest.Mock).mockImplementationOnce((arg: IPaginationArgs) => {
+        const promise: any = Promise.resolve(arg);
         promise.save = function(){return this;};
         return promise;
       });

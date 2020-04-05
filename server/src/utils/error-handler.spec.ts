@@ -40,7 +40,7 @@ describe('Error handlers', () => {
 
     it('should return the data argument when it is valid', async () => {
       const message = 'not found';
-      let data = { name: 'test handleNotFound' };
+      let data: any = { name: 'test handleNotFound' };
       let promise = handleNotFound(message)(data);
       await expect(promise).resolves.toEqual(data);
 

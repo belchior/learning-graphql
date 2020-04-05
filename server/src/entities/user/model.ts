@@ -1,9 +1,9 @@
-import { Document, model, Schema } from 'mongoose';
+import { Document, model, Model, Schema } from 'mongoose';
 
 import { IDBRef } from '../../utils/interfaces';
 
 
-interface IUser extends Document {
+interface IUserDocument extends Document {
   avatarUrl: string
   bio: string
   company: string
@@ -17,6 +17,9 @@ interface IUser extends Document {
   url: string
   websiteUrl: string
   __typename: 'User'
+}
+interface IUserModel extends Model<IUserDocument> {
+  save: () => Promise<IUserDocument>;
 }
 
 const UserSchema = new Schema(
@@ -37,4 +40,4 @@ const UserSchema = new Schema(
   },
   { timestamps: true }
 );
-export const User = model<IUser>('users', UserSchema);
+export const User = model<IUserDocument, IUserModel>('users', UserSchema);

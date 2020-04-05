@@ -4,6 +4,7 @@ import {
   parseKey,
   valuesToCursorConnection,
 } from './indexPagination';
+import { IPaginationArgs } from './arguments';
 
 
 describe('Cursor connection Index Pagination', () => {
@@ -44,14 +45,14 @@ describe('Cursor connection Index Pagination', () => {
     */
 
     it('should return un object containing skip and limit as attributes', () => {
-      const args = { first: 10 };
+      const args: IPaginationArgs = { first: 10 };
       const receivedValue = arrayIndexPagination(args);
       const expectedValue = { skip: 0, limit: 10 };
       expect(receivedValue).toEqual(expectedValue);
     });
 
     it('when a forward pagination arguments is provided the skip attribute should be zero or positive integer', () => {
-      let args = { first: 10 };
+      let args: IPaginationArgs = { first: 10 };
       let receivedSkip = arrayIndexPagination(args).skip;
       let expectedSkip = 0;
       expect(receivedSkip).toEqual(expectedSkip);
@@ -63,7 +64,7 @@ describe('Cursor connection Index Pagination', () => {
     });
 
     it('when a forward pagination arguments is provided the limit attribute should be positive integer', () => {
-      let args = { first: 10 };
+      let args: IPaginationArgs = { first: 10 };
       let receivedLimit = arrayIndexPagination(args).limit;
       let expectedLimit = 10;
       expect(receivedLimit).toEqual(expectedLimit);
@@ -75,7 +76,7 @@ describe('Cursor connection Index Pagination', () => {
     });
 
     it('when a backward pagination arguments is provided the skip attribute should be negative integer', () => {
-      let args = { last: 5 };
+      let args: IPaginationArgs = { last: 5 };
       let receivedSkip = arrayIndexPagination(args).skip;
       let expectedSkip = -5;
       expect(receivedSkip).toEqual(expectedSkip);
@@ -87,7 +88,7 @@ describe('Cursor connection Index Pagination', () => {
     });
 
     it('when a backward pagination arguments is provided the limit attribute should be positive integer', () => {
-      let args = { last: 5 };
+      let args: IPaginationArgs = { last: 5 };
       let receivedLimit = arrayIndexPagination(args).limit;
       let expectedLimit = 5;
       expect(receivedLimit).toEqual(expectedLimit);
@@ -102,7 +103,7 @@ describe('Cursor connection Index Pagination', () => {
   describe('valuesToCursorConnection', () => {
     it('should return an empty cursor connection when are null or empty', () => {
       let values = undefined;
-      const args = { first: 10 };
+      const args: IPaginationArgs = { first: 10 };
       let receivedConnection = valuesToCursorConnection(values, args);
       const expectedConnection = {
         edges: [],
@@ -122,7 +123,7 @@ describe('Cursor connection Index Pagination', () => {
       const values = [
         { key: '0|-1', totalItems: 1, name: 'item 1' },
       ];
-      const args = { first: 10 };
+      const args: IPaginationArgs = { first: 10 };
       const receivedConnection = valuesToCursorConnection(values, args);
       const expectedConnection = {
         edges: [
@@ -137,7 +138,7 @@ describe('Cursor connection Index Pagination', () => {
     });
 
     it('should return a valid cursor connection when a backward pagination argument is provided', () => {
-      const args = { last: 5 };
+      const args: IPaginationArgs = { last: 5 };
       let values = [
         { key: '0|-1', totalItems: 1, name: 'item 1' },
       ];

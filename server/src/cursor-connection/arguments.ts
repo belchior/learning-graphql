@@ -1,6 +1,15 @@
 import { GraphQLError } from 'graphql';
 
-export const validateArgs = callback => args => {
+type TContext = {
+  [keyName: string]: string | number | boolean
+}
+export interface IPaginationArgs extends TContext {
+  first?: number
+  last?: number
+  skip?: number
+}
+
+export const validateArgs = (callback: Function) => (args: IPaginationArgs) => {
   if (
     typeof args != 'object' ||
     (args.first == undefined && args.last == undefined)

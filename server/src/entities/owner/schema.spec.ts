@@ -7,7 +7,7 @@ import {
   GraphQLString,
 } from 'graphql';
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UserType } from '../user/schema';
 import { Organization as OrganizationModel } from '../organization/model';
 import { User as UserModel } from '../user/model';
@@ -50,8 +50,8 @@ describe('Owner Schema', () => {
     });
 
     it('should return an organization type', async () => {
-      OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
-      UserModel.find.mockImplementationOnce(() => Promise.resolve([]));
+      (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
+      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
 
       const query = `
         query Profile {
@@ -73,8 +73,8 @@ describe('Owner Schema', () => {
     });
 
     it('should return an user type', async () => {
-      OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([]));
-      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
 
       const query = `
         query Profile {

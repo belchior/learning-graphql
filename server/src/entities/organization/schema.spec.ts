@@ -1,6 +1,6 @@
 import { GraphQLError, GraphQLObjectType, GraphQLSchema, graphql, } from 'graphql';
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UserType } from '../user/schema';
 import { Organization as OrganizationModel } from './model';
 import { Repository as RepositoryModel } from '../repository/model';
@@ -24,7 +24,7 @@ const organizationData = {
 const pageInfo = { hasPreviousPage: false, hasNextPage: false };
 
 
-OrganizationModel.find.mockImplementation(() => Promise.resolve([organizationData]));
+(OrganizationModel.find as jest.Mock).mockImplementation(() => Promise.resolve([organizationData]));
 
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -70,7 +70,7 @@ describe('Organization Schema', () => {
 
     describe('people field', () => {
       it('should execute successfully', async () => {
-        OrganizationModel.aggregate
+        (OrganizationModel.aggregate as jest.Mock)
           .mockImplementationOnce(() => Promise.resolve(organizationData.people))
           .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -102,7 +102,7 @@ describe('Organization Schema', () => {
       });
 
       it('should return empty connection when organization has no one', async () => {
-        OrganizationModel.aggregate
+        (OrganizationModel.aggregate as jest.Mock)
           .mockImplementationOnce(() => Promise.resolve([]))
           .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -155,7 +155,7 @@ describe('Organization Schema', () => {
 
     describe('repositories field', () => {
       it('should execute successfully', async () => {
-        RepositoryModel.aggregate
+        (RepositoryModel.aggregate as jest.Mock)
           .mockImplementationOnce(() => Promise.resolve(organizationData.repositories))
           .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -187,7 +187,7 @@ describe('Organization Schema', () => {
       });
 
       it('should return empty connection when there is no repository', async () => {
-        RepositoryModel.aggregate
+        (RepositoryModel.aggregate as jest.Mock)
           .mockImplementationOnce(() => Promise.resolve([]))
           .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 

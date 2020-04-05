@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql';
 type TContext = {
   [keyName: string]: string | number | boolean
 }
-interface IPaginationArgs extends TContext {
+export interface IPaginationArgs extends TContext {
   first?: number
   last?: number
   skip?: number
