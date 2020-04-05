@@ -133,7 +133,6 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
-      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -188,7 +187,6 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
-      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -243,7 +241,6 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
-      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -298,7 +295,6 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
-      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -353,7 +349,6 @@ describe('user query', () => {
         }
       `;
       const error = new GraphQLError('Missing pagination boundaries');
-      // eslint-disable-next-line no-null/no-null
       const expectedData = { data: { user: null }, errors: [ error ] };
       const receivedData = await graphql(schema, query);
       expect(receivedData).toEqual(expectedData);
@@ -390,7 +385,6 @@ describe('addUserFollower mutation', () => {
       }
     `;
     error = new GraphQLError('Invalid args.: invalid id');
-    // eslint-disable-next-line no-null/no-null
     expectedData = { data: { addUserFollower: null }, errors: [ error ] };
     receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);
@@ -483,7 +477,6 @@ describe('removeUserFollower mutation', () => {
       }
     `;
     error = new GraphQLError('Invalid args.: invalid id');
-    // eslint-disable-next-line no-null/no-null
     expectedData = { data: { removeUserFollower: null }, errors: [ error ] };
     receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);
@@ -530,7 +523,6 @@ describe('updateUserName mutation', () => {
       }
     `;
     error = new GraphQLError('Invalid args.: invalid id');
-    // eslint-disable-next-line no-null/no-null
     expectedData = { data: { updateUserName: null }, errors: [ error ] };
     receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);

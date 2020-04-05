@@ -19,12 +19,12 @@
   "scripts": {
     "build": "tsc",
     "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts}'",
-    "start": "nodemon build/server.js",
+    "start": "node build/server.js",
     "start:ts": "nodemon -r ts-node/register src/server.ts",
-    "start:debug": "cross-env DEBUG='*' npm run start",
+    "start:debug": "cross-env DEBUG='*' npm run start:ts",
     "test": "jest --watch",
     "test:ci": "jest --coverage --ci",
-    "write-schema": "node -r ts-node/register scripts/write-schema"
+    "write-schema": "ts-node scripts/write-schema"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -68,8 +68,9 @@
     }
   },
   "nodemonConfig": {
-    "ignore": [
-      "**/*.spec.js"
-    ]
+    "watch": ["src"],
+    "ext": "ts",
+    "ignore": ["src/**/*.spec.ts"],
+    "exec": "ts-node ./src/server.ts"
   }
 }

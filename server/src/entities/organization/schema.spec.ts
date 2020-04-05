@@ -147,7 +147,6 @@ describe('Organization Schema', () => {
           }
         `;
         const error = new GraphQLError('Missing pagination boundaries');
-        // eslint-disable-next-line no-null/no-null
         const expectedData = { data: { organization: null }, errors: [ error ] };
         const receivedData = await graphql(schema, query);
         expect(receivedData).toEqual(expectedData);
@@ -233,7 +232,6 @@ describe('Organization Schema', () => {
           }
         `;
         const error = new GraphQLError('Missing pagination boundaries');
-        // eslint-disable-next-line no-null/no-null
         const expectedData = { data: { organization: null }, errors: [ error ] };
         const receivedData = await graphql(schema, query);
         expect(receivedData).toEqual(expectedData);
