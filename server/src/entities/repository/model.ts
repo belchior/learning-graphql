@@ -1,18 +1,35 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 
 import { RepositoryOwnerSchema } from '../owner/model';
+import { IDBRef } from '../../utils/interfaces';
 
+
+interface ILicese extends Document {
+  name: string
+}
+interface ILanguage extends Document {
+  color: string
+  name: string
+}
+interface IRepository extends Document {
+  description: string
+  forkCount: number
+  licenseInfo: ILicese,
+  name: string
+  owner: IDBRef
+  primaryLanguage: ILanguage,
+  url: string
+  __typename: 'Repository'
+}
 
 const LiceseSchema = new Schema({
-  _id: false,
   name: { type: String, trim: true, required: true, maxlength: 120, minlength: 3 },
-});
+}, { _id: false });
 
 const LanguageSchema = new Schema({
-  _id: false,
   color: { type: String, trim: true, required: true, maxlength: 7, minlength: 4 },
   name: { type: String, trim: true, required: true, maxlength: 120, minlength: 3 },
-});
+}, { _id: false });
 
 export const RepositorySchema = new Schema(
   {
@@ -29,4 +46,4 @@ export const RepositorySchema = new Schema(
 );
 
 
-export const Repository = model('repositories', RepositorySchema);
+export const Repository = model<IRepository>('repositories', RepositorySchema);
