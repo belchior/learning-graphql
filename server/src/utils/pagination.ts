@@ -1,10 +1,18 @@
 import { GraphQLError } from 'graphql';
 
+type TContext = {
+  [keyName: string]: string | number | boolean
+}
+interface IPaginationArgs extends TContext {
+  first?: number
+  last?: number
+  skip?: number
+}
 
 export const maxNumberOfItems = 50;
 export const minNumberOfItemsToSkip = 0;
 
-const validateArgs = args => {
+const validateArgs = (args: IPaginationArgs) => {
   if (args.first == undefined && args.last == undefined) {
     throw new GraphQLError('Missing pagination boundaries');
   }
@@ -20,7 +28,7 @@ const validateArgs = args => {
   }
 };
 
-export const paginationBoundaries = (args = {}) => {
+export const paginationBoundaries = (args: IPaginationArgs) => {
   validateArgs(args);
 
   let skip = args.skip || minNumberOfItemsToSkip;
@@ -35,7 +43,7 @@ export const paginationBoundaries = (args = {}) => {
   return { skip, limit, sort };
 };
 
-export const paginationArrays = (args = {}) => {
+export const paginationArrays = (args: IPaginationArgs) => {
   validateArgs(args);
 
   let limit = Math.min(args.first, maxNumberOfItems);

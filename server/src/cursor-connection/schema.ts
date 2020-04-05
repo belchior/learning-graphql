@@ -5,6 +5,7 @@ import {
   GraphQLBoolean,
   GraphQLString,
   GraphQLList,
+  GraphQLFieldConfigArgumentMap,
 } from 'graphql';
 
 
@@ -36,7 +37,7 @@ export const connectionType = Type => {
   return new GraphQLNonNull(ConnectionType);
 };
 
-export const connectionTypeArgs = () => ({
+export const connectionTypeArgs: () => GraphQLFieldConfigArgumentMap = () => ({
   after: { type: GraphQLString },
   before: { type: GraphQLString },
   first: { type: GraphQLInt },
