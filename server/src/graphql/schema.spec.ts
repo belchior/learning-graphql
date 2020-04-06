@@ -2,7 +2,6 @@ import graphqlHTTP from 'express-graphql';
 
 import { schema } from './schema';
 
-
 describe('schema', () => {
   it('should be parsable', () => {
     const resolver = {

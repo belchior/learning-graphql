@@ -4,7 +4,7 @@ import { handleError } from '../../utils/error-handler';
 import { Organization as OrganizationModel } from './model';
 
 
-const findOrganizationsByLogins = async logins => {
+const findOrganizationsByLogins = async (logins: string[]) => {
   const query = { login: { $in: logins } };
   return OrganizationModel
     .find(query)

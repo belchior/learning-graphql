@@ -11,7 +11,7 @@ interface ILanguage extends Document {
   color: string
   name: string
 }
-interface IRepositoryDocument extends Document {
+export interface IRepositoryDocument extends Document {
   description: string
   forkCount: number
   licenseInfo: ILicese,
@@ -20,9 +20,6 @@ interface IRepositoryDocument extends Document {
   primaryLanguage: ILanguage,
   url: string
   __typename: 'Repository'
-}
-interface IRepositoryModel extends Model<IRepositoryDocument> {
-  save: () => Promise<IRepositoryDocument>;
 }
 
 const LiceseSchema = new Schema({
@@ -49,4 +46,4 @@ export const RepositorySchema = new Schema(
 );
 
 
-export const Repository = model<IRepositoryDocument, IRepositoryModel>('repositories', RepositorySchema);
+export const Repository: Model<IRepositoryDocument> = model<IRepositoryDocument>('repositories', RepositorySchema);

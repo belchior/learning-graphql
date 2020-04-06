@@ -1,4 +1,5 @@
 import Dataloader from 'dataloader';
+import { Types } from 'mongoose';
 
 import { User as UserModel } from './model';
 import { handleError } from '../../utils/error-handler';
@@ -11,13 +12,13 @@ export const userProjection = {
   starredRepositories: 0
 };
 
-const getUsersByIds = async ids => {
+const getUsersByIds = async (ids: Types.ObjectId[]) => {
   const query = { _id: { $in: ids } };
   return UserModel
     .find(query, userProjection)
     .then(users => (
       ids.map(id => {
-        const user = users.find(user => user.id === id.toString());
+        const user = users.find(user => user._id === id);
         if (user) userByLoginLoader.prime(user.login, user);
         return user;
       })
@@ -25,17 +26,19 @@ const getUsersByIds = async ids => {
     .catch(handleError);
 };
 
-const getUsersByLogins = async logins => {
+const getUsersByLogins = async (logins: string[]) => {
   const query = { login: { $in: logins } };
   return UserModel
     .find(query, userProjection)
-    .then(users => (
-      logins.map(login => {
-        const user = users.find(user => user.login === login);
-        if (user) userByIdLoader.prime(user.id, user);
-        return user;
-      })
-    ))
+    .then(users => {
+      return (
+        logins.map(login => {
+          const user = users.find(user => user.login === login);
+          if (user) userByIdLoader.prime(user.id, user);
+          return user;
+        })
+      );
+    })
     .catch(handleError);
 };
 

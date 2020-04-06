@@ -1,8 +1,8 @@
-import { Document, model, Schema, Types } from 'mongoose';
+import { Document, model, Model, Schema } from 'mongoose';
 
 import { IDBRef } from '../../utils/interfaces';
 
-interface IOrganization extends Document {
+export interface IOrganizationDocument extends Document {
   avatarUrl: string
   description: string
   email: string
@@ -23,11 +23,15 @@ const OrganizationSchema = new Schema(
     location: { type: String, trim: true, maxlength: 120, minlength: 3 },
     login: { type: String, trim: true, required: true, unique: true, maxlength: 120, minlength: 3 },
     name: { type: String, trim: true, maxlength: 120, minlength: 3 },
-    people: [{ _id: Types.ObjectId, ref: String }],
+    people: [{ _id: Schema.Types.ObjectId, ref: String }],
     url: { type: String, trim: true, required: true, maxlength: 500, minlength: 5 },
     websiteUrl: { type: String, trim: true, maxlength: 500, minlength: 5 },
     __typename: { type: String, default: 'Organization' },
   },
   { timestamps: true }
 );
-export const Organization = model<IOrganization>('organizations', OrganizationSchema);
+
+export const Organization: Model<IOrganizationDocument> = model<IOrganizationDocument>(
+  'organizations',
+  OrganizationSchema
+);

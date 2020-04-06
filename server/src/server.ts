@@ -4,7 +4,7 @@ import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 
 import { DATABASE_URL, DEBUG, CLIENT_URL, NODE_ENV, SERVER_URL, PORT } from './enviroment';
-import { schema } from './schema';
+import { schema } from './graphql/schema';
 
 
 const app = express();

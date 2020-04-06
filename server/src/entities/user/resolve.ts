@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 import { Repository as RepositoryModel } from '../repository/model';
 import { User as UserModel } from './model';
@@ -9,6 +9,7 @@ import {
 } from '../../cursor-connection/referencePagination';
 import { handleError, handleNotFound } from '../../utils/error-handler';
 import { userByLoginLoader } from './loader';
+import { IPaginationArgs, IOwnerArgs, IInputArgs } from '../../cursor-connection/arguments';
 
 
 const handleInvalidId = fn => (...args) => {
@@ -26,7 +27,7 @@ const updateAttribute = async (Model, query, update, messageNotFound) => {
     .catch(handleError);
 };
 
-const paginatedQueryUserField = async (parent, args, fieldName, collectionName) => {
+const paginatedQueryUserField = async (parent, args: IPaginationArgs, fieldName: string, collectionName: string) => {
   const pagination = paginationArgs(args);
   const items = await UserModel.aggregate([
     { $match: { _id: parent._id } },
@@ -80,7 +81,7 @@ const paginatedQueryUserField = async (parent, args, fieldName, collectionName) 
 };
 
 export const User = {
-  followers: async (parent, args) => {
+  followers: async (parent: IOwnerArgs, args: IPaginationArgs) => {
     try {
       return paginatedQueryUserField(parent, args, 'followers', 'users');
     } catch (error) {
@@ -88,7 +89,7 @@ export const User = {
     }
   },
 
-  following: async (parent, args) => {
+  following: async (parent: IOwnerArgs, args: IPaginationArgs) => {
     try {
       return paginatedQueryUserField(parent, args, 'following', 'users');
     } catch (error) {
@@ -96,7 +97,7 @@ export const User = {
     }
   },
 
-  organizations: async (parent, args) => {
+  organizations: async (parent: IOwnerArgs, args: IPaginationArgs) => {
     try {
       return paginatedQueryUserField(parent, args, 'organizations', 'organizations');
     } catch (error) {
@@ -104,7 +105,7 @@ export const User = {
     }
   },
 
-  repositories: async (parent, args) => {
+  repositories: async (parent: IOwnerArgs, args: IPaginationArgs) => {
     try {
       const pagination = paginationArgs(args);
       const items = await RepositoryModel.aggregate([
@@ -126,7 +127,7 @@ export const User = {
       const firstItem = items[0];
       const lastItem = items[items.length -1];
 
-      const getStages = (operator, key) => ([
+      const getStages = (operator: string, key: Types.ObjectId) => ([
         { $match: {
           'owner.ref': 'users',
           'owner._id': parent._id,
@@ -149,7 +150,7 @@ export const User = {
     }
   },
 
-  starredRepositories: async (parent, args) => {
+  starredRepositories: async (parent: IOwnerArgs, args: IPaginationArgs) => {
     try {
       return paginatedQueryUserField(parent, args, 'starredRepositories', 'repositories');
     } catch (error) {
@@ -160,31 +161,31 @@ export const User = {
 
 
 export const Query = {
-  user: async (parent, args) => {
+  user: async (parent: IOwnerArgs, args: IOwnerArgs) => {
     return userByLoginLoader.load(args.login);
   },
 };
 
 
 export const Mutation = {
-  addUserFollower: handleInvalidId(async (parent, args) => {
+  addUserFollower: handleInvalidId(async (parent: IOwnerArgs, args: IInputArgs) => {
     const query = { _id: args.id };
     const update = { $addToSet: { followers: args.input } };
     return updateAttribute(UserModel, query, update, 'User not found');
   }),
 
-  createUser: async (parent, args) => {
+  createUser: async (parent: IOwnerArgs, args: IInputArgs) => {
     const user = new UserModel(args.input);
     return user.save().catch(handleError);
   },
 
-  removeUserFollower: handleInvalidId(async (parent, args) => {
+  removeUserFollower: handleInvalidId(async (parent: IOwnerArgs, args: IInputArgs) => {
     const query = { _id: args.id };
     const update = { $pull: { followers: { login: args.input } } };
     return updateAttribute(UserModel, query, update, 'User not found');
   }),
 
-  updateUserName: handleInvalidId(async (parent, args) => {
+  updateUserName: handleInvalidId(async (parent: IOwnerArgs, args: IInputArgs) => {
     const query = { _id: args.id };
     const update = { $set: { name: args.input } };
     return updateAttribute(UserModel, query, update, 'User not found');

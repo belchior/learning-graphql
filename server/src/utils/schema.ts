@@ -1,16 +1,9 @@
 import {
   GraphQLID,
   GraphQLInt,
-  GraphQLInterfaceType,
   GraphQLNonNull,
 } from 'graphql';
 
-export const NodeInterface = new GraphQLInterfaceType({
-  name: 'Node',
-  fields: {
-    id: { type: new GraphQLNonNull(GraphQLID) },
-  },
-});
 
 export const paginationArgs = () => ({
   first: { type: GraphQLInt },

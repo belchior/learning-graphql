@@ -12,7 +12,7 @@
     "Relay Modern",
     "React"
   ],
-  "main": "src/server.js",
+  "main": "build/server.js",
   "engines": {
     "node": "12.x"
   },
@@ -58,6 +58,10 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "node_modules",
+      "build"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 80,

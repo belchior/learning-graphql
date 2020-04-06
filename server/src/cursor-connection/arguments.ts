@@ -8,6 +8,13 @@ export interface IPaginationArgs extends TContext {
   last?: number
   skip?: number
 }
+export interface IOwnerArgs extends TContext {
+  login: string
+}
+export interface IInputArgs {
+  id: string
+  input: TContext
+}
 
 export const validateArgs = (callback: Function) => (args: IPaginationArgs) => {
   if (
