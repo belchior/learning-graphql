@@ -6,7 +6,7 @@ import {
   graphql,
 } from 'graphql';
 
-import { IPaginationArgs } from '../cursor-connection/arguments';
+import { IPaginationArgs } from './interfaces';
 import { Repository as RepositoryModel } from '../entities/repository/model';
 import { User as UserModel } from '../entities/user/model';
 import { mutationFields } from './mutations';
@@ -108,7 +108,6 @@ describe('createRepository', () => {
 
     const repo = { ...repositoryData };
     delete repo.__typename;
-    delete repo._id;
     delete repo.id;
     delete repo.owner;
 

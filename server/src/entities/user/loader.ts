@@ -12,13 +12,13 @@ export const userProjection = {
   starredRepositories: 0
 };
 
-const getUsersByIds = async (ids: Types.ObjectId[]) => {
-  const query = { _id: { $in: ids } };
+const getUsersByIds = async (ids: readonly Types.ObjectId[]) => {
+  const query: any = { _id: { $in: ids } };
   return UserModel
     .find(query, userProjection)
     .then(users => (
       ids.map(id => {
-        const user = users.find(user => user._id === id);
+        const user = users.find(user => user.id === id);
         if (user) userByLoginLoader.prime(user.login, user);
         return user;
       })
@@ -26,18 +26,16 @@ const getUsersByIds = async (ids: Types.ObjectId[]) => {
     .catch(handleError);
 };
 
-const getUsersByLogins = async (logins: string[]) => {
-  const query = { login: { $in: logins } };
+const getUsersByLogins = async (logins: readonly string[]) => {
+  const query: any = { login: { $in: logins } };
   return UserModel
     .find(query, userProjection)
     .then(users => {
-      return (
-        logins.map(login => {
-          const user = users.find(user => user.login === login);
-          if (user) userByIdLoader.prime(user.id, user);
-          return user;
-        })
-      );
+      return logins.map(login => {
+        const user = users.find(user => user.login === login);
+        if (user) userByIdLoader.prime(user.id, user);
+        return user;
+      });
     })
     .catch(handleError);
 };

@@ -1,20 +1,7 @@
 import { GraphQLError } from 'graphql';
 
-type TContext = {
-  [keyName: string]: string | number | boolean
-}
-export interface IPaginationArgs extends TContext {
-  first?: number
-  last?: number
-  skip?: number
-}
-export interface IOwnerArgs extends TContext {
-  login: string
-}
-export interface IInputArgs {
-  id: string
-  input: TContext
-}
+import { IPaginationArgs } from '../graphql/interfaces';
+
 
 export const validateArgs = (callback: Function) => (args: IPaginationArgs) => {
   if (
@@ -37,7 +24,7 @@ export const validateArgs = (callback: Function) => (args: IPaginationArgs) => {
   );
 
   const limit = args.first || args.last;
-  if (Number.isInteger(limit) === false || limit <= 0) throw new GraphQLError(
+  if (typeof limit !== 'number' || limit <= 0) throw new GraphQLError(
     'first and last must be a positive integer'
   );
 

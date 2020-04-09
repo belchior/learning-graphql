@@ -1,6 +1,6 @@
 import { Document, model, Model, Schema, Types } from 'mongoose';
 
-import { IDBRef } from '../../utils/interfaces';
+import { IDBRef } from '../interfaces';
 
 
 export interface IUserDocument extends Document {

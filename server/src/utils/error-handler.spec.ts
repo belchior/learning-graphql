@@ -29,7 +29,7 @@ describe('Error handlers', () => {
   describe('handleNotFound', () => {
     it('should return rejected promise when data is invalid or empty array', async () => {
       const message = 'not found';
-      let data = undefined;
+      let data: any = undefined;
       let promise = handleNotFound(message)(data);
       await expect(promise).rejects.toThrow(message);
 

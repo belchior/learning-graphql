@@ -1,6 +1,6 @@
 import { Document, model, Model, Schema } from 'mongoose';
 
-import { IDBRef } from '../../utils/interfaces';
+import { IDBRef } from '../interfaces';
 
 export interface IOrganizationDocument extends Document {
   avatarUrl: string

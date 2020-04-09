@@ -19,7 +19,7 @@ export const PageInfoType = new GraphQLObjectType({
   }),
 });
 
-export const connectionType = Type => {
+export const connectionType = (Type: GraphQLObjectType) => {
   const EdgeType = new GraphQLObjectType({
     name: `${Type.name}Edge`,
     fields: () => ({

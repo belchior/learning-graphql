@@ -43,7 +43,7 @@ describe('Query organization', () => {
     `;
     const expectedData = { data: {
       organization: {
-        id: organizationData.id
+        id: organizationData.id.toString()
       }
     } };
     const receivedData = await graphql(schema, query);
@@ -89,12 +89,15 @@ describe('Query organization', () => {
           }
         }
       `;
+      const login = organizationData.people && organizationData.people.length > 0
+        ? organizationData.people[0].login
+        : undefined;
       const expectedData = { data: {
         organization: {
           login: organizationData.login,
           people: {
             edges: [
-              { node: { login: organizationData.people[0].login } }
+              { node: { login } }
             ]
           },
         }
@@ -181,12 +184,15 @@ describe('Query organization', () => {
           }
         }
       `;
+      const name = organizationData.repositories && organizationData.repositories.length > 0
+        ? organizationData.repositories[0].name
+        : undefined;
       const expectedData = { data: {
         organization: {
           login: organizationData.login,
           repositories: {
             edges: [
-              { node: { name: organizationData.repositories[0].name } }
+              { node: { name } }
             ]
           },
         }
@@ -273,7 +279,7 @@ describe('Query profile', () => {
     `;
     const expectedData = { data: {
       profile: {
-        id: userData.id,
+        id: userData.id.toString(),
         __typename: userData.__typename
       }
     } };
@@ -296,7 +302,7 @@ describe('Query profile', () => {
     `;
     const expectedData = { data: {
       profile: {
-        id: organizationData.id,
+        id: organizationData.id.toString(),
         __typename: organizationData.__typename
       }
     } };
@@ -324,6 +330,7 @@ describe('Query profile', () => {
 
 describe('Query user', () => {
   beforeEach(() => {
+    (UserModel.find as jest.Mock).mockReset();
     (UserModel.aggregate as jest.Mock).mockReset();
     (RepositoryModel.aggregate as jest.Mock).mockReset();
   });
@@ -337,7 +344,7 @@ describe('Query user', () => {
         }
       }
     `;
-    const expectedData = { data: { user: { id: userData.id } } };
+    const expectedData = { data: { user: { id: userData.id.toString() } } };
     const receivedData = await graphql(schema, query);
 
     expect(receivedData).toEqual(expectedData);
@@ -380,12 +387,15 @@ describe('Query user', () => {
           }
         }
       `;
+      const name = userData.followers && userData.followers.length > 0
+        ? userData.followers[0].name
+        : undefined;
       const expectedData = { data: {
         user: {
           name: userData.name,
           followers: {
             edges: [
-              { node: { name: userData.followers[0].name } }
+              { node: { name } }
             ]
           },
         }
@@ -437,11 +447,14 @@ describe('Query user', () => {
           }
         }
       `;
+      const name = userData.following && userData.following.length > 0
+        ? userData.following[0].name
+        : undefined;
       const expectedData = { data: { user: {
         name: userData.name,
         following: {
           edges:[
-            { node: { name: userData.following[0].name } }
+            { node: { name } }
           ]
         },
       } } };
@@ -492,11 +505,14 @@ describe('Query user', () => {
           }
         }
       `;
+      const name = userData.organizations && userData.organizations.length > 0
+        ? userData.organizations[0].name
+        : undefined;
       const expectedData = { data: { user: {
         name: userData.name,
         organizations: {
           edges: [
-            { node: { name: userData.organizations[0].name } }
+            { node: { name } }
           ]
         },
       } } };
@@ -548,12 +564,15 @@ describe('Query user', () => {
           }
         }
       `;
+      const name = userData.repositories && userData.repositories.length > 0
+        ? userData.repositories[0].name
+        : undefined;
       const expectedData = { data: {
         user: {
           name: userData.name,
           repositories: {
             edges: [
-              { node: { name: userData.repositories[0].name } }
+              { node: { name } }
             ]
           },
         }
@@ -606,12 +625,15 @@ describe('Query user', () => {
           }
         }
       `;
+      const name = userData.starredRepositories && userData.starredRepositories.length > 0
+        ? userData.starredRepositories[0].name
+        : undefined;
       const expectedData = { data: {
         user: {
           name: userData.name,
           starredRepositories: {
             edges: [
-              { node: { name: userData.starredRepositories[0].name } }
+              { node: { name } }
             ]
           },
         }

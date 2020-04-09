@@ -1,7 +1,8 @@
-import mongoose from 'mongoose';
+import mongoose, { Types, Model as IModel, Document } from 'mongoose';
 
 import { base64ToString, stringToBase64 } from '../utils/converter';
 import { validateArgs } from './arguments';
+import { IPageInfo, IPaginationArgs, ICursorConnection } from '../graphql/interfaces';
 
 
 /*
@@ -25,40 +26,51 @@ import { validateArgs } from './arguments';
 */
 
 
-export const cursorToKey = cursor => mongoose.Types.ObjectId(base64ToString(cursor));
-export const keyToCursor = key => stringToBase64(key.toString());
+export interface IItemsToCursorConnectionConfig<T extends Document> {
+  Model: IModel<T>
+  args: IPaginationArgs
+  items: T[]
+  greaterThanStages: object[]
+  lessThanStages: object[]
+}
 
-const forwardPagination = args => ({
+export const cursorToKey = (cursor: string) => mongoose.Types.ObjectId(base64ToString(cursor));
+export const keyToCursor = (key: Types.ObjectId) => stringToBase64(key.toString());
+
+const forwardPagination = (args: IPaginationArgs) => ({
   limit: args.first,
   operator: '$gt',
   key: args.after ? cursorToKey(args.after) : undefined,
   sort: { _id: 1 },
 });
 
-const backwardPagination = args => ({
+const backwardPagination = (args: IPaginationArgs) => ({
   limit: args.last,
   operator: '$lt',
   key: args.before ? cursorToKey(args.before) : undefined,
   sort: { _id: -1 },
 });
 
-export const paginationArgs = validateArgs(args => {
+export const paginationArgs = validateArgs((args: IPaginationArgs) => {
   return args.first
     ? forwardPagination(args)
     : backwardPagination(args);
 });
 
-export const emptyCursorConnection = {
+export const emptyCursorConnection = <T>(): ICursorConnection<T> => ({
   edges: [],
   pageInfo: {
-    endCursor: '',
     hasPreviousPage: false,
     hasNextPage: false,
-    startCursor: '',
   }
-};
+});
 
-export const getPageInfo = async (Model, items, aggregationPrev, aggregationNext) => {
+export const getPageInfo = async (
+  Model: IModel<Document>,
+  items: Document[],
+  aggregationPrev: any[],
+  aggregationNext: any[]
+): Promise<IPageInfo> => {
   return Model
     .aggregate([
       { $facet: {
@@ -89,27 +101,25 @@ export const getPageInfo = async (Model, items, aggregationPrev, aggregationNext
       } }
     ])
     .then(([data]) => ({
-      endCursor: keyToCursor(items[items.length -1]._id),
+      endCursor: keyToCursor(items[items.length -1].id),
       hasNextPage: data.hasNextPage,
       hasPreviousPage: data.hasPreviousPage,
-      startCursor: keyToCursor(items[0]._id),
+      startCursor: keyToCursor(items[0].id),
     }));
 };
 
-export const itemsToCursorConnection = async cursorConnectionArgs => {
-  const { Model, args, items, greaterThanStages, lessThanStages } = cursorConnectionArgs;
+export const itemsToCursorConnection =
+  async <T extends Document>(config: IItemsToCursorConnectionConfig<T>): Promise<ICursorConnection<T>> => {
+    const { Model, args, items, greaterThanStages, lessThanStages } = config;
 
-  const pageInfo = args.first
-    ? await getPageInfo(Model, items, lessThanStages, greaterThanStages)
-    : await getPageInfo(Model, items, greaterThanStages, lessThanStages);
+    const pageInfo = args.first
+      ? await getPageInfo(Model, items, lessThanStages, greaterThanStages)
+      : await getPageInfo(Model, items, greaterThanStages, lessThanStages);
 
-  const cursorConnection = {
-    edges: items.map(value => ({
-      cursor: keyToCursor(value._id),
+    const edges = items.map(value => ({
+      cursor: keyToCursor(value.id),
       node: value,
-    })),
-    pageInfo,
-  };
+    }));
 
-  return cursorConnection;
-};
+    return { pageInfo, edges };
+  };

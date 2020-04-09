@@ -1,7 +1,7 @@
-import { Document, model, Model, Schema } from 'mongoose';
+import { Document, model, Model, Schema, Types } from 'mongoose';
 
 import { RepositoryOwnerSchema } from '../owner/model';
-import { IDBRef } from '../../utils/interfaces';
+import { IDBRef } from '../interfaces';
 
 
 interface ILicese extends Document {
@@ -12,12 +12,13 @@ interface ILanguage extends Document {
   name: string
 }
 export interface IRepositoryDocument extends Document {
+  id: Types.ObjectId
   description: string
   forkCount: number
-  licenseInfo: ILicese,
+  licenseInfo: ILicese
   name: string
   owner: IDBRef
-  primaryLanguage: ILanguage,
+  primaryLanguage: ILanguage
   url: string
   __typename: 'Repository'
 }

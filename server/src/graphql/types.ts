@@ -7,13 +7,18 @@ import {
   GraphQLInt,
   GraphQLInterfaceType,
 } from 'graphql';
+import { Document } from 'mongoose';
 
 import * as organizationResolve from '../entities/organization/resolve';
 import * as repositoryResolve from '../entities/repository/resolve';
 import * as userResolve from '../entities/user/resolve';
-import { connectionType, connectionTypeArgs } from '../cursor-connection/schema';
-import { idType } from '../utils/schema';
+import { connectionType, connectionTypeArgs } from '../cursor-connection/types';
 
+
+export const idType = () => ({
+  type: new GraphQLNonNull(GraphQLID),
+  resolve: (obj: Document) => obj.id,
+});
 
 const NodeInterface = new GraphQLInterfaceType({
   name: 'Node',
@@ -37,7 +42,7 @@ export const ProfileOwnerInterface = new GraphQLInterfaceType({
   },
 });
 
-export const RepositoryOwnerInterface = new GraphQLInterfaceType({
+export const RepositoryOwnerInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'RepositoryOwner',
   fields: () => ({
     avatarUrl: { type: new GraphQLNonNull(GraphQLString) },
@@ -55,7 +60,7 @@ export const RepositoryOwnerInterface = new GraphQLInterfaceType({
   },
 });
 
-export const UserType = new GraphQLObjectType({
+export const UserType: GraphQLObjectType = new GraphQLObjectType({
   interfaces: [NodeInterface, ProfileOwnerInterface, RepositoryOwnerInterface],
   name: 'User',
   fields: () => ({
@@ -185,7 +190,7 @@ export const RepositoryInputType = new GraphQLInputObjectType({
   }),
 });
 
-export const OrganizationType = new GraphQLObjectType({
+export const OrganizationType: GraphQLObjectType = new GraphQLObjectType({
   interfaces: [NodeInterface, ProfileOwnerInterface, RepositoryOwnerInterface],
   name: 'Organization',
   fields: () => ({

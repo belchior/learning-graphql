@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 
-import { validateArgs, IPaginationArgs } from './arguments';
+import { IPaginationArgs } from '../graphql/interfaces';
+import { validateArgs } from './arguments';
 
 
 describe('connection arguments', () => {
