@@ -3,13 +3,16 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 
-import { DATABASE_URL, DEBUG, CLIENT_URL, NODE_ENV, SERVER_URL, PORT } from './enviroment';
+import { DATABASE_URL, CLIENT_URL, SERVER_URL, PORT, NODE_ENV } from './enviroment';
 import { schema } from './graphql/schema';
+import { debugGraphqlQuery, debugValues } from './utils/debug';
 
-
+const debug = debugValues();
 const app = express();
 
 const startServer = () => {
+  if (NODE_ENV === 'development' && debug.query) debugGraphqlQuery(app);
+
   app.use(cors({ origin: CLIENT_URL }));
   app.use('/graphql', graphqlHTTP({
     schema: schema,
@@ -31,7 +34,7 @@ const connectionOptions = {
   useUnifiedTopology: true,
 };
 
-mongoose.set('debug', DEBUG === 'db' || DEBUG === '*');
+mongoose.set('debug', debug.db);
 mongoose.connect(DATABASE_URL, connectionOptions);
 mongoose.connection.once('open', startServer);
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
