@@ -10,7 +10,7 @@ import {
   paginationArgs,
 } from '../../cursor-connection/referencePagination';
 import { handleError, handleNotFound } from '../../utils/error-handler';
-import { userByLoginLoader } from './loader';
+import { findUserByLogin } from './loader';
 
 
 interface IUpdateAttributeConfig {
@@ -20,7 +20,7 @@ interface IUpdateAttributeConfig {
   messageNotFound: string
 }
 interface IPaginatedQueryUserFieldConfig {
-  parent: IUserOutput
+  parent: IUserDocument
   args: IPaginationArgs
   fieldName: string
   collectionName: string
@@ -46,7 +46,7 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
   const { parent, args, fieldName, collectionName } = config;
   const pagination = paginationArgs(args);
   const items = await UserModel.aggregate([
-    { $match: { _id: parent.id } },
+    { $match: { _id: parent._id } },
     { $unwind: `$${fieldName}` },
     { $project: { _id: `$${fieldName}._id`, } },
     { $sort: pagination.sort },
@@ -75,7 +75,7 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
   const lastItem = items[items.length -1];
 
   const getQuery = (operator: string, key: Types.ObjectId) => ([
-    { $match: { _id: parent.id } },
+    { $match: { _id: parent._id } },
     { $project: { [fieldName]: 1 } },
     { $unwind: `$${fieldName}` },
     { $project: { _id: `$${fieldName}._id`, } },
@@ -83,8 +83,8 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
     { $match: { _id: { [operator]: key } } },
   ]);
 
-  const greaterThanStages = getQuery('$gt', lastItem.id);
-  const lessThanStages = getQuery('$lt', firstItem.id);
+  const greaterThanStages = getQuery('$gt', lastItem._id);
+  const lessThanStages = getQuery('$lt', firstItem._id);
 
   const cursorConnectionArgs = {
     Model: UserModel,
@@ -99,7 +99,7 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
 };
 
 export const User = {
-  followers: async (parent: IUserOutput, args: IPaginationArgs) => {
+  followers: async (parent: IUserDocument, args: IPaginationArgs) => {
     try {
       const config = { parent, args, fieldName: 'followers', collectionName: 'users' };
       return paginatedQueryUserField<IUserDocument>(config);
@@ -108,7 +108,7 @@ export const User = {
     }
   },
 
-  following: async (parent: IUserOutput, args: IPaginationArgs) => {
+  following: async (parent: IUserDocument, args: IPaginationArgs) => {
     try {
       const config = { parent, args, fieldName: 'following', collectionName: 'users' };
       return paginatedQueryUserField<IUserDocument>(config);
@@ -117,7 +117,7 @@ export const User = {
     }
   },
 
-  organizations: async (parent: IUserOutput, args: IPaginationArgs) => {
+  organizations: async (parent: IUserDocument, args: IPaginationArgs) => {
     try {
       const config = { parent, args, fieldName: 'organizations', collectionName: 'organizations' };
       return paginatedQueryUserField<IOrganizationDocument>(config);
@@ -126,13 +126,13 @@ export const User = {
     }
   },
 
-  repositories: async (parent: IUserOutput, args: IPaginationArgs) => {
+  repositories: async (parent: IUserDocument, args: IPaginationArgs) => {
     try {
       const pagination = paginationArgs(args);
-      const items = await RepositoryModel.aggregate([
+      const items = await RepositoryModel.aggregate<IRepositoryDocument>([
         { $match: {
           'owner.ref': 'users',
-          'owner._id': parent.id,
+          'owner._id': parent._id,
           ...(pagination.key
             ? { _id: { [pagination.operator]: pagination.key } }
             : {}
@@ -151,12 +151,12 @@ export const User = {
       const getStages = (operator: string, key: Types.ObjectId) => ([
         { $match: {
           'owner.ref': 'users',
-          'owner._id': parent.id,
+          'owner._id': parent._id,
           _id: { [operator]: key },
         } }
       ]);
-      const greaterThanStages = getStages('$gt', lastItem.id);
-      const lessThanStages = getStages('$lt', firstItem.id);
+      const greaterThanStages = getStages('$gt', lastItem._id);
+      const lessThanStages = getStages('$lt', firstItem._id);
 
       const cursorConnectionArgs = {
         Model: RepositoryModel,
@@ -171,7 +171,7 @@ export const User = {
     }
   },
 
-  starredRepositories: async (parent: IUserOutput, args: IPaginationArgs) => {
+  starredRepositories: async (parent: IUserDocument, args: IPaginationArgs) => {
     try {
       const config = { parent, args, fieldName: 'starredRepositories', collectionName: 'repositories' };
       return paginatedQueryUserField<IRepositoryDocument>(config);
@@ -184,7 +184,7 @@ export const User = {
 
 export const Query = {
   user: async (parent: any, args: TArgs) => {
-    return userByLoginLoader.load(args.login);
+    return findUserByLogin.load(args.login);
   },
 };
 

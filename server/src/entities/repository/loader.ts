@@ -10,7 +10,7 @@ import { IRepositoryOutput } from '../../graphql/interfaces';
 
 const unserializeOwners = (serializedOwners: readonly string[]) => serializedOwners.map(item => JSON.parse(item));
 
-const getRepositoryOwner = async (serializedOwners: readonly string[]): Promise<IRepositoryOutput[]> => {
+const findRepositoriesOwners = async (serializedOwners: readonly string[]): Promise<IRepositoryOutput[]> => {
   const owners: IDBRef[] = unserializeOwners(serializedOwners);
 
   const ids: { [key: string]: Types.ObjectId[] } = {
@@ -35,4 +35,4 @@ const getRepositoryOwner = async (serializedOwners: readonly string[]): Promise<
     .catch(handleError);
 };
 
-export const repositoryOwnerLoader = new Dataloader(getRepositoryOwner);
+export const findRepositoryOwner = new Dataloader(findRepositoriesOwners);

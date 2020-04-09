@@ -17,7 +17,7 @@ import { connectionType, connectionTypeArgs } from '../cursor-connection/types';
 
 export const idType = () => ({
   type: new GraphQLNonNull(GraphQLID),
-  resolve: (obj: Document) => obj.id,
+  resolve: (obj: Document) => obj._id.toString(),
 });
 
 const NodeInterface = new GraphQLInterfaceType({

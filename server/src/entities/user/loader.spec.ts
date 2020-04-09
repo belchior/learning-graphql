@@ -1,26 +1,26 @@
 
-import { userByIdLoader, userByLoginLoader, userProjection } from './loader';
+import { findUserById, findUserByLogin, userProjection } from './loader';
 import { User as UserModel } from './model';
 import { userData, ownerDataUser } from '../../utils/mockData';
 
 jest.mock('./model');
 
 
-describe('userByIdLoader', () => {
+describe('findUserById', () => {
   it('should return user that math with the provided id', async () => {
     (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData, ownerDataUser]));
-    const id = userData.id;
-    const userPromise = userByIdLoader.load(id);
+    const id = userData._id;
+    const userPromise = findUserById.load(id);
 
     await expect(userPromise).resolves.toBe(userData);
   });
 });
 
-describe('userByLoginLoader', () => {
+describe('findUserByLogin', () => {
   it('should return user that math with the provided login', async () => {
     (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData, ownerDataUser]));
     const login = userData.login;
-    const userPromise = userByLoginLoader.load(login);
+    const userPromise = findUserByLogin.load(login);
 
     await expect(userPromise).resolves.toBe(userData);
   });

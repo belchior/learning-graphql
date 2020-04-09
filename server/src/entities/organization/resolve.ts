@@ -10,13 +10,13 @@ import {
 import { findOrganizationByLogin } from './loader';
 import { handleError } from '../../utils/error-handler';
 import { userProjection } from '../user/loader';
-import { IPaginationArgs, IOrganizationOutput, TArgs } from '../../graphql/interfaces';
+import { IPaginationArgs, TArgs } from '../../graphql/interfaces';
 
 export const Organization = {
-  people: async (parent: IOrganizationOutput, args: IPaginationArgs) => {
+  people: async (parent: IOrganizationDocument, args: IPaginationArgs) => {
     const pagination = paginationArgs(args);
-    const items = await OrganizationModel.aggregate([
-      { $match: { _id: parent.id } },
+    const items = await OrganizationModel.aggregate<IOrganizationDocument>([
+      { $match: { _id: parent._id } },
       { $unwind: '$people' },
       { $project: { _id: '$people._id', } },
       { $sort: pagination.sort },
@@ -46,7 +46,7 @@ export const Organization = {
     const lastItem = items[items.length -1];
 
     const getQuery = (operator: string, key: Types.ObjectId) => ([
-      { $match: { _id: parent.id } },
+      { $match: { _id: parent._id } },
       { $project: { people: 1 } },
       { $unwind: '$people' },
       { $project: { _id: '$people._id', } },
@@ -54,8 +54,8 @@ export const Organization = {
       { $match: { _id: { [operator]: key } } },
     ]);
 
-    const greaterThanStages = getQuery('$gt', lastItem.id);
-    const lessThanStages = getQuery('$lt', firstItem.id);
+    const greaterThanStages = getQuery('$gt', lastItem._id);
+    const lessThanStages = getQuery('$lt', firstItem._id);
 
     const cursorConnectionArgs = {
       Model: OrganizationModel,
@@ -67,13 +67,13 @@ export const Organization = {
     return itemsToCursorConnection<IOrganizationDocument>(cursorConnectionArgs);
   },
 
-  repositories: async (parent: IOrganizationOutput, args: IPaginationArgs) => {
+  repositories: async (parent: IOrganizationDocument, args: IPaginationArgs) => {
     try {
       const pagination = paginationArgs(args);
-      const items = await RepositoryModel.aggregate([
+      const items = await RepositoryModel.aggregate<IRepositoryDocument>([
         { $match: {
           'owner.ref': 'organizations',
-          'owner._id': parent.id,
+          'owner._id': parent._id,
           ...(pagination.key
             ? { _id: { [pagination.operator]: pagination.key } }
             : {}
@@ -92,12 +92,12 @@ export const Organization = {
       const getStages = (operator: string, key: Types.ObjectId) => ([
         { $match: {
           'owner.ref': 'organizations',
-          'owner._id': parent.id,
+          'owner._id': parent._id,
           _id: { [operator]: key },
         } }
       ]);
-      const greaterThanStages = getStages('$gt', lastItem.id);
-      const lessThanStages = getStages('$lt', firstItem.id);
+      const greaterThanStages = getStages('$gt', lastItem._id);
+      const lessThanStages = getStages('$lt', firstItem._id);
 
       const cursorConnectionArgs = {
         Model: RepositoryModel,

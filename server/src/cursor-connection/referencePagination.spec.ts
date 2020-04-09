@@ -7,7 +7,7 @@ import {
   keyToCursor,
   paginationArgs,
 } from './referencePagination';
-import { IPaginationArgs, IUserOutput, IPageInfo } from '../graphql/interfaces';
+import { IPaginationArgs, IPageInfo } from '../graphql/interfaces';
 import { User as UserModel } from '../entities/user/model';
 import { userData } from '../utils/mockData';
 
@@ -116,7 +116,7 @@ describe('itemsToCursorConnection', () => {
     (UserModel.aggregate as jest.Mock).mockImplementation(() => Promise.resolve([pageInfo]));
 
     const args: IPaginationArgs = { first: 10 };
-    const items: IUserOutput[] = [userData];
+    const items = [userData];
     const greaterThanStages = [{ $match: { _id: { $gt: '5e5580d6f72291487ec648ce' } } }];
     const lessThanStages = [{ $match: { _id: { $lt: '5e5580d6f72291487ec648ce' } } }];
     const config = {
@@ -148,7 +148,7 @@ describe('itemsToCursorConnection', () => {
     };
     (UserModel.aggregate as jest.Mock).mockImplementation(() => Promise.resolve([pageInfo]));
     const args: IPaginationArgs = { last: 10 };
-    const items: IUserOutput[] = [userData];
+    const items = [userData];
     const greaterThanStages = [{ $match: { _id: { $gt: '5e5580d6f72291487ec648cf' } } }];
     const lessThanStages = [{ $match: { _id: { $lt: '5e5580d6f72291487ec648cf' } } }];
     const config = {

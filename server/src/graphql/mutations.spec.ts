@@ -108,7 +108,7 @@ describe('createRepository', () => {
 
     const repo = { ...repositoryData };
     delete repo.__typename;
-    delete repo.id;
+    delete repo._id;
     delete repo.owner;
 
     const query = `

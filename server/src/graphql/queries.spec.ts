@@ -43,7 +43,7 @@ describe('Query organization', () => {
     `;
     const expectedData = { data: {
       organization: {
-        id: organizationData.id.toString()
+        id: organizationData._id.toString()
       }
     } };
     const receivedData = await graphql(schema, query);
@@ -279,7 +279,7 @@ describe('Query profile', () => {
     `;
     const expectedData = { data: {
       profile: {
-        id: userData.id.toString(),
+        id: userData._id.toString(),
         __typename: userData.__typename
       }
     } };
@@ -302,7 +302,7 @@ describe('Query profile', () => {
     `;
     const expectedData = { data: {
       profile: {
-        id: organizationData.id.toString(),
+        id: organizationData._id.toString(),
         __typename: organizationData.__typename
       }
     } };
@@ -344,7 +344,7 @@ describe('Query user', () => {
         }
       }
     `;
-    const expectedData = { data: { user: { id: userData.id.toString() } } };
+    const expectedData = { data: { user: { id: userData._id.toString() } } };
     const receivedData = await graphql(schema, query);
 
     expect(receivedData).toEqual(expectedData);

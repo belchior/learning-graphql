@@ -101,10 +101,10 @@ export const getPageInfo = async (
       } }
     ])
     .then(([data]) => ({
-      endCursor: keyToCursor(items[items.length -1].id),
+      endCursor: keyToCursor(items[items.length -1]._id),
       hasNextPage: data.hasNextPage,
       hasPreviousPage: data.hasPreviousPage,
-      startCursor: keyToCursor(items[0].id),
+      startCursor: keyToCursor(items[0]._id),
     }));
 };
 
@@ -117,7 +117,7 @@ export const itemsToCursorConnection =
       : await getPageInfo(Model, items, greaterThanStages, lessThanStages);
 
     const edges = items.map(value => ({
-      cursor: keyToCursor(value.id),
+      cursor: keyToCursor(value._id),
       node: value,
     }));
 
