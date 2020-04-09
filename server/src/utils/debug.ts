@@ -48,7 +48,7 @@ const toObject = (list: string[], predicate: TPredicate) => {
   }, {});
 };
 
-const debugOptions = ['*', 'db', 'graphiql', 'query'];
+const debugOptions = ['*', 'db', 'query'];
 
 export const debugValues = () => {
   const debugValues = intersection(debugOptions, (DEBUG || '').split(/[,\s]+/));
