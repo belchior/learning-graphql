@@ -17,7 +17,7 @@ module.exports = {
   'parser': '@typescript-eslint/parser',
   'parserOptions': {
     'ecmaVersion': 2018,
-    'sourceType': 'module'
+    'sourceType': 'module',
   },
   'plugins': [
     '@typescript-eslint',
@@ -35,6 +35,6 @@ module.exports = {
       "vars": "all",
       "args": "after-used",
       "ignoreRestSiblings": false
-    }]
+    }],
   }
 };

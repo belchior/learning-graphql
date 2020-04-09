@@ -1,0 +1,9 @@
+{
+  "eslint.workingDirectories": [
+    "./client",
+    "./server"
+  ],
+  "files.exclude": {
+    "**/__generated__": true
+  }
+}

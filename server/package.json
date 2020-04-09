@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "description": "",
+  "description": "server",
   "version": "0.1.0",
   "author": "Belchior Oliveira",
   "license": "MIT",
@@ -17,10 +17,10 @@
     "node": "12.x"
   },
   "scripts": {
-    "build": "tsc",
-    "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts}'",
+    "build": "tsc --project tsconfig.prod.json",
+    "lint": "tsc --noEmit && eslint 'src/**/*.ts'",
     "start": "node build/server.js",
-    "start:ts": "nodemon -r ts-node/register src/server.ts",
+    "start:ts": "nodemon",
     "start:debug": "cross-env DEBUG='*' npm run start:ts",
     "test": "jest --watch",
     "test:ci": "jest --coverage --ci",
@@ -56,12 +56,9 @@
     "@types/node": "^13.11.0"
   },
   "jest": {
+    "rootDir": "src",
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "testPathIgnorePatterns": [
-      "node_modules",
-      "build"
-    ],
     "coverageThreshold": {
       "global": {
         "branches": 80,
@@ -72,9 +69,13 @@
     }
   },
   "nodemonConfig": {
-    "watch": ["src"],
+    "watch": [
+      "src"
+    ],
     "ext": "ts",
-    "ignore": ["src/**/*.spec.ts"],
+    "ignore": [
+      "src/**/*.spec.ts"
+    ],
     "exec": "ts-node ./src/server.ts"
   }
 }
