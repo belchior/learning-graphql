@@ -3,9 +3,11 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 
+import * as pkg from '../package.json';
 import { DATABASE_URL, CLIENT_URL, SERVER_URL, PORT, NODE_ENV } from './enviroment';
-import { schema } from './graphql/schema';
 import { debugGraphqlQuery, debugValues } from './utils/debug';
+import { schema } from './graphql/schema';
+
 
 const debug = debugValues();
 const app = express();
@@ -19,7 +21,7 @@ const startServer = () => {
     graphiql: NODE_ENV === 'development',
   }));
   app.use('/', (req, res) => {
-    res.json({ status: 'running' });
+    res.json({ status: 'running', version: pkg.version });
   });
   app.listen(PORT, () => {
     console.log(`Running a GraphQL API server at ${SERVER_URL}/graphql`);
