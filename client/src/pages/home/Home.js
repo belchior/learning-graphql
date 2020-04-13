@@ -21,7 +21,7 @@ const Home = props => {
         Hi <span role="img" aria-label="hi">👋</span> friend!
       </Title>
       <Typography>
-        This app will be better if you choose an user.
+        This app will be better if you choose a user.
         Try <Anchor href="/belchior">belchior</Anchor>
       </Typography>
     </main>

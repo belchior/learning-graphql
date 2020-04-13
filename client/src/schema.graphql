@@ -1,36 +1,7 @@
-input FollowerInput {
-  id: ID
-  login: String
-}
-
-type Language {
-  color: String
-  name: String
-}
-
-input LanguageInput {
-  color: String
-  name: String
-}
-
-type License {
-  name: String
-}
-
-input LicenseInput {
-  name: String
-}
-
-type Mutation {
-  createRepository(input: RepositoryInput!): Repository
-  addUserFollower(id: ID!, input: FollowerInput!): User
-  createUser(input: UserInput!): User
-  removeUserFollower(id: ID!): User
-  updateUserName(id: ID!, input: String!): User
-}
-
-interface Node {
-  id: ID!
+type Query {
+  organization(login: String!): Organization
+  profile(login: String!): ProfileOwner
+  user(login: String!): User
 }
 
 type Organization implements Node & ProfileOwner & RepositoryOwner {
@@ -47,63 +18,13 @@ type Organization implements Node & ProfileOwner & RepositoryOwner {
   websiteUrl: String
 }
 
-type OrganizationConnection {
-  edges: [OrganizationEdge]!
-  pageInfo: PageInfo!
-}
-
-type OrganizationEdge {
-  cursor: String!
-  node: Organization
-}
-
-type PageInfo {
-  endCursor: String!
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String!
+interface Node {
+  id: ID!
 }
 
 interface ProfileOwner {
   id: ID!
   login: String!
-}
-
-type Query {
-  organization(login: String!): Organization
-  profile(login: String!): ProfileOwner
-  user(login: String!): User
-}
-
-type Repository implements Node {
-  description: String
-  forkCount: Int
-  id: ID!
-  licenseInfo: License
-  name: String!
-  owner: RepositoryOwner!
-  primaryLanguage: Language
-  url: String!
-}
-
-type RepositoryConnection {
-  edges: [RepositoryEdge]!
-  pageInfo: PageInfo!
-}
-
-type RepositoryEdge {
-  cursor: String!
-  node: Repository
-}
-
-input RepositoryInput {
-  description: String
-  forkCount: Int
-  licenseInfo: LicenseInput
-  name: String
-  ownerLogin: String
-  primaryLanguage: LanguageInput
-  url: String
 }
 
 interface RepositoryOwner {
@@ -112,6 +33,16 @@ interface RepositoryOwner {
   login: String!
   name: String
   url: String!
+}
+
+type UserConnection {
+  edges: [UserEdge]!
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  cursor: String!
+  node: User
 }
 
 type User implements Node & ProfileOwner & RepositoryOwner {
@@ -132,14 +63,83 @@ type User implements Node & ProfileOwner & RepositoryOwner {
   websiteUrl: String
 }
 
-type UserConnection {
-  edges: [UserEdge]!
+type OrganizationConnection {
+  edges: [OrganizationEdge]!
   pageInfo: PageInfo!
 }
 
-type UserEdge {
+type OrganizationEdge {
   cursor: String!
-  node: User
+  node: Organization
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type RepositoryConnection {
+  edges: [RepositoryEdge]!
+  pageInfo: PageInfo!
+}
+
+type RepositoryEdge {
+  cursor: String!
+  node: Repository
+}
+
+type Repository implements Node {
+  description: String
+  forkCount: Int
+  id: ID!
+  licenseInfo: License
+  name: String!
+  owner: RepositoryOwner!
+  primaryLanguage: Language
+  url: String!
+}
+
+type License {
+  name: String
+}
+
+type Language {
+  color: String
+  name: String
+}
+
+type Mutation {
+  addUserFollower(id: ID!, input: FollowerInput!): User
+  createRepository(input: RepositoryInput!): Repository
+  createUser(input: UserInput!): User
+  removeUserFollower(id: ID!): User
+  updateUserName(id: ID!, input: String!): User
+}
+
+input FollowerInput {
+  id: ID
+  login: String
+}
+
+input RepositoryInput {
+  description: String
+  forkCount: Int
+  licenseInfo: LicenseInput
+  name: String
+  ownerLogin: String
+  primaryLanguage: LanguageInput
+  url: String
+}
+
+input LicenseInput {
+  name: String
+}
+
+input LanguageInput {
+  color: String
+  name: String
 }
 
 input UserInput {
