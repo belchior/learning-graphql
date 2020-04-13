@@ -1,7 +1,7 @@
 import { writeFileSync } from 'fs';
 import { printSchema } from 'graphql';
 
-import { schema } from '../src/schema';
+import { schema } from '../src/graphql/schema';
 
 
 const filePath = typeof process.argv[2] === 'string'

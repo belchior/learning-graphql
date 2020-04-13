@@ -12,7 +12,6 @@ module.exports = {
   'globals': {
     'Atomics': 'readonly',
     'SharedArrayBuffer': 'readonly',
-    'SharedArrayBuffer': 'readonly',
   },
   'parser': '@typescript-eslint/parser',
   'parserOptions': {
@@ -24,17 +23,17 @@ module.exports = {
     'jest',
   ],
   'rules': {
-    'indent': ["error", 2, { SwitchCase: 1 }],
+    'indent': ['error', 2, { SwitchCase: 1 }],
     'linebreak-style': [ 'error', 'unix' ],
     'max-len': ['error', { code: 120, ignoreComments: true }],
     'object-curly-spacing': [ 'error', 'always' ],
     'quotes': [ 'error', 'single' ],
     'semi': [ 'error', 'always' ],
     'no-unused-vars': 'off',
-    "@typescript-eslint/no-unused-vars": ["error", {
-      "vars": "all",
-      "args": "after-used",
-      "ignoreRestSiblings": false
+    '@typescript-eslint/no-unused-vars': ['error', {
+      'vars': 'all',
+      'args': 'after-used',
+      'ignoreRestSiblings': false
     }],
   }
 };

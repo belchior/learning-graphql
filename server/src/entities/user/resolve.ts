@@ -2,15 +2,11 @@ import mongoose, { Types, Model as IModel, Document } from 'mongoose';
 
 import { IOrganizationDocument } from '../organization/model';
 import { IPaginationArgs, IUserOutput, TArgs } from '../../graphql/interfaces';
-import { Repository as RepositoryModel, IRepositoryDocument } from '../repository/model';
-import { User as UserModel, IUserDocument } from './model';
-import {
-  emptyCursorConnection,
-  itemsToCursorConnection,
-  paginationArgs,
-} from '../../cursor-connection/referencePagination';
-import { handleError, handleNotFound } from '../../utils/error-handler';
+import { IRepositoryDocument, Repository as RepositoryModel } from '../repository/model';
+import { IUserDocument, User as UserModel } from './model';
 import { findUserByLogin } from './loader';
+import { handleError, handleNotFound } from '../../utils/error-handler';
+import { paginationArgs, getCursorPagination, } from '../../cursor-connection/referencePagination';
 
 
 interface IUpdateAttributeConfig {
@@ -26,12 +22,11 @@ interface IPaginatedQueryUserFieldConfig {
   collectionName: string
 }
 
-const handleInvalidId =
-  (fn: (p: IUserOutput, a: any) => Promise<unknown>) => (...args: [IUserOutput, any]) => {
-    return mongoose.Types.ObjectId.isValid(args[1].id)
-      ? fn(...args)
-      : handleError(new Error(`Invalid args.: ${args[1].id}`));
-  };
+const handleInvalidId = (fn: (p: IUserOutput, a: any) => Promise<unknown>) => (...args: [IUserOutput, any]) => {
+  return mongoose.Types.ObjectId.isValid(args[1].id)
+    ? fn(...args)
+    : handleError(new Error(`Invalid args.: ${args[1].id}`));
+};
 
 const updateAttribute = async (config: IUpdateAttributeConfig) => {
   const { Model, query, update, messageNotFound } = config;
@@ -45,7 +40,7 @@ const updateAttribute = async (config: IUpdateAttributeConfig) => {
 const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQueryUserFieldConfig) => {
   const { parent, args, fieldName, collectionName } = config;
   const pagination = paginationArgs(args);
-  const items = await UserModel.aggregate([
+  const itemsPipeline = [
     { $match: { _id: parent._id } },
     { $unwind: `$${fieldName}` },
     { $project: { _id: `$${fieldName}._id`, } },
@@ -67,14 +62,8 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
         $arrayElemAt: [ '$item', 0 ]
       }
     } },
-  ]);
-
-  if (items.length === 0) return emptyCursorConnection<T>();
-
-  const firstItem = items[0];
-  const lastItem = items[items.length -1];
-
-  const getQuery = (operator: string, key: Types.ObjectId) => ([
+  ];
+  const getPageInfoStage = (operator: string, key: Types.ObjectId) => ([
     { $match: { _id: parent._id } },
     { $project: { [fieldName]: 1 } },
     { $unwind: `$${fieldName}` },
@@ -83,19 +72,11 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
     { $match: { _id: { [operator]: key } } },
   ]);
 
-  const greaterThanStages = getQuery('$gt', lastItem._id);
-  const lessThanStages = getQuery('$lt', firstItem._id);
-
-  const cursorConnectionArgs = {
+  return getCursorPagination<T>({
     Model: UserModel,
-    greaterThanStages,
-    lessThanStages,
-    args,
-    items,
-  };
-
-  // @ts-ignore
-  return itemsToCursorConnection<T>(cursorConnectionArgs);
+    getPageInfoStage,
+    itemsPipeline,
+  });
 };
 
 export const User = {
@@ -129,7 +110,7 @@ export const User = {
   repositories: async (parent: IUserDocument, args: IPaginationArgs) => {
     try {
       const pagination = paginationArgs(args);
-      const items = await RepositoryModel.aggregate<IRepositoryDocument>([
+      const itemsPipeline = [
         { $match: {
           'owner.ref': 'users',
           'owner._id': parent._id,
@@ -141,31 +122,20 @@ export const User = {
         { $sort : pagination.sort },
         { $limit : pagination.limit },
         { $sort : { _id: 1 } },
-      ]);
-
-      if (items.length === 0) return emptyCursorConnection<IRepositoryDocument>();
-
-      const firstItem = items[0];
-      const lastItem = items[items.length -1];
-
-      const getStages = (operator: string, key: Types.ObjectId) => ([
+      ];
+      const getPageInfoStage = (operator: string, key: Types.ObjectId) => ([
         { $match: {
           'owner.ref': 'users',
           'owner._id': parent._id,
           _id: { [operator]: key },
         } }
       ]);
-      const greaterThanStages = getStages('$gt', lastItem._id);
-      const lessThanStages = getStages('$lt', firstItem._id);
 
-      const cursorConnectionArgs = {
+      return getCursorPagination<IRepositoryDocument>({
         Model: RepositoryModel,
-        greaterThanStages,
-        lessThanStages,
-        args,
-        items,
-      };
-      return itemsToCursorConnection<IRepositoryDocument>(cursorConnectionArgs);
+        getPageInfoStage,
+        itemsPipeline,
+      });
     } catch (error) {
       return handleError(error);
     }

@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 /*
   Pagination
 */
-interface IEdge<T> {
+export interface IEdge<T> {
   cursor: string
   node: T
 }

@@ -1,7 +1,7 @@
-import { Query as userQuery } from '../user/resolve';
 import { Query as organizationQuery } from '../organization/resolve';
-import { handleError } from '../../utils/error-handler';
+import { Query as userQuery } from '../user/resolve';
 import { TArgs } from '../../graphql/interfaces';
+import { handleError } from '../../utils/error-handler';
 
 
 export const Query = {
