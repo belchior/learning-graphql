@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "author": "Belchior Oliveira",
   "license": "MIT",
-  "main": "build/server.js",
   "engines": {
     "node": "12.x"
   },
+  "main": "build/server.js",
   "scripts": {
     "build": "tsc --project tsconfig.prod.json",
     "lint": "tsc --noEmit && eslint 'src/**/*.ts'",
