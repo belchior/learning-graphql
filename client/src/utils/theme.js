@@ -25,9 +25,9 @@ export const theme = createMuiTheme({
         lineHeight: '3rem'
       },
       h2: {
-        fontSize: '1.5rem',
+        fontSize: '1.4rem',
         fontWeight: 400,
-        lineHeight: '2rem'
+        lineHeight: '1.8rem'
       },
     },
   }

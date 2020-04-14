@@ -10,6 +10,21 @@ import UserProfile from './components/UserProfile/UserProfile';
 import { environment } from 'utils/environment';
 
 
+const query = graphql`
+  query ProfileQuery($login: String!) {
+    profile(login: $login) {
+      id
+      __typename
+      ... on User {
+        ...UserSidebar_profile
+      }
+      ... on Organization {
+        ...OrganizationHeader_profile
+      }
+    }
+  }
+`;
+
 const Loading = props => (
   <Skeleton width="100%" height="3px" style={{ background: 'rgba(255, 255, 255, 0.3)' }} />
 );
@@ -17,20 +32,6 @@ const Loading = props => (
 const Profile = props => {
   const params = useParams();
   const variables = { login: params.login };
-  const query = graphql`
-    query ProfileQuery($login: String!) {
-      profile(login: $login) {
-        id
-        __typename
-        ... on User {
-          ...UserSidebar_profile
-        }
-        ... on Organization {
-          ...OrganizationHeader_profile
-        }
-      }
-    }
-  `;
 
   return (
     <QueryRenderer

@@ -14,7 +14,7 @@ import Title from 'components/Title/Title';
 
 const useStyles = makeStyles(theme => ({
   userItem: {
-    borderBottom: '1px solid rgb(85, 85, 85)',
+    borderBottom: `1px solid ${theme.palette.divider}`,
     display: 'flex',
     padding: '2rem 0',
     '&:last-child': {

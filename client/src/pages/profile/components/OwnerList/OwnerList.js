@@ -10,7 +10,7 @@ import Image from 'components/Image/Image';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: '1rem 0',
-    borderTop: '1px solid #555555',
+    borderTop: `1px solid ${theme.palette.divider}`,
     marginTop: '1rem',
   },
   anchor: {
@@ -24,7 +24,7 @@ const OwnerList = props => {
 
   return (
     <div className={classes.root}>
-      <Title component="h2" gutterBottom>{title}</Title>
+      <Title variant="h2" gutterBottom>{title}</Title>
       {owners.map(owner => {
         const localUrl = owner.url.replace(/https?:\/\/github\.com/, '');
         return (

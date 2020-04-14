@@ -104,12 +104,12 @@ const OrganizationTabPanels = props => {
 };
 
 const NavigatorView = props => {
+  const { isLoading, organization } = props;
   const classes = useStyles();
   const [search, setSearch] = useQueryString();
   const initialTabIndex = Math.max(0, tabs.indexOf(search.get('tab')));
   const [tabIndex, setTabIndex] = React.useState(initialTabIndex);
   const tabName = tabs[tabIndex];
-  const { isLoading, organization } = props;
   const items = isLoading === false
     ? edgesToArray(organization[tabName])
     : [];

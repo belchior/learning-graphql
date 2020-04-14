@@ -46,7 +46,6 @@ const useStyles = makeStyles(theme => ({
 const RepositoryItem = props => {
   const { repository } = props;
   const classes = useStyles();
-  const topics = []; // edgesToArray(repository.repositoryTopics).map(item => item.topic);
   const language = repository.primaryLanguage;
 
   return (
@@ -56,13 +55,6 @@ const RepositoryItem = props => {
       { repository.description &&
         <Typography className={classes.description} variant="body2">{repository.description}</Typography>
       }
-      <div>
-        {topics.map(topic => (
-          <Typography key={topic.name}>
-            {topic.name}
-          </Typography>
-        ))}
-      </div>
       <div className={classes.details}>
         { language && <Language color={language.color}>{language.name}</Language> }
         { repository.forkCount > 0 &&
