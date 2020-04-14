@@ -39,3 +39,5 @@ export const getVariables = (props, paginationInfo, fragmentVariables) => ({
   repositories: fragmentVariables.repositories,
   starredRepositories: fragmentVariables.starredRepositories,
 });
+
+export const connectionConfig = { getVariables, query };
