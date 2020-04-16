@@ -49,6 +49,10 @@ export const RepositoryOwnerInterface: GraphQLInterfaceType = new GraphQLInterfa
     id: idType(),
     login: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: GraphQLString },
+    repositories: {
+      type: RepositoryConnectionType,
+      args: connectionTypeArgs(),
+    },
     url: { type: new GraphQLNonNull(GraphQLString) },
   }),
   resolveType: value => {
