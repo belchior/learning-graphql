@@ -4,7 +4,7 @@
 build/
 coverage/
 node_modules/
-#__generated__/
+__generated__/
 
 
 ### Files ###
