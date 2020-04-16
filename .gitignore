@@ -1,14 +1,19 @@
 
 
-### Node ###
+### Directories ###
 build/
 coverage/
 node_modules/
-logs
+#__generated__/
+
+
+### Files ###
 .env
+logs
 *.log
 npm-debug.log*
 /package-lock.json
+
 
 ### macOS ###
 .DS_Store

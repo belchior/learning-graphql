@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "start": "concurrently -k \"react-scripts start\" \"npm run relay -- --watch\"",
-    "build": "react-scripts build",
+    "build": "npm run relay && react-scripts build",
     "lint": "eslint src",
     "get-schema": "cd ../server && npm run write-schema && cd ../client",
     "relay": "relay-compiler --src ./src --schema ./src/schema.graphql",
