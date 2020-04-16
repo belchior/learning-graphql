@@ -10,9 +10,9 @@
 import type { ReaderFragment } from 'relay-runtime';
 type RepositoryItem_repository$ref = any;
 import type { FragmentReference } from "relay-runtime";
-declare export opaque type RepositoriesList_user$ref: FragmentReference;
-declare export opaque type RepositoriesList_user$fragmentType: RepositoriesList_user$ref;
-export type RepositoriesList_user = {|
+declare export opaque type RepositoriesList_owner$ref: FragmentReference;
+declare export opaque type RepositoriesList_owner$fragmentType: RepositoriesList_owner$ref;
+export type RepositoriesList_owner = {|
   +repositories: {|
     +edges: $ReadOnlyArray<?{|
       +node: ?{|
@@ -21,12 +21,12 @@ export type RepositoriesList_user = {|
       |}
     |}>
   |},
-  +$refType: RepositoriesList_user$ref,
+  +$refType: RepositoriesList_owner$ref,
 |};
-export type RepositoriesList_user$data = RepositoriesList_user;
-export type RepositoriesList_user$key = {
-  +$data?: RepositoriesList_user$data,
-  +$fragmentRefs: RepositoriesList_user$ref,
+export type RepositoriesList_owner$data = RepositoriesList_owner;
+export type RepositoriesList_owner$key = {
+  +$data?: RepositoriesList_owner$data,
+  +$fragmentRefs: RepositoriesList_owner$ref,
   ...
 };
 */
@@ -34,8 +34,8 @@ export type RepositoriesList_user$key = {
 
 const node/*: ReaderFragment*/ = {
   "kind": "Fragment",
-  "name": "RepositoriesList_user",
-  "type": "User",
+  "name": "RepositoriesList_owner",
+  "type": "RepositoryOwner",
   "metadata": {
     "connection": [
       {
@@ -150,6 +150,6 @@ const node/*: ReaderFragment*/ = {
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = '63154c8273f20bac73597bf0bce56226';
+(node/*: any*/).hash = '901148bd6fd0ae692b8ea72bf9ba74dc';
 
 module.exports = node;

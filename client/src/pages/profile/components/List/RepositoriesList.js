@@ -5,12 +5,12 @@ import { createPaginationContainer } from 'react-relay';
 import List from './List';
 import RepositoryItem from '../Item/RepositoryItem';
 import { edgesToArray } from 'utils/array';
-import { connectionConfig } from '../UserNavigator/UserNavigator.relay';
+import { getVariables } from 'pages/profile/Profile.relay';
 
 
 const RepositoriesList = props => {
-  const { relay, user } = props;
-  const repositories = edgesToArray(user.repositories);
+  const { relay, owner } = props;
+  const repositories = edgesToArray(owner.repositories);
 
   return (
     <List relay={relay}>
@@ -21,8 +21,8 @@ const RepositoriesList = props => {
 
 export default createPaginationContainer(RepositoriesList,
   {
-    user: graphql`
-      fragment RepositoriesList_user on User
+    owner: graphql`
+      fragment RepositoriesList_owner on RepositoryOwner
         @argumentDefinitions(
           count: { type: "Int", defaultValue: 5 }
           cursor: { type: "String" }
@@ -38,5 +38,14 @@ export default createPaginationContainer(RepositoriesList,
       }
     `
   },
-  connectionConfig
+  {
+    getVariables,
+    query: graphql`
+      query RepositoriesListQuery($cursor: String $login: String!) {
+        profile(login: $login) {
+          ...RepositoriesList_owner @arguments(cursor: $cursor)
+        }
+      }
+    `
+  }
 );

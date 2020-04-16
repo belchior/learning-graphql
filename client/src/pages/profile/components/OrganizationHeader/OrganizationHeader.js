@@ -16,6 +16,7 @@ const useStyles = makeStyles(theme => ({
   organizationHeader: {
     display: 'flex',
     flex: '1',
+    marginBottom: '2rem',
   },
   avatar: {
     marginRight: '1.5rem',

@@ -5,32 +5,32 @@ import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+import FollowersList from 'pages/profile/components/List/FollowersList';
+import FollowingList from 'pages/profile/components/List/FollowingList';
 import Label from 'components/Label/Label';
 import PeopleIcon from 'components/Icons/People';
-import PeopleList from 'pages/profile/components/List/PeopleList';
 import QueryRendererTabList from 'pages/profile/components/QueryRendererTabList/QueryRendererTabList';
 import RepositoriesList from 'pages/profile/components/List/RepositoriesList';
 import RepositoryIcon from 'components/Icons/Repository';
 import RepositoryItemSkeleton from 'pages/profile/components/Item/RepositoryItem.skeleton';
+import StarredRepositoriesList from 'pages/profile/components/List/StarredRepositoriesList';
 import UserItemSkeleton from 'pages/profile/components/Item/UserItem.skeleton';
 import { useQueryString } from 'utils/hooks';
 
 
-
-const tabs = ['repositories', 'people'];
+const tabs = ['repositories', 'starredRepositories', 'followers', 'following'];
 
 const useStyles = makeStyles(theme => ({
-  organizationNavigator: {
+  root: {
     flex: '1 1 auto',
-    marginTop: '2rem',
   },
   tab: {
     textTransform: 'none',
-  }
+  },
 }));
 
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props;
+const TabPanel = props => {
+  const { children, index, value, ...other } = props;
 
   return (
     <Typography component="div" hidden={value !== index} id={`tab-${index}`} {...other}>
@@ -40,11 +40,11 @@ const TabPanel = (props) => {
 };
 TabPanel.propTypes = {
   children: PropTypes.node,
-  value: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
 };
 
-const OrganizationTabs = props => {
+const UserTabs = props => {
   const { tabIndex, handleTabChange } = props;
   const classes = useStyles();
   const overrides = {
@@ -53,16 +53,18 @@ const OrganizationTabs = props => {
   return (
     <Tabs value={tabIndex} onChange={handleTabChange}>
       <Tab classes={overrides} label={<Label><RepositoryIcon />Repositories</Label>} />
-      <Tab classes={overrides} label={<Label><PeopleIcon />People</Label>} />
+      <Tab classes={overrides} label={<Label><RepositoryIcon />Stars</Label>} />
+      <Tab classes={overrides} label={<Label><PeopleIcon />Followers</Label>} />
+      <Tab classes={overrides} label={<Label><PeopleIcon />Following</Label>} />
     </Tabs>
   );
 };
-OrganizationTabs.propTypes = {
+UserTabs.propTypes = {
   handleTabChange: PropTypes.func.isRequired,
   tabIndex: PropTypes.number.isRequired,
 };
 
-const OrganizationTabPanels = props => {
+const UserTabPanels = props => {
   const { profile, tabIndex, tabName } = props;
 
   return (
@@ -72,24 +74,36 @@ const OrganizationTabPanels = props => {
           <RepositoriesList owner={profile} />
         </TabPanel>
       }
-      { tabName === 'people' &&
+      { tabName === 'starredRepositories' &&
         <TabPanel value={tabIndex} index={1}>
-          <PeopleList organization={profile} />
+          <StarredRepositoriesList user={profile} />
+        </TabPanel>
+      }
+      { tabName === 'followers' &&
+        <TabPanel value={tabIndex} index={2}>
+          <FollowersList user={profile} />
+        </TabPanel>
+      }
+      { tabName === 'following' &&
+        <TabPanel value={tabIndex} index={3}>
+          <FollowingList user={profile} />
         </TabPanel>
       }
     </React.Fragment>
   );
 };
-OrganizationTabPanels.propTypes = {
+UserTabPanels.propTypes = {
   profile: PropTypes.shape({
+    followers: PropTypes.object,
+    following: PropTypes.object,
     repositories: PropTypes.object,
-    reople: PropTypes.object,
+    starredRepositories: PropTypes.object,
   }).isRequired,
   tabIndex: PropTypes.number.isRequired,
   tabName: PropTypes.oneOf(tabs).isRequired,
 };
 
-const OrganizationNavigator = props => {
+const UserNavigator = props => {
   const { profile } = props;
   const classes = useStyles();
   const [search, setSearch] = useQueryString();
@@ -109,10 +123,10 @@ const OrganizationNavigator = props => {
 
     return (
       <div className={classes.root}>
-        <OrganizationTabs handleTabChange={handleTabChange} tabIndex={tabIndex} />
+        <UserTabs handleTabChange={handleTabChange} tabIndex={tabIndex} />
         { isLoading === true
           ? <TabPanel value={tabIndex} index={tabIndex}><Skeleton /></TabPanel>
-          : <OrganizationTabPanels profile={profile} tabIndex={tabIndex} tabName={tabName} />
+          : <UserTabPanels profile={profile} tabIndex={tabIndex} tabName={tabName} />
         }
       </div>
     );
@@ -122,12 +136,14 @@ const OrganizationNavigator = props => {
     ? <Content profile={profile} isLoading={false} />
     : <QueryRendererTabList tabName={tabName} Content={Content} />;
 };
-OrganizationNavigator.propTypes = {
+UserNavigator.propTypes = {
   profile: PropTypes.shape({
-    people: PropTypes.object,
+    followers: PropTypes.object,
+    following: PropTypes.object,
     repositories: PropTypes.object,
+    starredRepositories: PropTypes.object,
   }).isRequired,
   tabName: PropTypes.string.isRequired,
 };
 
-export default OrganizationNavigator;
+export default UserNavigator;

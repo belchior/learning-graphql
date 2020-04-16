@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UserNavigator from 'pages/profile/components/UserNavigator/UserNavigator.container';
+import UserNavigator from 'pages/profile/components/UserNavigator/UserNavigator';
 import Sidebar from 'pages/profile/components/UserSidebar/UserSidebar';
 
 const UserProfile = props => {
@@ -9,7 +9,7 @@ const UserProfile = props => {
   return (
     <main>
       <Sidebar profile={profile} />
-      <UserNavigator />
+      <UserNavigator profile={profile} tabName={props.tabName} />
     </main>
   );
 };

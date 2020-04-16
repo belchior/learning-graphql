@@ -21,7 +21,7 @@ const OrganizationProfile = props => {
   return (
     <main className={classes.root}>
       <OrganizationHeader profile={profile} />
-      <OrganizationNavigator />
+      <OrganizationNavigator profile={profile} />
     </main>
   );
 };

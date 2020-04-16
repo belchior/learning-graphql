@@ -6,12 +6,15 @@ import { makeStyles } from '@material-ui/core/styles';
 
 
 const useStyles = makeStyles(theme => ({
-  root: {
+  list: {
     flex: '1 1 auto',
   },
   actionContainer: {
     marginTop: '1rem',
     textAlign: 'center',
+  },
+  empty: {
+    padding: '2rem 0',
   }
 }));
 
@@ -25,9 +28,9 @@ const List = props => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.list}>
       { Array.isArray(children) && children.length === 0
-        ? <Typography>There is no item to show</Typography>
+        ? <Typography className={classes.empty}>There is no item to show</Typography>
         : (
           <React.Fragment>
             {children}
@@ -39,7 +42,6 @@ const List = props => {
           </React.Fragment>
         )
       }
-
     </div>
   );
 };

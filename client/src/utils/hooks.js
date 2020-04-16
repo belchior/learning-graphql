@@ -1,16 +1,10 @@
-import { useLocation, useHistory } from 'react-router-dom';
-
 
 export const useQueryString = () => {
-  const search = new URLSearchParams(useLocation().search);
-  const history = useHistory();
+  const search = new window.URLSearchParams(window.location.search);
 
   const setSearch = (key, value) => {
     search.set(key, value);
-    history.push({
-      pathname: history.location.pathname,
-      search: search.toString(),
-    });
+    window.history.pushState(undefined, '', `?${search}`);
   };
 
   return [search, setSearch];

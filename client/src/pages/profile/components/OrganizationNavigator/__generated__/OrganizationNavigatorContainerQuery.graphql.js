@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash c177c5bf7d17175a91db637d5da59d8a
+ * @relayHash 4fa7a01b7190caaaaf5acf80773f8932
  */
 
 /* eslint-disable */
@@ -11,12 +11,12 @@
 import type { ConcreteRequest } from 'relay-runtime';
 type RepositoryItem_repository$ref = any;
 type UserItem_user$ref = any;
-export type OrganizationNavigatorQueryVariables = {|
+export type OrganizationNavigatorContainerQueryVariables = {|
   login: string,
   repositories: boolean,
   people: boolean,
 |};
-export type OrganizationNavigatorQueryResponse = {|
+export type OrganizationNavigatorContainerQueryResponse = {|
   +organization: ?{|
     +repositories?: {|
       +edges: $ReadOnlyArray<?{|
@@ -36,15 +36,15 @@ export type OrganizationNavigatorQueryResponse = {|
     |},
   |}
 |};
-export type OrganizationNavigatorQuery = {|
-  variables: OrganizationNavigatorQueryVariables,
-  response: OrganizationNavigatorQueryResponse,
+export type OrganizationNavigatorContainerQuery = {|
+  variables: OrganizationNavigatorContainerQueryVariables,
+  response: OrganizationNavigatorContainerQueryResponse,
 |};
 */
 
 
 /*
-query OrganizationNavigatorQuery(
+query OrganizationNavigatorContainerQuery(
   $login: String!
   $repositories: Boolean!
   $people: Boolean!
@@ -177,7 +177,7 @@ return {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "OrganizationNavigatorQuery",
+    "name": "OrganizationNavigatorContainerQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
@@ -289,7 +289,7 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "OrganizationNavigatorQuery",
+    "name": "OrganizationNavigatorContainerQuery",
     "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
@@ -484,14 +484,14 @@ return {
   },
   "params": {
     "operationKind": "query",
-    "name": "OrganizationNavigatorQuery",
+    "name": "OrganizationNavigatorContainerQuery",
     "id": null,
-    "text": "query OrganizationNavigatorQuery(\n  $login: String!\n  $repositories: Boolean!\n  $people: Boolean!\n) {\n  organization(login: $login) {\n    repositories(last: 20) @include(if: $repositories) {\n      edges {\n        node {\n          id\n          ...RepositoryItem_repository\n        }\n      }\n    }\n    people(last: 20) @include(if: $people) {\n      edges {\n        node {\n          id\n          ...UserItem_user\n        }\n      }\n    }\n    id\n  }\n}\n\nfragment RepositoryItem_repository on Repository {\n  description\n  forkCount\n  id\n  licenseInfo {\n    name\n  }\n  name\n  owner {\n    __typename\n    avatarUrl\n    login\n    url\n    id\n  }\n  primaryLanguage {\n    color\n    name\n  }\n  url\n}\n\nfragment UserItem_user on User {\n  avatarUrl\n  bio\n  company\n  location\n  login\n  name\n  url\n}\n",
+    "text": "query OrganizationNavigatorContainerQuery(\n  $login: String!\n  $repositories: Boolean!\n  $people: Boolean!\n) {\n  organization(login: $login) {\n    repositories(last: 20) @include(if: $repositories) {\n      edges {\n        node {\n          id\n          ...RepositoryItem_repository\n        }\n      }\n    }\n    people(last: 20) @include(if: $people) {\n      edges {\n        node {\n          id\n          ...UserItem_user\n        }\n      }\n    }\n    id\n  }\n}\n\nfragment RepositoryItem_repository on Repository {\n  description\n  forkCount\n  id\n  licenseInfo {\n    name\n  }\n  name\n  owner {\n    __typename\n    avatarUrl\n    login\n    url\n    id\n  }\n  primaryLanguage {\n    color\n    name\n  }\n  url\n}\n\nfragment UserItem_user on User {\n  avatarUrl\n  bio\n  company\n  location\n  login\n  name\n  url\n}\n",
     "metadata": {}
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'd260af7fc74e9ba9f3ae8a75da965659';
+(node/*: any*/).hash = '038ae25f64b74608bdc99836769dafb5';
 
 module.exports = node;

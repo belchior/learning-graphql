@@ -32,7 +32,45 @@ interface RepositoryOwner {
   id: ID!
   login: String!
   name: String
+  repositories(after: String, before: String, first: Int, last: Int): RepositoryConnection!
   url: String!
+}
+
+type RepositoryConnection {
+  edges: [RepositoryEdge]!
+  pageInfo: PageInfo!
+}
+
+type RepositoryEdge {
+  cursor: String!
+  node: Repository
+}
+
+type Repository implements Node {
+  description: String
+  forkCount: Int
+  id: ID!
+  licenseInfo: License
+  name: String!
+  owner: RepositoryOwner!
+  primaryLanguage: Language
+  url: String!
+}
+
+type License {
+  name: String
+}
+
+type Language {
+  color: String
+  name: String
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
 }
 
 type UserConnection {
@@ -71,43 +109,6 @@ type OrganizationConnection {
 type OrganizationEdge {
   cursor: String!
   node: Organization
-}
-
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
-
-type RepositoryConnection {
-  edges: [RepositoryEdge]!
-  pageInfo: PageInfo!
-}
-
-type RepositoryEdge {
-  cursor: String!
-  node: Repository
-}
-
-type Repository implements Node {
-  description: String
-  forkCount: Int
-  id: ID!
-  licenseInfo: License
-  name: String!
-  owner: RepositoryOwner!
-  primaryLanguage: Language
-  url: String!
-}
-
-type License {
-  name: String
-}
-
-type Language {
-  color: String
-  name: String
 }
 
 type Mutation {

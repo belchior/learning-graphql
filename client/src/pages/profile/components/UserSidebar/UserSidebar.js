@@ -87,7 +87,7 @@ UserSidebar.propTypes = {
     login: PropTypes.string.isRequired,
     name: PropTypes.string,
     organizations: PropTypes.object,
-    websiteUrl: PropTypes.string.isRequired,
+    websiteUrl: PropTypes.string,
   }).isRequired,
 };
 

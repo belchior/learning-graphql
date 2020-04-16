@@ -5,7 +5,7 @@ import { createPaginationContainer } from 'react-relay';
 import List from './List';
 import UserItem from '../Item/UserItem';
 import { edgesToArray } from 'utils/array';
-import { connectionConfig } from '../UserNavigator/UserNavigator.relay';
+import { getVariables } from 'pages/profile/Profile.relay';
 
 
 const FollowersList = props => {
@@ -40,5 +40,14 @@ export default createPaginationContainer(
       }
     `
   },
-  connectionConfig
+  {
+    getVariables,
+    query: graphql`
+      query FollowersListQuery($cursor: String $login: String!) {
+        user(login: $login) {
+          ...FollowersList_user @arguments(cursor: $cursor)
+        }
+      }
+    `
+  }
 );

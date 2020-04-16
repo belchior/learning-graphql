@@ -5,7 +5,7 @@ import { createPaginationContainer } from 'react-relay';
 import List from './List';
 import RepositoryItem from '../Item/RepositoryItem';
 import { edgesToArray } from 'utils/array';
-import { connectionConfig } from '../UserNavigator/UserNavigator.relay';
+import { getVariables } from 'pages/profile/Profile.relay';
 
 
 const StarredRepositoriesList = props => {
@@ -39,5 +39,14 @@ export default createPaginationContainer(StarredRepositoriesList,
       }
     `
   },
-  connectionConfig
+  {
+    getVariables,
+    query: graphql`
+      query StarredRepositoriesListQuery($cursor: String $login: String!) {
+        user(login: $login) {
+          ...StarredRepositoriesList_user @arguments(cursor: $cursor)
+        }
+      }
+    `
+  }
 );

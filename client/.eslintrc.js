@@ -24,6 +24,7 @@ module.exports = {
     'indent': ["error", 2, { SwitchCase: 1 }],
     'linebreak-style': [ 'error', 'unix' ],
     'max-len': ['error', { code: 120, ignoreComments: true }],
+    'no-console': ["error", { allow: ["warn", "error"] }],
     'object-curly-spacing': [ 'error', 'always' ],
     'quotes': [ 'error', 'single' ],
     'semi': [ 'error', 'always' ],

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 5ad30dd79c84e2268a2b40acf6bdc697
+ * @relayHash c934d58e908c99ea56d628612799db1c
  */
 
 /* eslint-disable */
@@ -11,41 +11,46 @@
 import type { ConcreteRequest } from 'relay-runtime';
 type FollowersList_user$ref = any;
 type FollowingList_user$ref = any;
-type RepositoriesList_user$ref = any;
+type PeopleList_organization$ref = any;
+type RepositoriesList_owner$ref = any;
 type StarredRepositoriesList_user$ref = any;
-export type UserNavigatorRelayQueryVariables = {|
+export type QueryRendererTabListQueryVariables = {|
   cursor?: ?string,
   followers: boolean,
   following: boolean,
   login: string,
+  people: boolean,
   repositories: boolean,
   starredRepositories: boolean,
 |};
-export type UserNavigatorRelayQueryResponse = {|
-  +user: ?{|
-    +$fragmentRefs: FollowersList_user$ref & FollowingList_user$ref & RepositoriesList_user$ref & StarredRepositoriesList_user$ref
+export type QueryRendererTabListQueryResponse = {|
+  +profile: ?{|
+    +$fragmentRefs: FollowersList_user$ref & FollowingList_user$ref & PeopleList_organization$ref & RepositoriesList_owner$ref & StarredRepositoriesList_user$ref
   |}
 |};
-export type UserNavigatorRelayQuery = {|
-  variables: UserNavigatorRelayQueryVariables,
-  response: UserNavigatorRelayQueryResponse,
+export type QueryRendererTabListQuery = {|
+  variables: QueryRendererTabListQueryVariables,
+  response: QueryRendererTabListQueryResponse,
 |};
 */
 
 
 /*
-query UserNavigatorRelayQuery(
+query QueryRendererTabListQuery(
   $cursor: String
   $followers: Boolean!
   $following: Boolean!
   $login: String!
+  $people: Boolean!
   $repositories: Boolean!
   $starredRepositories: Boolean!
 ) {
-  user(login: $login) {
+  profile(login: $login) {
+    __typename
     ...FollowersList_user_SneHE @include(if: $followers)
     ...FollowingList_user_SneHE @include(if: $following)
-    ...RepositoriesList_user_SneHE @include(if: $repositories)
+    ...PeopleList_organization_SneHE @include(if: $people)
+    ...RepositoriesList_owner_SneHE @include(if: $repositories)
     ...StarredRepositoriesList_user_SneHE @include(if: $starredRepositories)
     id
   }
@@ -85,7 +90,24 @@ fragment FollowingList_user_SneHE on User {
   }
 }
 
-fragment RepositoriesList_user_SneHE on User {
+fragment PeopleList_organization_SneHE on Organization {
+  people(first: 5, after: $cursor) {
+    edges {
+      node {
+        id
+        ...UserItem_user
+        __typename
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}
+
+fragment RepositoriesList_owner_SneHE on RepositoryOwner {
   repositories(first: 5, after: $cursor) {
     edges {
       node {
@@ -180,6 +202,12 @@ var v0 = [
   },
   {
     "kind": "LocalArgument",
+    "name": "people",
+    "type": "Boolean!",
+    "defaultValue": null
+  },
+  {
+    "kind": "LocalArgument",
     "name": "repositories",
     "type": "Boolean!",
     "defaultValue": null
@@ -208,11 +236,18 @@ v2 = [
 v3 = {
   "kind": "ScalarField",
   "alias": null,
+  "name": "__typename",
+  "args": null,
+  "storageKey": null
+},
+v4 = {
+  "kind": "ScalarField",
+  "alias": null,
   "name": "id",
   "args": null,
   "storageKey": null
 },
-v4 = [
+v5 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -224,38 +259,31 @@ v4 = [
     "value": 5
   }
 ],
-v5 = {
+v6 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "avatarUrl",
   "args": null,
   "storageKey": null
 },
-v6 = {
+v7 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "login",
   "args": null,
   "storageKey": null
 },
-v7 = {
+v8 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "name",
   "args": null,
   "storageKey": null
 },
-v8 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "url",
-  "args": null,
-  "storageKey": null
-},
 v9 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "__typename",
+  "name": "url",
   "args": null,
   "storageKey": null
 },
@@ -310,8 +338,8 @@ v12 = [
         "concreteType": "User",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
-          (v5/*: any*/),
+          (v4/*: any*/),
+          (v6/*: any*/),
           {
             "kind": "ScalarField",
             "alias": null,
@@ -333,10 +361,10 @@ v12 = [
             "args": null,
             "storageKey": null
           },
-          (v6/*: any*/),
           (v7/*: any*/),
           (v8/*: any*/),
-          (v9/*: any*/)
+          (v9/*: any*/),
+          (v3/*: any*/)
         ]
       },
       (v10/*: any*/)
@@ -363,7 +391,7 @@ v13 = [
         "concreteType": "Repository",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "ScalarField",
             "alias": null,
@@ -387,10 +415,10 @@ v13 = [
             "concreteType": "License",
             "plural": false,
             "selections": [
-              (v7/*: any*/)
+              (v8/*: any*/)
             ]
           },
-          (v7/*: any*/),
+          (v8/*: any*/),
           {
             "kind": "LinkedField",
             "alias": null,
@@ -400,11 +428,11 @@ v13 = [
             "concreteType": null,
             "plural": false,
             "selections": [
-              (v9/*: any*/),
-              (v5/*: any*/),
+              (v3/*: any*/),
               (v6/*: any*/),
-              (v8/*: any*/),
-              (v3/*: any*/)
+              (v7/*: any*/),
+              (v9/*: any*/),
+              (v4/*: any*/)
             ]
           },
           {
@@ -423,11 +451,11 @@ v13 = [
                 "args": null,
                 "storageKey": null
               },
-              (v7/*: any*/)
+              (v8/*: any*/)
             ]
           },
-          (v8/*: any*/),
-          (v9/*: any*/)
+          (v9/*: any*/),
+          (v3/*: any*/)
         ]
       },
       (v10/*: any*/)
@@ -439,7 +467,7 @@ return {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "UserNavigatorRelayQuery",
+    "name": "QueryRendererTabListQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
@@ -447,10 +475,10 @@ return {
       {
         "kind": "LinkedField",
         "alias": null,
-        "name": "user",
+        "name": "profile",
         "storageKey": null,
         "args": (v1/*: any*/),
-        "concreteType": "User",
+        "concreteType": null,
         "plural": false,
         "selections": [
           {
@@ -480,11 +508,23 @@ return {
           {
             "kind": "Condition",
             "passingValue": true,
+            "condition": "people",
+            "selections": [
+              {
+                "kind": "FragmentSpread",
+                "name": "PeopleList_organization",
+                "args": (v2/*: any*/)
+              }
+            ]
+          },
+          {
+            "kind": "Condition",
+            "passingValue": true,
             "condition": "repositories",
             "selections": [
               {
                 "kind": "FragmentSpread",
-                "name": "RepositoriesList_user",
+                "name": "RepositoriesList_owner",
                 "args": (v2/*: any*/)
               }
             ]
@@ -507,42 +547,49 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "UserNavigatorRelayQuery",
+    "name": "QueryRendererTabListQuery",
     "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
         "kind": "LinkedField",
         "alias": null,
-        "name": "user",
+        "name": "profile",
         "storageKey": null,
         "args": (v1/*: any*/),
-        "concreteType": "User",
+        "concreteType": null,
         "plural": false,
         "selections": [
           (v3/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "Condition",
             "passingValue": true,
             "condition": "followers",
             "selections": [
               {
-                "kind": "LinkedField",
-                "alias": null,
-                "name": "followers",
-                "storageKey": null,
-                "args": (v4/*: any*/),
-                "concreteType": "UserConnection",
-                "plural": false,
-                "selections": (v12/*: any*/)
-              },
-              {
-                "kind": "LinkedHandle",
-                "alias": null,
-                "name": "followers",
-                "args": (v4/*: any*/),
-                "handle": "connection",
-                "key": "FollowersList_followers",
-                "filters": null
+                "kind": "InlineFragment",
+                "type": "User",
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "name": "followers",
+                    "storageKey": null,
+                    "args": (v5/*: any*/),
+                    "concreteType": "UserConnection",
+                    "plural": false,
+                    "selections": (v12/*: any*/)
+                  },
+                  {
+                    "kind": "LinkedHandle",
+                    "alias": null,
+                    "name": "followers",
+                    "args": (v5/*: any*/),
+                    "handle": "connection",
+                    "key": "FollowersList_followers",
+                    "filters": null
+                  }
+                ]
               }
             ]
           },
@@ -552,23 +599,61 @@ return {
             "condition": "following",
             "selections": [
               {
-                "kind": "LinkedField",
-                "alias": null,
-                "name": "following",
-                "storageKey": null,
-                "args": (v4/*: any*/),
-                "concreteType": "UserConnection",
-                "plural": false,
-                "selections": (v12/*: any*/)
-              },
+                "kind": "InlineFragment",
+                "type": "User",
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "name": "following",
+                    "storageKey": null,
+                    "args": (v5/*: any*/),
+                    "concreteType": "UserConnection",
+                    "plural": false,
+                    "selections": (v12/*: any*/)
+                  },
+                  {
+                    "kind": "LinkedHandle",
+                    "alias": null,
+                    "name": "following",
+                    "args": (v5/*: any*/),
+                    "handle": "connection",
+                    "key": "FollowingList_following",
+                    "filters": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "Condition",
+            "passingValue": true,
+            "condition": "people",
+            "selections": [
               {
-                "kind": "LinkedHandle",
-                "alias": null,
-                "name": "following",
-                "args": (v4/*: any*/),
-                "handle": "connection",
-                "key": "FollowingList_following",
-                "filters": null
+                "kind": "InlineFragment",
+                "type": "Organization",
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "name": "people",
+                    "storageKey": null,
+                    "args": (v5/*: any*/),
+                    "concreteType": "UserConnection",
+                    "plural": false,
+                    "selections": (v12/*: any*/)
+                  },
+                  {
+                    "kind": "LinkedHandle",
+                    "alias": null,
+                    "name": "people",
+                    "args": (v5/*: any*/),
+                    "handle": "connection",
+                    "key": "PeopleList_people",
+                    "filters": null
+                  }
+                ]
               }
             ]
           },
@@ -582,7 +667,7 @@ return {
                 "alias": null,
                 "name": "repositories",
                 "storageKey": null,
-                "args": (v4/*: any*/),
+                "args": (v5/*: any*/),
                 "concreteType": "RepositoryConnection",
                 "plural": false,
                 "selections": (v13/*: any*/)
@@ -591,7 +676,7 @@ return {
                 "kind": "LinkedHandle",
                 "alias": null,
                 "name": "repositories",
-                "args": (v4/*: any*/),
+                "args": (v5/*: any*/),
                 "handle": "connection",
                 "key": "RepositoriesList_repositories",
                 "filters": null
@@ -604,23 +689,29 @@ return {
             "condition": "starredRepositories",
             "selections": [
               {
-                "kind": "LinkedField",
-                "alias": null,
-                "name": "starredRepositories",
-                "storageKey": null,
-                "args": (v4/*: any*/),
-                "concreteType": "RepositoryConnection",
-                "plural": false,
-                "selections": (v13/*: any*/)
-              },
-              {
-                "kind": "LinkedHandle",
-                "alias": null,
-                "name": "starredRepositories",
-                "args": (v4/*: any*/),
-                "handle": "connection",
-                "key": "StarredRepositoriesList_starredRepositories",
-                "filters": null
+                "kind": "InlineFragment",
+                "type": "User",
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "name": "starredRepositories",
+                    "storageKey": null,
+                    "args": (v5/*: any*/),
+                    "concreteType": "RepositoryConnection",
+                    "plural": false,
+                    "selections": (v13/*: any*/)
+                  },
+                  {
+                    "kind": "LinkedHandle",
+                    "alias": null,
+                    "name": "starredRepositories",
+                    "args": (v5/*: any*/),
+                    "handle": "connection",
+                    "key": "StarredRepositoriesList_starredRepositories",
+                    "filters": null
+                  }
+                ]
               }
             ]
           }
@@ -630,14 +721,14 @@ return {
   },
   "params": {
     "operationKind": "query",
-    "name": "UserNavigatorRelayQuery",
+    "name": "QueryRendererTabListQuery",
     "id": null,
-    "text": "query UserNavigatorRelayQuery(\n  $cursor: String\n  $followers: Boolean!\n  $following: Boolean!\n  $login: String!\n  $repositories: Boolean!\n  $starredRepositories: Boolean!\n) {\n  user(login: $login) {\n    ...FollowersList_user_SneHE @include(if: $followers)\n    ...FollowingList_user_SneHE @include(if: $following)\n    ...RepositoriesList_user_SneHE @include(if: $repositories)\n    ...StarredRepositoriesList_user_SneHE @include(if: $starredRepositories)\n    id\n  }\n}\n\nfragment FollowersList_user_SneHE on User {\n  followers(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...UserItem_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment FollowingList_user_SneHE on User {\n  following(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...UserItem_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RepositoriesList_user_SneHE on User {\n  repositories(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RepositoryItem_repository\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RepositoryItem_repository on Repository {\n  description\n  forkCount\n  id\n  licenseInfo {\n    name\n  }\n  name\n  owner {\n    __typename\n    avatarUrl\n    login\n    url\n    id\n  }\n  primaryLanguage {\n    color\n    name\n  }\n  url\n}\n\nfragment StarredRepositoriesList_user_SneHE on User {\n  starredRepositories(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RepositoryItem_repository\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment UserItem_user on User {\n  avatarUrl\n  bio\n  company\n  location\n  login\n  name\n  url\n}\n",
+    "text": "query QueryRendererTabListQuery(\n  $cursor: String\n  $followers: Boolean!\n  $following: Boolean!\n  $login: String!\n  $people: Boolean!\n  $repositories: Boolean!\n  $starredRepositories: Boolean!\n) {\n  profile(login: $login) {\n    __typename\n    ...FollowersList_user_SneHE @include(if: $followers)\n    ...FollowingList_user_SneHE @include(if: $following)\n    ...PeopleList_organization_SneHE @include(if: $people)\n    ...RepositoriesList_owner_SneHE @include(if: $repositories)\n    ...StarredRepositoriesList_user_SneHE @include(if: $starredRepositories)\n    id\n  }\n}\n\nfragment FollowersList_user_SneHE on User {\n  followers(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...UserItem_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment FollowingList_user_SneHE on User {\n  following(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...UserItem_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment PeopleList_organization_SneHE on Organization {\n  people(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...UserItem_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RepositoriesList_owner_SneHE on RepositoryOwner {\n  repositories(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RepositoryItem_repository\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RepositoryItem_repository on Repository {\n  description\n  forkCount\n  id\n  licenseInfo {\n    name\n  }\n  name\n  owner {\n    __typename\n    avatarUrl\n    login\n    url\n    id\n  }\n  primaryLanguage {\n    color\n    name\n  }\n  url\n}\n\nfragment StarredRepositoriesList_user_SneHE on User {\n  starredRepositories(first: 5, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RepositoryItem_repository\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment UserItem_user on User {\n  avatarUrl\n  bio\n  company\n  location\n  login\n  name\n  url\n}\n",
     "metadata": {}
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'b23004003e2323422d80967d732fb5ef';
+(node/*: any*/).hash = '3ca29929fa72322d469eb0276b682d5d';
 
 module.exports = node;

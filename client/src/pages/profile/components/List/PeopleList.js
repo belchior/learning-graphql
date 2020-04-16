@@ -8,27 +8,28 @@ import { edgesToArray } from 'utils/array';
 import { getVariables } from 'pages/profile/Profile.relay';
 
 
-const FollowingList = props => {
-  const { relay, user } = props;
-  const following = edgesToArray(user.following);
+const PeopleList = props => {
+  const { relay, organization } = props;
+  const people = edgesToArray(organization.people);
 
   return (
     <List relay={relay}>
-      {following.map(user => <UserItem user={user} key={user.id} />)}
+      { people.map(user => <UserItem user={user} key={user.id} />) }
     </List>
   );
 };
 
-export default createPaginationContainer(FollowingList,
+export default createPaginationContainer(
+  PeopleList,
   {
-    user: graphql`
-      fragment FollowingList_user on User
+    organization: graphql`
+      fragment PeopleList_organization on Organization
         @argumentDefinitions(
           count: { type: "Int", defaultValue: 5 }
           cursor: { type: "String" }
         ) {
-        following(first: $count after: $cursor)
-          @connection(key: "FollowingList_following") {
+        people(first: $count after: $cursor)
+          @connection(key: "PeopleList_people") {
           edges {
             node {
               id
@@ -42,9 +43,9 @@ export default createPaginationContainer(FollowingList,
   {
     getVariables,
     query: graphql`
-      query FollowingListQuery($cursor: String $login: String!) {
-        user(login: $login) {
-          ...FollowingList_user @arguments(cursor: $cursor)
+      query PeopleListQuery($cursor: String $login: String!) {
+        organization(login: $login) {
+          ...PeopleList_organization @arguments(cursor: $cursor)
         }
       }
     `
