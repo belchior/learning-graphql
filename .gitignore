@@ -8,7 +8,6 @@ __generated__/
 
 
 ### Files ###
-.env
 logs
 *.log
 npm-debug.log*
