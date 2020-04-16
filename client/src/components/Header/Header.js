@@ -7,11 +7,10 @@ import GithubIcon from 'components/Icons/Github';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: '#24292e',
+    backgroundColor: theme.palette.background.default,
     borderBottom: `1px solid ${theme.palette.divider}`,
-    color: '#ffffff',
-    padding: '1rem',
     marginBottom: '2rem',
+    padding: '1rem',
   },
 }));
 

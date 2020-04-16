@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Header from 'components/Header/Header';
+import Footer from 'components/Footer/Footer';
 import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
 
 
@@ -21,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   container: {
-    paddingBottom: '2rem',
+    paddingBottom: '5rem',
   }
 }));
 
@@ -38,6 +39,7 @@ const App = props => {
           {children}
         </ErrorBoundary>
       </Container>
+      <Footer />
     </div>
   );
 };
