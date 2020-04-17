@@ -10,6 +10,7 @@ __generated__/
 ### Files ###
 logs
 *.log
+.env
 npm-debug.log*
 /package-lock.json
 
