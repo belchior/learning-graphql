@@ -59,7 +59,10 @@ export interface IRepositoryOwnerOutput extends INodeOutput {
   __typename: 'Organization' | 'User'
 }
 interface IProfileOwnerOutput extends INodeOutput {
+  avatarUrl: string
   login: string
+  name?: string
+  url: string
 }
 interface ILicenseOutput {
   name: string
