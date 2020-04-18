@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Repository = (props: object) => {
+const Repository = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg viewBox="0 0 12 16" width="12" height="16" fill="currentColor" {...props}>
       {/* eslint-disable-next-line max-len */}

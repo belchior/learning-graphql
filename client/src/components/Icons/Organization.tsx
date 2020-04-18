@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Organization = (props: object) => {
+const Organization = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" {...props}>
       {/* eslint-disable-next-line max-len */}

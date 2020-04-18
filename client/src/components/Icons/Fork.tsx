@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Fork = (props: object) => {
+const Fork = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg viewBox="0 0 10 16" width="10" height="16" fill="currentColor" {...props}>
       {/* eslint-disable-next-line max-len */}

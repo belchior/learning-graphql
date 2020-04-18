@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const License = (props: object) => {
+const License = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg viewBox="0 0 14 16" width="14" height="16" fill="currentColor" {...props}>
       {/* eslint-disable-next-line max-len */}

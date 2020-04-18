@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Github = (props: object) => {
+const Github = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg height="32" width="32" viewBox="0 0 16 16" fill="#fff" {...props}>
       {/* eslint-disable-next-line max-len */}
