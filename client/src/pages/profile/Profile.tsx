@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import NotFound from 'pages/notfound/NotFound';
 import OrganizationProfile from './components/OrganizationProfile/OrganizationProfile';
 import UserProfile from './components/UserProfile/UserProfile';
-import { IProfileOwner, TUserTabs, TOrganizationTabs } from 'utils/interfaces';
+import { TUserTabs, TOrganizationTabs } from 'utils/interfaces';
 import { environment } from 'utils/environment';
 import { query } from './Profile.relay';
 import { useQueryString } from 'utils/hooks';
@@ -14,9 +14,9 @@ import { TTabs } from 'utils/interfaces';
 
 
 interface IRenderProps {
-  error: Error
-  props: { profile: IProfileOwner }
-  retry: () => void
+  error: Error | null
+  props: any
+  retry: (() => void) | null
 }
 
 const tabs: TTabs[] = ['repositories', 'starredRepositories', 'followers', 'following', 'people'];

@@ -16,6 +16,7 @@ const fetchQuery = async (operation: { text: string }, variables: object) => {
 };
 
 export const environment = new Environment({
+  // @ts-ignore
   network: Network.create(fetchQuery),
   store: new Store(new RecordSource()),
 });

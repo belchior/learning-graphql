@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import graphql from 'babel-plugin-relay/macro';
+import { graphql } from 'babel-plugin-relay/macro';
 import { createPaginationContainer } from 'react-relay';
 
 import Anchor from 'components/Anchor/Anchor';
@@ -22,12 +22,12 @@ interface IProps {
 const UserSidebar = (props: IProps) => {
   const { profile } = props;
   const classes = useStyles();
-  const organizations = edgesToArray(profile.organizations);
+  const organizations = edgesToArray(profile.organizations || { edges: [] });
 
   return (
     <div className={classes.root}>
       <Image
-        alt={profile.name}
+        alt={profile.login}
         className={classes.avatar}
         height={288}
         src={profile.avatarUrl}

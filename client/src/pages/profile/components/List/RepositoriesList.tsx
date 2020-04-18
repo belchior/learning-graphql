@@ -1,5 +1,5 @@
 import React from 'react';
-import graphql from 'babel-plugin-relay/macro';
+import { graphql } from 'babel-plugin-relay/macro';
 import { createPaginationContainer } from 'react-relay';
 
 import List from './List';
@@ -16,7 +16,7 @@ interface IProps {
 
 const RepositoriesList = (props: IProps) => {
   const { relay, owner } = props;
-  const repositories = edgesToArray(owner.repositories);
+  const repositories = edgesToArray(owner.repositories || { edges: [] });
 
   return (
     <List relay={relay}>

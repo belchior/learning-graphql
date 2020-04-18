@@ -34,6 +34,10 @@ interface OrganizationNavigatorProps {
   profile: IOrganization
   tabName: string
 }
+interface ContentProps {
+  profile: IOrganization
+  isLoading: boolean
+}
 
 const tabs: TOrganizationTabs[] = ['repositories', 'people'];
 
@@ -95,7 +99,7 @@ const OrganizationNavigator = (props: OrganizationNavigatorProps) => {
     setTabIndex(index);
   };
 
-  const Content = props => {
+  const Content = (props: ContentProps) => {
     const { isLoading, profile } = props;
     const Skeleton = ['repositories', 'starredRepositories'].includes(tabName)
       ? () => <RepositoryItemSkeleton />

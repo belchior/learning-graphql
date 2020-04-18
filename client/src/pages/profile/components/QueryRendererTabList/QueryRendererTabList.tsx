@@ -1,5 +1,5 @@
 import React from 'react';
-import graphql from 'babel-plugin-relay/macro';
+import { graphql } from 'babel-plugin-relay/macro';
 import { QueryRenderer } from 'react-relay';
 import { useParams } from 'react-router-dom';
 
