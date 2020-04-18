@@ -1,12 +1,11 @@
 import React from 'react';
-import { graphql } from 'babel-plugin-relay/macro';
 import { createPaginationContainer } from 'react-relay';
 
 import List from './List';
-import UserItem from '../Item/UserItem';
-import { edgesToArray } from 'utils/array';
-import { getVariables } from 'pages/profile/Profile.relay';
+import UserItem from 'pages/profile/components/UserItem/UserItem';
 import { IRelay, IUser } from 'utils/interfaces';
+import { connectionConfig, fragmentSpec } from './FollowingList.relay';
+import { edgesToArray } from 'utils/array';
 
 
 interface IProps {
@@ -25,35 +24,4 @@ const FollowingList = (props: IProps) => {
   );
 };
 
-export default createPaginationContainer(
-  FollowingList,
-  {
-    user: graphql`
-      fragment FollowingList_user on User
-        @argumentDefinitions(
-          count: { type: "Int", defaultValue: 5 }
-          cursor: { type: "String" }
-        ) {
-        following(first: $count after: $cursor)
-          @connection(key: "FollowingList_following") {
-          edges {
-            node {
-              id
-              ...UserItem_user
-            }
-          }
-        }
-      }
-    `
-  },
-  {
-    getVariables,
-    query: graphql`
-      query FollowingListQuery($cursor: String $login: String!) {
-        user(login: $login) {
-          ...FollowingList_user @arguments(cursor: $cursor)
-        }
-      }
-    `
-  }
-);
+export default createPaginationContainer(FollowingList, fragmentSpec, connectionConfig);

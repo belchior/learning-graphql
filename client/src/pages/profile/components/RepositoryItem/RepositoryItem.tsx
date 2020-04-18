@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { graphql } from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay';
 
 import ForkIcon from 'components/Icons/Fork';
@@ -9,6 +8,7 @@ import LicenseIcon from 'components/Icons/License';
 import Title from 'components/Title/Title';
 import { useStyles } from './RepositoryItem.styles';
 import { IRepository } from 'utils/interfaces';
+import { fragmentSpec } from './RepositoryItem.relay';
 
 
 interface IProps {
@@ -46,30 +46,4 @@ const RepositoryItem = (props: IProps) => {
   );
 };
 
-export default createFragmentContainer(
-  RepositoryItem,
-  {
-    repository: graphql`
-      fragment RepositoryItem_repository on Repository {
-        description
-        forkCount
-        id
-        licenseInfo {
-          name
-        }
-        name
-        owner {
-          avatarUrl
-          login
-          url
-        }
-        primaryLanguage {
-          color
-          name
-        }
-        url
-      }
-    `
-  },
-);
-
+export default createFragmentContainer(RepositoryItem, fragmentSpec);

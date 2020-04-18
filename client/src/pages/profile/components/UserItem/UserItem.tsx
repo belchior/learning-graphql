@@ -1,15 +1,15 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import { graphql } from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay';
+import Typography from '@material-ui/core/Typography';
 
 import Anchor from 'components/Anchor/Anchor';
 import Image from 'components/Image/Image';
-import OrganizationIcon from 'components/Icons/Organization';
 import LocationIcon from 'components/Icons/Location';
+import OrganizationIcon from 'components/Icons/Organization';
 import Title from 'components/Title/Title';
-import { useStyles } from './UserItem.styles';
 import { IUser } from 'utils/interfaces';
+import { fragmentSpec } from './UserItem.relay';
+import { useStyles } from './UserItem.styles';
 
 
 interface IProps {
@@ -63,19 +63,4 @@ const UserItem = (props: IProps) => {
   );
 };
 
-export default createFragmentContainer(
-  UserItem,
-  {
-    user: graphql`
-      fragment UserItem_user on User {
-        avatarUrl
-        bio
-        company
-        location
-        login
-        name
-        url
-      }
-    `
-  },
-);
+export default createFragmentContainer(UserItem, fragmentSpec);

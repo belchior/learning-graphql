@@ -22,11 +22,11 @@ const query = graphql`
     $starredRepositories: Boolean!
   ) {
     profile(login: $login) {
-      ...FollowersList_user @include(if: $followers) @arguments(cursor: $cursor)
-      ...FollowingList_user @include(if: $following) @arguments(cursor: $cursor)
-      ...PeopleList_organization @include(if: $people) @arguments(cursor: $cursor)
-      ...RepositoriesList_owner @include(if: $repositories) @arguments(cursor: $cursor)
-      ...StarredRepositoriesList_user @include(if: $starredRepositories) @arguments(cursor: $cursor)
+      ...FollowersListRelay_user @include(if: $followers) @arguments(cursor: $cursor)
+      ...FollowingListRelay_user @include(if: $following) @arguments(cursor: $cursor)
+      ...PeopleListRelay_organization @include(if: $people) @arguments(cursor: $cursor)
+      ...RepositoriesListRelay_owner @include(if: $repositories) @arguments(cursor: $cursor)
+      ...StarredRepositoriesListRelay_user @include(if: $starredRepositories) @arguments(cursor: $cursor)
     }
   }
 `;
