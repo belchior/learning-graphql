@@ -3,18 +3,18 @@ import React from 'react';
 import { useStyles } from './Image.styles';
 
 
+interface IFallbackProps {
+  alt: string
+  className?: string
+  height?: number
+  width?: number
+}
 interface IImageProps {
   alt: string
   className?: string
   fallback?: JSX.Element
   height?: number
   src: string
-  width?: number
-}
-interface IFallbackProps {
-  alt: string
-  className?: string
-  height?: number
   width?: number
 }
 

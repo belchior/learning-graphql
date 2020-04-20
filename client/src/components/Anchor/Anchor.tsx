@@ -7,10 +7,11 @@ import { useStyles } from './Anchor.styles';
 
 interface IProps {
   children: React.ReactNode
-  className?: string,
+  className?: string
   decoration?: 'primary' | 'secondary' | 'contained'
   external?: boolean
   href: string
+  title?: string
   variant?: (
     'button' | 'caption' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'inherit' |
     'overline' | 'subtitle1' | 'subtitle2' | 'body1' | 'body2' | 'srOnly'

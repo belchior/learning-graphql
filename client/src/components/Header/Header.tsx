@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <div className={classes.root}>
       <Container maxWidth="xl">
-        <Anchor href="/"><GithubIcon /></Anchor>
+        <Anchor href="/" title="Go to home"><GithubIcon /></Anchor>
       </Container>
     </div>
   );

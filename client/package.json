@@ -19,7 +19,7 @@
     "get-schema": "cd ../server && npm run write-schema && cd ../client",
     "relay": "relay-compiler --src ./src --schema ./src/schema.graphql --language typescript",
     "test": "react-scripts test",
-    "test:ci": "jest --coverage --ci"
+    "test:ci": "cross-env CI=true react-scripts test --coverage"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.7",
@@ -41,6 +41,7 @@
     "@typescript-eslint/parser": "^2.28.0",
     "babel-plugin-relay": "^9.0.0",
     "concurrently": "^5.1.0",
+    "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-plugin-jest": "^23.8.2",
     "esm": "^3.2.25",
@@ -66,7 +67,10 @@
         "lines": 80,
         "statements": 80
       }
-    }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.tsx"
+    ]
   },
   "browserslist": {
     "production": [
