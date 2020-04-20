@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { graphql } from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay';
 
 import Anchor from 'components/Anchor/Anchor';
@@ -10,6 +9,7 @@ import LocationIcon from 'components/Icons/Location';
 import Title from 'components/Title/Title';
 import { useStyles } from './OrganizationHeader.styles';
 import { IOrganization } from 'utils/interfaces';
+import { fragmentSpec } from './OrganizationHeader.relay';
 
 
 interface IProps {
@@ -56,20 +56,5 @@ const OrganizationHeader = (props: IProps) => {
   );
 };
 
-export default createFragmentContainer(
-  OrganizationHeader,
-  {
-    profile: graphql`
-      fragment OrganizationHeader_profile on Organization {
-        avatarUrl
-        description
-        location
-        login
-        name
-        url
-        websiteUrl
-      }
-    `
-  }
-);
+export default createFragmentContainer(OrganizationHeader, fragmentSpec);
 

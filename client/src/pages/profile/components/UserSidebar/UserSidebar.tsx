@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { graphql } from 'babel-plugin-relay/macro';
 import { createPaginationContainer } from 'react-relay';
 
 import Anchor from 'components/Anchor/Anchor';
@@ -11,8 +10,8 @@ import OwnerList from 'pages/profile/components/ProfileOwnerList/ProfileOwnerLis
 import Title from 'components/Title/Title';
 import { IUser } from 'utils/interfaces';
 import { edgesToArray } from 'utils/array';
-import { getVariables } from 'pages/profile/Profile.relay';
 import { useStyles } from './UserSidebar.styles';
+import { connectionConfig, fragmentSpec } from './UserSidebar.relay';
 
 
 interface IProps {
@@ -59,44 +58,4 @@ const UserSidebar = (props: IProps) => {
   );
 };
 
-export default createPaginationContainer(
-  UserSidebar,
-  {
-    profile: graphql`
-      fragment UserSidebar_profile on User
-        @argumentDefinitions(
-          count: { type: "Int", defaultValue: 5 }
-          cursor: { type: "String" }
-        ) {
-        avatarUrl
-        bio
-        email
-        login
-        name
-        websiteUrl
-        organizations(first: $count after: $cursor)
-          @connection(key: "UserSidebar_organizations") {
-          edges {
-            node {
-              avatarUrl
-              id
-              login
-              name
-              url
-            }
-          }
-        }
-      }
-    `
-  },
-  {
-    getVariables,
-    query: graphql`
-      query UserSidebarQuery($cursor: String $login: String!) {
-        profile(login: $login) {
-          ...UserSidebar_profile @arguments(cursor: $cursor)
-        }
-      }
-    `
-  }
-);
+export default createPaginationContainer(UserSidebar, fragmentSpec, connectionConfig);

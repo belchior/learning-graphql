@@ -15,7 +15,7 @@ export const query = graphql`
       id
       __typename
       ... on User {
-        ...UserSidebar_profile
+        ...UserSidebarRelay_profile
         ...FollowersListRelay_user @include(if: $followers) @arguments(cursor: $cursor)
         ...FollowingListRelay_user @include(if: $following) @arguments(cursor: $cursor)
         ...RepositoriesListRelay_owner @include(if: $repositories) @arguments(cursor: $cursor)
@@ -23,7 +23,7 @@ export const query = graphql`
       }
 
       ... on Organization {
-        ...OrganizationHeader_profile
+        ...OrganizationHeaderRelay_profile
         ...RepositoriesListRelay_owner @include(if: $repositories) @arguments(cursor: $cursor)
         ...PeopleListRelay_organization @include(if: $people) @arguments(cursor: $cursor)
       }
