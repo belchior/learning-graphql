@@ -1,0 +1,25 @@
+{
+  "name": "learning-graphql",
+  "version": "1.0.0",
+  "description": "The purpose of this repository is to practice GraphQL acquired knowledge as well as your ecosystem",
+  "author": "Belchior",
+  "license": "MIT",
+  "scripts": {
+    "client:lint": "cd client && npm run lint && cd ..",
+    "client:start": "cd client && npm run start",
+    "client:test": "cd client && npm run test:ci && cd ..",
+    "lint": "npm run client:lint && npm run server:lint",
+    "server:lint": "cd server && npm run lint && cd ..",
+    "server:start": "cd server && npm run start:ts",
+    "server:test": "cd server && npm run test:ci && cd ..",
+    "test": "npm run client:test && npm run server:test"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint && npm run test"
+    }
+  }
+}

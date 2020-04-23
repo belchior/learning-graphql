@@ -48,6 +48,7 @@ You can use the environment variable `DEBUG` to enable some level of debug, it's
 
 
 ### Client
+In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency, you must install it and make it available in the environment `PATH` and then
 
 ```shell
 cd ./client
