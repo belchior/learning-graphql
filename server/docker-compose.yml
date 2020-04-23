@@ -24,8 +24,9 @@ services:
     command: ["npm", "run", "start:ts"]
     restart: always
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL='mongodb://database:27017/learning-graphql'
+      - DEBUG=${DEBUG}
+      - NODE_ENV={NODE_ENV}
+      - DATABASE_URL=mongodb://database:27017/learning-graphql
     ports:
       - "${PORT}:4000"
     volumes:
