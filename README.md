@@ -20,6 +20,7 @@ The `client` is based on
 - [Material-UI](https://github.com/mui-org/material-ui)
 - [Create React App](https://github.com/facebook/create-react-app)
 
+The server implement the [GraphQL Cursor Connections Specification](https://relay.dev/graphql/connections.htm) to handle paginated list and are compliance with [Relay GraphQL Server Specification](https://relay.dev/docs/en/graphql-server-specification.html) to take's advantages of Relay Modern features.
 
 ## Development
 
@@ -58,4 +59,10 @@ npm install
 start client in development mode
 ```shell
 npm run start
+```
+
+### Integration between server and client
+After server change some definition inside `server/src/graphql` the client must run the above script to update the `client/src/schema.graphql`.
+```shell
+npm run get-schema
 ```
