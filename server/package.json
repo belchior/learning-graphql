@@ -1,13 +1,18 @@
 {
-  "name": "server",
+  "name": "learning-graphql-server",
   "description": "server",
   "version": "0.1.0",
   "author": "Belchior Oliveira",
   "license": "MIT",
+  "homepage": "https://belchior-learning-graphql.herokuapp.com",
   "engines": {
     "node": "12.x"
   },
   "main": "build/src/server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/belchior/learning-graphql.git"
+  },
   "scripts": {
     "build": "tsc --project tsconfig.prod.json",
     "lint": "tsc --noEmit && eslint 'src/**/*.ts'",
