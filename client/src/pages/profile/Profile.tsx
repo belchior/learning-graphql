@@ -58,7 +58,7 @@ const Profile = () => {
         if (error) return <div>Error!</div>;
         if (!props) return <Loading />;
 
-        switch (props.profile.__typename) {
+        switch (props.profile?.__typename) {
           case 'User': return <UserProfile {...props as any} tabName={tabName as TUserTabs} />;
           case 'Organization': return <OrganizationProfile {...props as any} tabName={tabName as TOrganizationTabs} />;
           default: return <NotFound />;
