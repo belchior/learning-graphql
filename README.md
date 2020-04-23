@@ -40,22 +40,22 @@ npm run start:ts
 #### Debug
 You can use the environment variable `DEBUG` to enable some level of debug, it's possible to use more than one, like: `DEBUG='db query'`
 
-| value | description |
-|-------|-------------|
-| db | enable database log |
-| query | enable GraphQL query log |
-| * | enable full application log |
+| value | description                 |
+|-------|-----------------------------|
+| db    | enable database log         |
+| query | enable GraphQL query log    |
+| *     | enable full application log |
 
 
 ### Client
-In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency, you must install it and make it available in the environment `PATH` and then
+In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency to enable the `--watch` feature, you must install it first and make it available at `PATH` environment variable after that you are ready to install client dependencies.
 
 ```shell
 cd ./client
 npm install
 ```
 
-start client in develop mode
+start client in development mode
 ```shell
 npm run start
 ```
