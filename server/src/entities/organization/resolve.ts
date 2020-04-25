@@ -10,6 +10,8 @@ import { userProjection } from '../user/loader';
 
 
 export const Organization = {
+  id: async (parent: IOrganizationDocument) => parent._id.toString(),
+
   people: async (parent: IOrganizationDocument, args: IPaginationArgs) => {
     const pagination = paginationArgs(args);
     const itemsPipeline = [

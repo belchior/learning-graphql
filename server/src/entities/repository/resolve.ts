@@ -1,11 +1,12 @@
 
-import { Repository as RepositoryModel } from './model';
+import { Repository as RepositoryModel, IRepositoryDocument } from './model';
 import { handleError } from '../../utils/error-handler';
 import { findRepositoryOwner } from './loader';
-import { IRepositoryOutput } from '../../graphql/interfaces';
 
 export const Repository = {
-  owner: async (parent: IRepositoryOutput) => {
+  id: async (parent: IRepositoryDocument) => parent._id.toString(),
+
+  owner: async (parent: IRepositoryDocument) => {
     return findRepositoryOwner.load(JSON.stringify(parent.owner));
   },
 };

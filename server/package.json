@@ -24,6 +24,7 @@
     "write-schema": "ts-node scripts/write-schema"
   },
   "dependencies": {
+    "apollo-server-express": "^2.12.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dataloader": "^2.0.0",
@@ -82,6 +83,6 @@
     "ignore": [
       "src/**/*.spec.ts"
     ],
-    "exec": "ts-node ./src/server.ts"
+    "exec": "ts-node ./src/apollo-server.ts"
   }
 }

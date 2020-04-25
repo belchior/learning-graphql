@@ -80,6 +80,8 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
 };
 
 export const User = {
+  id: async (parent: IUserDocument) => parent._id.toString(),
+
   followers: async (parent: IUserDocument, args: IPaginationArgs) => {
     try {
       const config = { parent, args, fieldName: 'followers', collectionName: 'users' };
