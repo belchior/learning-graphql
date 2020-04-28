@@ -1,6 +1,6 @@
 import { Query as organizationQuery } from '../organization/resolve';
 import { Query as userQuery } from '../user/resolve';
-import { TArgs } from '../../graphql/interfaces';
+import { TArgs } from '../../apollo/interfaces';
 import { handleError } from '../../utils/error-handler';
 
 

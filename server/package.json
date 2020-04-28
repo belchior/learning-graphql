@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.prod.json",
     "lint": "tsc --noEmit && eslint 'src/**/*.ts'",
-    "start": "node build/src/server.js",
+    "start": "node build/server.js",
     "start:ts": "nodemon",
     "start:debug": "cross-env DEBUG='*' npm run start:ts",
     "test": "jest --watch",
@@ -83,6 +83,6 @@
     "ignore": [
       "src/**/*.spec.ts"
     ],
-    "exec": "ts-node ./src/apollo-server.ts"
+    "exec": "ts-node ./src/server.ts"
   }
 }

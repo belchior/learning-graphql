@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 
-import { IPaginationArgs } from '../graphql/interfaces';
+import { IPaginationArgs } from '../apollo/interfaces';
 import { validateArgs } from './arguments';
 
 

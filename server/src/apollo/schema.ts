@@ -14,15 +14,15 @@ const interfaceResolve = {
   },
   ProfileOwner: {
     __resolveType: (obj: { __typename: string }) => {
-      const knownImplemetors = ['User', 'Organization'];
-      if (knownImplemetors.includes(obj.__typename)) return obj.__typename;
+      const knownImplementors = ['User', 'Organization'];
+      if (knownImplementors.includes(obj.__typename)) return obj.__typename;
       throw new Error(`Invalid typename: ${obj.__typename}`);
     },
   },
   RepositoryOwner: {
     __resolveType: (obj: { __typename: string }) => {
-      const knownImplemetors = ['User', 'Organization'];
-      if (knownImplemetors.includes(obj.__typename)) return obj.__typename;
+      const knownImplementors = ['User', 'Organization'];
+      if (knownImplementors.includes(obj.__typename)) return obj.__typename;
       throw new Error(`Invalid typename: ${obj.__typename}`);
     },
   }

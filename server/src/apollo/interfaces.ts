@@ -22,3 +22,15 @@ export interface IPaginationArgs {
   before?: string
   after?: string
 }
+
+
+/*
+  Input
+*/
+export type TArgs = {
+  [keyName: string]: any
+}
+export interface IInputArgs {
+  id: string
+  input: TArgs
+}

@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
 import { IOrganizationDocument, Organization as OrganizationModel } from '../organization/model';
-import { IPaginationArgs, TArgs } from '../../graphql/interfaces';
+import { IPaginationArgs, TArgs } from '../../apollo/interfaces';
 import { IRepositoryDocument, Repository as RepositoryModel } from '../repository/model';
 import { findOrganizationByLogin } from './loader';
 import { getCursorPagination, paginationArgs, } from '../../cursor-connection/referencePagination';

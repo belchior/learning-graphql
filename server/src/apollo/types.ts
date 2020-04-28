@@ -45,12 +45,12 @@ export const typeDefs = gql`
     startCursor: String
   }
 
-  interface ProfileOwner {
+  interface ProfileOwner implements Node {
     id: ID!
     login: String!
   }
 
-  interface RepositoryOwner {
+  interface RepositoryOwner implements Node {
     avatarUrl: String!
     id: ID!
     login: String!

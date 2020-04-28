@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import hash from 'object-hash';
 import querystring from 'querystring';
 import { intersection } from 'ramda';
+import { Express } from 'express-serve-static-core';
 
 import { DEBUG, SERVER_URL } from '../enviroment';
 
@@ -12,12 +13,12 @@ type TDebugMap = {
 type TPredicate = (i: string) => boolean
 
 
-export const debugGraphqlQuery = (app: any) => {
+export const debugGraphqlQuery = (server: Express) => {
   const queryLog: any = {};
 
-  app.use(bodyParser.json());
+  server.use(bodyParser.json());
 
-  app.use('/goto', (req: any, res: any) => {
+  server.use('/goto', (req: any, res: any) => {
     const { id } = req.query;
     if (!queryLog[id]) {
       console.error('Failed to find a stored query');
@@ -26,7 +27,7 @@ export const debugGraphqlQuery = (app: any) => {
     return res.redirect(queryLog[id]);
   });
 
-  app.use('/graphql', (req: any, res: any, next: Function) => {
+  server.use('/graphql', (req: any, res: any, next: Function) => {
     const { query, variables } = req.body;
     const queryParams = querystring.stringify({
       query,
@@ -38,7 +39,7 @@ export const debugGraphqlQuery = (app: any) => {
     next();
   });
 
-  return app;
+  return server;
 };
 
 const toObject = (list: string[], predicate: TPredicate) => {

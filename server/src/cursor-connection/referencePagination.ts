@@ -1,6 +1,6 @@
 import mongoose, { Types, Model as IModel, Document } from 'mongoose';
 
-import { IEdge, IPageInfo, IPaginationArgs, ICursorConnection } from '../graphql/interfaces';
+import { IEdge, IPageInfo, IPaginationArgs, ICursorConnection } from '../apollo/interfaces';
 import { base64ToString, stringToBase64 } from '../utils/converter';
 import { validateArgs } from './arguments';
 
@@ -86,9 +86,9 @@ export async function getCursorPagination <T extends Document>(
   const { Model, getPageInfoStage, itemsPipeline } = config;
 
   const items = await Model.aggregate(itemsPipeline);
-  if (items.length === 0) return emptyCursorConnection();
+  if (items.length === 0) return emptyCursorConnection<T>();
 
-  const pageInfo = await getPageInfoNew({ Model, getPageInfoStage, items, });
+  const pageInfo = await getPageInfo<T>({ Model, getPageInfoStage, items, });
   const edges = getEdges<T>(items);
 
   return { pageInfo, edges };
@@ -101,7 +101,7 @@ function getEdges <T extends Document>(items: T[]): IEdge<T>[] {
   }));
 }
 
-async function getPageInfoNew<T extends Document>(config: IGetPageInfoNew<T>) {
+async function getPageInfo<T extends Document>(config: IGetPageInfoNew<T>) {
   const { Model, getPageInfoStage, items } = config;
 
   const firstItem = items[0];
