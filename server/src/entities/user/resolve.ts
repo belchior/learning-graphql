@@ -1,7 +1,7 @@
 import mongoose, { Types, Model as IModel, Document } from 'mongoose';
 
 import { IOrganizationDocument } from '../organization/model';
-import { IPaginationArgs, IUserOutput, TArgs } from '../../graphql/interfaces';
+import { IPaginationArgs, TArgs } from '../../graphql/interfaces';
 import { IRepositoryDocument, Repository as RepositoryModel } from '../repository/model';
 import { IUserDocument, User as UserModel } from './model';
 import { findUserByLogin } from './loader';
@@ -22,7 +22,7 @@ interface IPaginatedQueryUserFieldConfig {
   collectionName: string
 }
 
-const handleInvalidId = (fn: (p: IUserOutput, a: any) => Promise<unknown>) => (...args: [IUserOutput, any]) => {
+const handleInvalidId = (fn: (p: IUserDocument, a: any) => Promise<unknown>) => (...args: [IUserDocument, any]) => {
   return mongoose.Types.ObjectId.isValid(args[1].id)
     ? fn(...args)
     : handleError(new Error(`Invalid args.: ${args[1].id}`));

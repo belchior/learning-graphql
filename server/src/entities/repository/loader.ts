@@ -6,11 +6,11 @@ import { Organization as OrganizationModel } from '../organization/model';
 import { handleError } from '../../utils/error-handler';
 import { userProjection } from '../user/loader';
 import { IDBRef } from '../interfaces';
-import { IRepositoryOutput } from '../../graphql/interfaces';
+import { IRepositoryDocument } from './model';
 
 const unserializeOwners = (serializedOwners: readonly string[]) => serializedOwners.map(item => JSON.parse(item));
 
-const findRepositoriesOwners = async (serializedOwners: readonly string[]): Promise<IRepositoryOutput[]> => {
+const findRepositoriesOwners = async (serializedOwners: readonly string[]): Promise<IRepositoryDocument[]> => {
   const owners: IDBRef[] = unserializeOwners(serializedOwners);
 
   const ids: { [key: string]: Types.ObjectId[] } = {
