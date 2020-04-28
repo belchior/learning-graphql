@@ -63,7 +63,7 @@
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     // assumeChangesOnlyAffectDirectDependencies: true, /* usefull your project is large and the compiler are slow */
-    "resolveJsonModule": true
+    "resolveJsonModule": false
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "build"]

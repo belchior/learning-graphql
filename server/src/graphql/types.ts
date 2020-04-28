@@ -28,6 +28,7 @@ const NodeInterface = new GraphQLInterfaceType({
 });
 
 export const ProfileOwnerInterface = new GraphQLInterfaceType({
+  interfaces: [NodeInterface],
   name: 'ProfileOwner',
   fields: () => ({
     id: idType(),
@@ -43,6 +44,7 @@ export const ProfileOwnerInterface = new GraphQLInterfaceType({
 });
 
 export const RepositoryOwnerInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
+  interfaces: [NodeInterface],
   name: 'RepositoryOwner',
   fields: () => ({
     avatarUrl: { type: new GraphQLNonNull(GraphQLString) },

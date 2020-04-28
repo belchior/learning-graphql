@@ -4,5 +4,5 @@
     "sourceMap": false,
     "removeComments": true
   },
-  "exclude": ["node_modules", "build", "src/**/*.spec.ts"]
+  "exclude": ["node_modules", "build", "src/**/*.spec.ts", "src/utils/mockData.ts"]
 }

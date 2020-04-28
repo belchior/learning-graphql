@@ -1,6 +1,16 @@
 import { Types } from 'mongoose';
 
-const ownerDataUser = {
+export const ownerDataOrganization = {
+  __typename: 'Organization',
+  _id: Types.ObjectId('5e61c002081d28c0fd5c3489'),
+  avatarUrl: 'http://acme.com/avatar.jpg',
+  email: 'contact@acme.com',
+  login: 'acme',
+  name: 'ACME Corporation',
+  url: 'https://github.com/acme',
+};
+
+export const ownerDataUser = {
   __typename: 'User',
   _id: Types.ObjectId('5e5580d6f72291487ec648cf'),
   avatarUrl: 'http://johndoe.com/avatar.jpg',
@@ -10,19 +20,31 @@ const ownerDataUser = {
   url: 'https://github.com/johndoe',
 };
 
-const repositoryData = {
+export const repositoryDataOrganization = {
   __typename: 'Repository',
   _id: Types.ObjectId('5e74ce7ff3bb02311c781c0e'),
   description: 'repo description',
   forkCount: 2,
   licenseInfo: { name: 'MIT License' },
   name: 'Repo name',
-  owner: ownerDataUser,
+  owner: { _id: ownerDataOrganization._id, ref: 'organizations' },
   primaryLanguage: { name: 'JavaScript', color: '#f1e05a', },
   url: 'https://github.com/userLogin/repo-name',
 };
 
-const starredRepositoryData = {
+export const repositoryData = {
+  __typename: 'Repository',
+  _id: Types.ObjectId('5e74ce7ff3bb02311c781c0e'),
+  description: 'repo description',
+  forkCount: 2,
+  licenseInfo: { name: 'MIT License' },
+  name: 'Repo name',
+  owner: { _id: ownerDataUser._id, ref: 'users' },
+  primaryLanguage: { name: 'JavaScript', color: '#f1e05a', },
+  url: 'https://github.com/userLogin/repo-name',
+};
+
+export const starredRepositoryData = {
   __typename: 'Repository',
   _id: Types.ObjectId('5e74ce7ff3bb02311c781c0e'),
   description: 'starred repo description',
@@ -34,7 +56,7 @@ const starredRepositoryData = {
   url: 'https://github.com/userLogin/repo-name',
 };
 
-const organizationData = {
+export const organizationData = {
   __typename: 'Organization',
   _id: Types.ObjectId('5e61c002081d28c0fd5c3489'),
   avatarUrl: 'http://acme.com/avatar.jpg',
@@ -48,7 +70,7 @@ const organizationData = {
   websiteUrl: 'http://acme.com',
 };
 
-const followerData = {
+export const followerData = {
   __typename: 'User',
   _id: Types.ObjectId('5e5580d6f72291487ec648d1'),
   avatarUrl: 'http://richardroe.com/avatar.jpg',
@@ -58,7 +80,7 @@ const followerData = {
   url: 'https://github.com/richardroe',
 };
 
-const followingData = {
+export const followingData = {
   __typename: 'User',
   _id: Types.ObjectId('5e74ce7ff3bb02311c781c20'),
   avatarUrl: 'http://charlydoe.com/avatar.jpg',
@@ -68,7 +90,7 @@ const followingData = {
   url: 'https://github.com/charlydoe',
 };
 
-const userData = {
+export const userData = {
   __typename: 'User',
   _id: Types.ObjectId('5e5580d6f72291487ec648cf'),
   avatarUrl: 'http://johndoe.com/avatar.jpg',
@@ -87,18 +109,8 @@ const userData = {
   websiteUrl: 'http://johndoe.com',
 };
 
-const pageInfo = {
+export const pageInfo = {
   hasPreviousPage: false,
   hasNextPage: false,
 };
 
-export {
-  followerData,
-  followingData,
-  organizationData,
-  ownerDataUser,
-  pageInfo,
-  repositoryData,
-  starredRepositoryData,
-  userData,
-};

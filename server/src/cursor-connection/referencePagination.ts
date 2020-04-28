@@ -80,15 +80,13 @@ export const emptyCursorConnection = <T>(): ICursorConnection<T> => ({
   }
 });
 
-export async function getCursorPagination <T extends Document>(
-  config: IGetCursorPaginationConfig
-): Promise<ICursorConnection<T>> {
+export async function getCursorPagination <T extends Document>(config: IGetCursorPaginationConfig) {
   const { Model, getPageInfoStage, itemsPipeline } = config;
 
-  const items = await Model.aggregate(itemsPipeline);
-  if (items.length === 0) return emptyCursorConnection();
+  const items = await Model.aggregate<T>(itemsPipeline);
+  if (items.length === 0) return emptyCursorConnection<T>();
 
-  const pageInfo = await getPageInfoNew({ Model, getPageInfoStage, items, });
+  const pageInfo = await getPageInfo<T>({ Model, getPageInfoStage, items, });
   const edges = getEdges<T>(items);
 
   return { pageInfo, edges };
@@ -101,7 +99,7 @@ function getEdges <T extends Document>(items: T[]): IEdge<T>[] {
   }));
 }
 
-async function getPageInfoNew<T extends Document>(config: IGetPageInfoNew<T>) {
+async function getPageInfo<T extends Document>(config: IGetPageInfoNew<T>) {
   const { Model, getPageInfoStage, items } = config;
 
   const firstItem = items[0];
@@ -111,7 +109,7 @@ async function getPageInfoNew<T extends Document>(config: IGetPageInfoNew<T>) {
   const pipeline = getPageInfoPipeline({ stagePrevious, stageNext, });
 
   const [data] = await Model.aggregate(pipeline);
-  const pageInfo: IPageInfo = {
+  const pageInfo: IPageInfo<T> = {
     endCursor: keyToCursor(items[items.length -1]._id),
     hasNextPage: data.hasNextPage,
     hasPreviousPage: data.hasPreviousPage,
