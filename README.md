@@ -2,6 +2,8 @@
 
 > The purpose of this repository is to practice GraphQL acquired knowledge as well as your ecosystem
 
+[Demo](https://belchior-learning-graphql.herokuapp.com/)
+
 The purpose of this **branch** is to find out the best setup and usage of the specified stack. Each branch at this repo has a unique stack, take a look.
 
 ## Stack
@@ -27,6 +29,7 @@ The server implement the [GraphQL Cursor Connections Specification](https://rela
 ## Development
 
 ### Server
+
 the data used by this server is strongly based on the [GraphQL API of Github](https://developer.github.com/v4/explorer/), I don't know if I have legal right to share the data that I copy to develop this project, so you must provide your on data.
 
 After clone this repo you can enter in server directory and install all dependencies
