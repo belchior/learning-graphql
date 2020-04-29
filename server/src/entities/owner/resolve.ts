@@ -5,9 +5,9 @@ import { handleError } from '../../utils/error-handler';
 
 
 export const Query = {
-  profile: async (parent: any, args: TArgs) => {
-    const userPromise = userQuery.user(parent, args);
-    const organizationPromise = organizationQuery.organization(parent, args);
+  profile: async (parent: any, args: TArgs, context: any) => {
+    const userPromise = userQuery.user(parent, args, context);
+    const organizationPromise = organizationQuery.organization(parent, args, context);
     return Promise
       .all([userPromise, organizationPromise])
       .then(([user, organization]) => (user || organization))

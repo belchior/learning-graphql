@@ -1,10 +1,9 @@
 import mongoose, { Types, Model as IModel, Document } from 'mongoose';
 
 import { IOrganizationDocument } from '../organization/model';
-import { IPaginationArgs, TArgs } from '../../graphql/interfaces';
+import { IPaginationArgs, TArgs, IGraphQLContext } from '../../graphql/interfaces';
 import { IRepositoryDocument, Repository as RepositoryModel } from '../repository/model';
 import { IUserDocument, User as UserModel } from './model';
-import { findUserByLogin } from './loader';
 import { handleError, handleNotFound } from '../../utils/error-handler';
 import { paginationArgs, getCursorPagination, } from '../../cursor-connection/referencePagination';
 
@@ -153,8 +152,8 @@ export const User = {
 
 
 export const Query = {
-  user: async (parent: any, args: TArgs) => {
-    return findUserByLogin.load(args.login);
+  user: async (parent: any, args: TArgs, context: IGraphQLContext) => {
+    return context.loader.findUserByLogin.load(args.login);
   },
 };
 

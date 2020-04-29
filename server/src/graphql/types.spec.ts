@@ -3,9 +3,7 @@ import { GraphQLError, graphql } from 'graphql';
 import { Organization as OrganizationModel } from '../entities/organization/model';
 import { Repository as RepositoryModel } from '../entities/repository/model';
 import { User as UserModel } from '../entities/user/model';
-import { findOrganizationByLogin } from '../entities/organization/loader';
-import { findRepositoryOwner } from '../entities/repository/loader';
-import { findUserByLogin } from '../entities/user/loader';
+import { createLoaders } from '../entities/loaders';
 import {
   organizationData,
   ownerDataOrganization,
@@ -27,7 +25,6 @@ describe('Organization type', () => {
     beforeEach(() => {
       (OrganizationModel.find as jest.Mock).mockReset();
       (OrganizationModel.aggregate as jest.Mock).mockReset();
-      findOrganizationByLogin.clearAll();
     });
 
     it('should execute successfully', async () => {
@@ -63,7 +60,8 @@ describe('Organization type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -98,7 +96,8 @@ describe('Organization type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -123,7 +122,8 @@ describe('Organization type', () => {
       `;
       const error = new GraphQLError('Missing pagination boundaries');
       const expectedData = { data: { organization: null }, errors: [ error ] };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -135,7 +135,6 @@ describe('Organization type', () => {
       (OrganizationModel.find as jest.Mock).mockReset();
       (OrganizationModel.aggregate as jest.Mock).mockReset();
       (RepositoryModel.aggregate as jest.Mock).mockReset();
-      findOrganizationByLogin.clearAll();
     });
 
     it('should execute successfully', async () => {
@@ -171,7 +170,8 @@ describe('Organization type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -206,7 +206,8 @@ describe('Organization type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -231,7 +232,8 @@ describe('Organization type', () => {
       `;
       const error = new GraphQLError('Missing pagination boundaries');
       const expectedData = { data: { organization: null }, errors: [ error ] };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -244,8 +246,6 @@ describe('Repository type', () => {
     (OrganizationModel.find as jest.Mock).mockReset();
     (RepositoryModel.aggregate as jest.Mock).mockReset();
     (UserModel.find as jest.Mock).mockReset();
-    findRepositoryOwner.clearAll();
-    findUserByLogin.clearAll();
   });
 
   it('field id should return string type', async () => {
@@ -281,7 +281,8 @@ describe('Repository type', () => {
         }
       }
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -331,7 +332,8 @@ describe('Repository type', () => {
         }
       }
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -383,7 +385,8 @@ describe('Repository type', () => {
         }
       }
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(UserModel.find).toHaveBeenCalledTimes(2);
@@ -430,7 +433,8 @@ describe('Repository type', () => {
       },
       errors: [ error ]
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(UserModel.find).toHaveBeenCalledTimes(2);
@@ -443,7 +447,6 @@ describe('User type', () => {
     beforeEach(() => {
       (UserModel.find as jest.Mock).mockReset();
       (UserModel.aggregate as jest.Mock).mockReset();
-      findUserByLogin.clearAll();
     });
 
     it('should execute successfully', async () => {
@@ -479,7 +482,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -514,7 +518,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -538,7 +543,8 @@ describe('User type', () => {
       `;
       const error = new GraphQLError('Missing pagination boundaries');
       const expectedData = { data: { user: null }, errors: [ error ] };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -549,7 +555,6 @@ describe('User type', () => {
     beforeEach(() => {
       (UserModel.find as jest.Mock).mockReset();
       (UserModel.aggregate as jest.Mock).mockReset();
-      findUserByLogin.clearAll();
     });
 
     it('should execute successfully', async () => {
@@ -585,7 +590,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -620,7 +626,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -644,7 +651,8 @@ describe('User type', () => {
       `;
       const error = new GraphQLError('Missing pagination boundaries');
       const expectedData = { data: { user: null }, errors: [ error ] };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -655,7 +663,6 @@ describe('User type', () => {
     beforeEach(() => {
       (UserModel.find as jest.Mock).mockReset();
       (UserModel.aggregate as jest.Mock).mockReset();
-      findUserByLogin.clearAll();
     });
 
     it('should execute successfully', async () => {
@@ -691,7 +698,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -726,7 +734,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -750,7 +759,8 @@ describe('User type', () => {
       `;
       const error = new GraphQLError('Missing pagination boundaries');
       const expectedData = { data: { user: null }, errors: [ error ] };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -761,7 +771,6 @@ describe('User type', () => {
     beforeEach(() => {
       (UserModel.find as jest.Mock).mockReset();
       (RepositoryModel.aggregate as jest.Mock).mockReset();
-      findUserByLogin.clearAll();
     });
 
     it('should execute successfully', async () => {
@@ -797,7 +806,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -832,7 +842,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -856,7 +867,8 @@ describe('User type', () => {
       `;
       const error = new GraphQLError('Missing pagination boundaries');
       const expectedData = { data: { user: null }, errors: [ error ] };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -867,7 +879,6 @@ describe('User type', () => {
     beforeEach(() => {
       (UserModel.find as jest.Mock).mockReset();
       (UserModel.aggregate as jest.Mock).mockReset();
-      findUserByLogin.clearAll();
     });
 
     it('should execute successfully', async () => {
@@ -903,7 +914,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -938,7 +950,8 @@ describe('User type', () => {
           }
         }
       };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -962,7 +975,8 @@ describe('User type', () => {
       `;
       const error = new GraphQLError('Missing pagination boundaries');
       const expectedData = { data: { user: null }, errors: [ error ] };
-      const receivedData = await graphql(schema, query);
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
 
       expect(receivedData).toEqual(expectedData);
       expect(UserModel.find).toHaveBeenCalledTimes(1);

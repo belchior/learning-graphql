@@ -1,12 +1,11 @@
 import { Types } from 'mongoose';
 
 import { IOrganizationDocument, Organization as OrganizationModel } from '../organization/model';
-import { IPaginationArgs, TArgs } from '../../graphql/interfaces';
+import { IPaginationArgs, TArgs, IGraphQLContext } from '../../graphql/interfaces';
 import { IRepositoryDocument, Repository as RepositoryModel } from '../repository/model';
-import { findOrganizationByLogin } from './loader';
 import { getCursorPagination, paginationArgs, } from '../../cursor-connection/referencePagination';
 import { handleError } from '../../utils/error-handler';
-import { userProjection } from '../user/loader';
+import { userProjection } from '../user/find';
 
 
 export const Organization = {
@@ -88,7 +87,7 @@ export const Organization = {
 };
 
 export const Query = {
-  organization: async (parent: any, args: TArgs) => {
-    return findOrganizationByLogin.load(args.login);
+  organization: async (parent: any, args: TArgs, context: IGraphQLContext) => {
+    return context.loader.findOrganizationByLogin.load(args.login);
   }
 };
