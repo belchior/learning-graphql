@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 
 import { DATABASE_URL, CLIENT_URL, SERVER_URL, PORT, NODE_ENV } from './enviroment';
+import { createLoaders } from './entities/loaders';
 import { debugValues, debugGraphqlQuery } from './utils/debug';
 import { resolvers, typeDefs } from './apollo/schema';
 
@@ -12,6 +13,9 @@ const apolloServerConfig: ApolloServerExpressConfig = {
   resolvers,
   typeDefs,
   tracing: NODE_ENV === 'development',
+  context: () => ({
+    loader: createLoaders(),
+  })
 };
 const mongooseConfig = {
   useNewUrlParser: true,

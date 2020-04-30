@@ -3,10 +3,9 @@ import { makeExecutableSchema } from 'apollo-server-express';
 
 import { Organization as OrganizationModel } from '../entities/organization/model';
 import { User as UserModel } from '../entities/user/model';
+import { createLoaders } from '../entities/loaders';
 import { organizationData, userData } from '../utils/mockData';
 import { resolvers, typeDefs } from './schema';
-import { findUserByLogin } from '../entities/user/loader';
-import { findOrganizationByLogin } from '../entities/organization/loader';
 
 
 jest.mock('../entities/organization/model');
@@ -19,7 +18,6 @@ const schema = makeExecutableSchema({ typeDefs, resolvers, });
 describe('organization query', () => {
   beforeEach(() => {
     (OrganizationModel.find as jest.Mock).mockReset();
-    findOrganizationByLogin.clearAll();
   });
 
   it('should resolve to an Organization', async () => {
@@ -41,7 +39,8 @@ describe('organization query', () => {
         }
       }
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -59,7 +58,8 @@ describe('organization query', () => {
       'Field "organization" argument "login" of type "String!" is required, but it was not provided.'
     );
     const expectedData = { errors: [ error ] };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
   });
@@ -69,8 +69,6 @@ describe('profile query', () => {
   beforeEach(() => {
     (OrganizationModel.find as jest.Mock).mockReset();
     (UserModel.find as jest.Mock).mockReset();
-    findUserByLogin.clearAll();
-    findOrganizationByLogin.clearAll();
   });
 
   it('should resolve to UserType when login match a User', async () => {
@@ -93,7 +91,8 @@ describe('profile query', () => {
         }
       }
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -120,7 +119,8 @@ describe('profile query', () => {
         }
       }
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -142,7 +142,8 @@ describe('profile query', () => {
     `;
     const error = new GraphQLError('Invalid typename: unknown');
     const expectedData = { data: { profile: null }, errors: [error] };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
@@ -161,7 +162,8 @@ describe('profile query', () => {
       'Field "profile" argument "login" of type "String!" is required, but it was not provided.'
     );
     const expectedData = { errors: [ error ] };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
     expect(receivedData).toEqual(expectedData);
   });
 });
@@ -169,7 +171,6 @@ describe('profile query', () => {
 describe('user query', () => {
   beforeEach(() => {
     (UserModel.find as jest.Mock).mockReset();
-    findUserByLogin.clearAll();
   });
 
   it('should resolve to a User', async () => {
@@ -190,7 +191,8 @@ describe('user query', () => {
         }
       }
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(UserModel.find).toHaveBeenCalledTimes(1);
@@ -208,7 +210,8 @@ describe('user query', () => {
       'Field "user" argument "login" of type "String!" is required, but it was not provided.'
     );
     const expectedData = { errors: [ error ] };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
   });

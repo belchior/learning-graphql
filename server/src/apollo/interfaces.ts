@@ -1,3 +1,6 @@
+import DataLoader from 'dataloader';
+import { Document } from 'mongoose';
+
 
 /*
   Pagination
@@ -33,4 +36,9 @@ export type TArgs = {
 export interface IInputArgs {
   id: string
   input: TArgs
+}
+export interface IGraphQLContext {
+  loader: {
+    [key: string]: DataLoader<string, Document>
+  }
 }

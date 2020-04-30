@@ -3,8 +3,7 @@ import { makeExecutableSchema } from 'apollo-server-express';
 
 import { Organization as OrganizationModel } from '../entities/organization/model';
 import { User as UserModel } from '../entities/user/model';
-import { findOrganizationByLogin } from '../entities/organization/loader';
-import { findUserByLogin } from '../entities/user/loader';
+import { createLoaders } from '../entities/loaders';
 import { resolvers, typeDefs } from './schema';
 import { userData } from '../utils/mockData';
 
@@ -20,8 +19,6 @@ describe('schema', () => {
   beforeEach(() => {
     (OrganizationModel.find as jest.Mock).mockReset();
     (UserModel.find as jest.Mock).mockReset();
-    findUserByLogin.clearAll();
-    findOrganizationByLogin.clearAll();
   });
 
   it('should be parsed without errors', async () => {
@@ -44,7 +41,8 @@ describe('schema', () => {
         }
       }
     };
-    const receivedData = await graphql(schema, query);
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
     expect(OrganizationModel.find).toHaveBeenCalledTimes(1);
