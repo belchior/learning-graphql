@@ -1,27 +1,24 @@
 import React from 'react';
-import { createPaginationContainer } from 'react-relay';
 
 import List from './List';
 import RepositoryItem from '../RepositoryItem/RepositoryItem';
-import { IRelay, IUser } from 'utils/interfaces';
-import { connectionConfig, fragmentSpec } from './StarredRepositoriesList.relay';
+import { IUser } from 'utils/interfaces';
 import { edgesToArray } from 'utils/array';
 
 
 interface IProps {
-  relay: IRelay
   user: IUser
 }
 
 const StarredRepositoriesList = (props: IProps) => {
-  const { relay, user } = props;
+  const { user } = props;
   const repositories = edgesToArray(user.starredRepositories || { edges: [] });
 
   return (
-    <List relay={relay}>
+    <List>
       {repositories.map(repository => <RepositoryItem repository={repository} key={repository.id} />)}
     </List>
   );
 };
 
-export default createPaginationContainer(StarredRepositoriesList, fragmentSpec, connectionConfig);
+export default StarredRepositoriesList;

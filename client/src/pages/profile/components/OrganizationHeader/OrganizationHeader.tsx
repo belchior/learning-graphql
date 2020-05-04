@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { createFragmentContainer } from 'react-relay';
 
 import Anchor from 'components/Anchor/Anchor';
 import Image from 'components/Image/Image';
@@ -9,7 +8,6 @@ import LocationIcon from 'components/Icons/Location';
 import Title from 'components/Title/Title';
 import { useStyles } from './OrganizationHeader.styles';
 import { IOrganization } from 'utils/interfaces';
-import { fragmentSpec } from './OrganizationHeader.relay';
 
 
 interface IProps {
@@ -56,5 +54,5 @@ const OrganizationHeader = (props: IProps) => {
   );
 };
 
-export default createFragmentContainer(OrganizationHeader, fragmentSpec);
+export default OrganizationHeader;
 

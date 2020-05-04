@@ -1,5 +1,4 @@
 import React from 'react';
-import { createFragmentContainer } from 'react-relay';
 import Typography from '@material-ui/core/Typography';
 
 import Anchor from 'components/Anchor/Anchor';
@@ -8,7 +7,6 @@ import LocationIcon from 'components/Icons/Location';
 import OrganizationIcon from 'components/Icons/Organization';
 import Title from 'components/Title/Title';
 import { IUser } from 'utils/interfaces';
-import { fragmentSpec } from './UserItem.relay';
 import { useStyles } from './UserItem.styles';
 
 
@@ -63,4 +61,4 @@ const UserItem = (props: IProps) => {
   );
 };
 
-export default createFragmentContainer(UserItem, fragmentSpec);
+export default UserItem;

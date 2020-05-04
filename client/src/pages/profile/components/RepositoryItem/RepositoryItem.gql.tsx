@@ -1,9 +1,9 @@
-import { graphql } from 'babel-plugin-relay/macro';
+import { gql } from '@apollo/client';
 
 
-export const fragmentSpec = {
-  repository: graphql`
-    fragment RepositoryItemRelay_repository on Repository {
+export const fragment = {
+  repository: gql`
+    fragment RepositoryItem_fragment_repository on Repository {
       description
       forkCount
       id

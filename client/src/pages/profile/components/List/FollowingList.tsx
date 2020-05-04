@@ -1,27 +1,24 @@
 import React from 'react';
-import { createPaginationContainer } from 'react-relay';
 
 import List from './List';
 import UserItem from 'pages/profile/components/UserItem/UserItem';
-import { IRelay, IUser } from 'utils/interfaces';
-import { connectionConfig, fragmentSpec } from './FollowingList.relay';
+import { IUser } from 'utils/interfaces';
 import { edgesToArray } from 'utils/array';
 
 
 interface IProps {
-  relay: IRelay
   user: IUser
 }
 
 const FollowingList = (props: IProps) => {
-  const { relay, user } = props;
+  const { user } = props;
   const following = edgesToArray(user.following || { edges: [] });
 
   return (
-    <List relay={relay}>
+    <List>
       {following.map(user => <UserItem user={user} key={user.id} />)}
     </List>
   );
 };
 
-export default createPaginationContainer(FollowingList, fragmentSpec, connectionConfig);
+export default FollowingList;

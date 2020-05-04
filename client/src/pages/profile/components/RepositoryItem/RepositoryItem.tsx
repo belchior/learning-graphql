@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { createFragmentContainer } from 'react-relay';
 
 import ForkIcon from 'components/Icons/Fork';
 import Language from 'pages/profile/components/Language/Language';
@@ -8,7 +7,6 @@ import LicenseIcon from 'components/Icons/License';
 import Title from 'components/Title/Title';
 import { useStyles } from './RepositoryItem.styles';
 import { IRepository } from 'utils/interfaces';
-import { fragmentSpec } from './RepositoryItem.relay';
 
 
 interface IProps {
@@ -46,4 +44,4 @@ const RepositoryItem = (props: IProps) => {
   );
 };
 
-export default createFragmentContainer(RepositoryItem, fragmentSpec);
+export default RepositoryItem;

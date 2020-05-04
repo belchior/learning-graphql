@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { createPaginationContainer } from 'react-relay';
 
 import Anchor from 'components/Anchor/Anchor';
 import EmailIcon from 'components/Icons/Email';
@@ -11,7 +10,6 @@ import Title from 'components/Title/Title';
 import { IUser } from 'utils/interfaces';
 import { edgesToArray } from 'utils/array';
 import { useStyles } from './UserSidebar.styles';
-import { connectionConfig, fragmentSpec } from './UserSidebar.relay';
 
 
 interface IProps {
@@ -58,4 +56,4 @@ const UserSidebar = (props: IProps) => {
   );
 };
 
-export default createPaginationContainer(UserSidebar, fragmentSpec, connectionConfig);
+export default UserSidebar;

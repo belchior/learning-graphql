@@ -1,23 +1,16 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { useStyles } from './List.styles';
-import { IRelay } from 'utils/interfaces';
 
 
 interface IProps {
-  relay: IRelay
   children: React.ReactNode
 }
 
 const List = (props: IProps) => {
-  const { relay, children } = props;
+  const { children } = props;
   const classes = useStyles();
-
-  const handleLoadMore = () => {
-    if (relay.hasMore() === false || relay.isLoading() === true) return;
-    relay.loadMore();
-  };
 
   return (
     <div className={classes.list}>
@@ -26,11 +19,6 @@ const List = (props: IProps) => {
         : (
           <React.Fragment>
             {children}
-            <div className={classes.actionContainer}>
-              <Button onClick={handleLoadMore} disabled={relay.hasMore() === false}>
-                {relay.hasMore() ? 'Load more' : 'No more items to show'}
-              </Button>
-            </div>
           </React.Fragment>
         )
       }

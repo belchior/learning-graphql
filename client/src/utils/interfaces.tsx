@@ -80,21 +80,9 @@ export interface IOrganization extends IProfileOwner, IRepositoryOwner {
   __typename: 'Organization'
 }
 
-
-export interface IRelay {
-  hasMore: () => boolean
-  loadMore: (
-    pageSize?: number,
-    callback?: (error?: Error) => void,
-    options?: object
-  ) => void
-  isLoading: () => boolean
-}
-
 export type TEventFn = (event: ChangeEvent<{}>, value: any) => void
 
 export type THookTuple = [any, Function]
-
 
 export type TUserTabs = 'repositories' | 'starredRepositories' | 'followers' | 'following'
 export type TOrganizationTabs = 'repositories' | 'people'

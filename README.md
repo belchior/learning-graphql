@@ -57,8 +57,6 @@ You can use the environment variable `DEBUG` to enable some level of debug, it's
 
 ### Client
 
-In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency to enable the `--watch` feature, you must install it first and make it available at `PATH` environment variable after that you are ready to install client dependencies.
-
 ```shell
 cd ./client
 npm install
