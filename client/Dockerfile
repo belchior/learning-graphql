@@ -15,6 +15,7 @@ RUN ["npm", "test"]
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 COPY --from=dependencies /usr/app/build/ ./
+COPY --from=dependencies /usr/app/nginx.conf /etc/nginx/
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
