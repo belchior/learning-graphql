@@ -38,7 +38,7 @@ After clone this repo you can enter in server directory and then install all dep
 
 ```shell
 cd ./server
-npm install
+npm ci
 ```
 
 start server in develop mode
@@ -63,7 +63,7 @@ In development mode relay has [watchman](https://github.com/facebook/watchman) a
 
 ```shell
 cd ./client
-npm install
+npm ci
 ```
 
 start client in development mode
@@ -113,7 +113,3 @@ Below are some links that have somehow helped to develop this project or influen
 - [DataLoader – Source code walkthrough](https://www.youtube.com/watch?v=OQTnXNCDywA&feature=youtu.be)
 - [Lessons from 4 Years of GraphQL
 ](https://www.youtube.com/watch?v=zVNrqo9XGOs)
-
-### Tools
-
-- [AST Explorer](https://astexplorer.net/)
