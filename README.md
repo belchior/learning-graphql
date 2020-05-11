@@ -2,7 +2,7 @@
 
 > The purpose of this repository is to practice GraphQL acquired knowledge as well as your ecosystem
 
-[Demo](https://belchior-learning-graphql.herokuapp.com/)
+[Demo](https://belchior-learning-graphql.azurewebsites.net)
 
 The purpose of this **branch** is to find out the best setup and usage of the specified stack. Each branch at this repo has a unique stack, take a look at [all branches](https://github.com/belchior/learning-graphql/branches/all).
 
@@ -24,7 +24,7 @@ The `client` is based on
 - [Material-UI](https://github.com/mui-org/material-ui)
 - [Create React App](https://github.com/facebook/create-react-app)
 
-Both server and client are hosted by [Heroku](https://www.heroku.com/).
+Both server and client are hosted by [Azure](https://azure.microsoft.com).
 
 The server implement the [GraphQL Cursor Connections Specification](https://relay.dev/graphql/connections.htm) to handle paginated list and are compliance with [Relay GraphQL Server Specification](https://relay.dev/docs/en/graphql-server-specification.html) to take's advantages of Relay Modern features.
 
@@ -111,5 +111,4 @@ Below are some links that have somehow helped to develop this project or influen
 ### Videos
 
 - [DataLoader – Source code walkthrough](https://www.youtube.com/watch?v=OQTnXNCDywA&feature=youtu.be)
-- [Lessons from 4 Years of GraphQL
-](https://www.youtube.com/watch?v=zVNrqo9XGOs)
+- [Lessons from 4 Years of GraphQL](https://www.youtube.com/watch?v=zVNrqo9XGOs)
