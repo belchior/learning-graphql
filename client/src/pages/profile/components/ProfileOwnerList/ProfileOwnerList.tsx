@@ -22,7 +22,7 @@ const ProfileOwnerList = (props: OwnerListProps) => {
       {owners.map(owner => {
         const localUrl = owner.url.replace(/https?:\/\/github\.com/, '');
         return (
-          <Anchor className={classes.anchor} href={localUrl} key={owner.login}>
+          <Anchor className={classes.anchor} href={localUrl} key={owner.login} data-testid="owner-link">
             <Image alt={owner.login} src={owner.avatarUrl} height={32} width={32} />
           </Anchor>
         );

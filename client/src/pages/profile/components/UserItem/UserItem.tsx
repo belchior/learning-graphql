@@ -16,7 +16,7 @@ interface IProps {
   user: IUser
 }
 
-const UserItem = (props: IProps) => {
+export const UserItem = (props: IProps) => {
   const { user } = props;
   const classes = useStyles();
   const localUrl = user.url.replace(/https?:\/\/github\.com/, '');

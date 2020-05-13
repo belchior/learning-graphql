@@ -15,7 +15,7 @@ interface IProps {
   repository: IRepository
 }
 
-const RepositoryItem = (props: IProps) => {
+export const RepositoryItem = (props: IProps) => {
   const { repository } = props;
   const classes = useStyles();
   const language = repository.primaryLanguage;

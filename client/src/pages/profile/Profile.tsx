@@ -11,6 +11,7 @@ import { environment } from 'utils/environment';
 import { query } from './Profile.relay';
 import { useQueryString } from 'utils/hooks';
 import { TTabs } from 'utils/interfaces';
+import { Typography } from '@material-ui/core';
 
 
 interface IRenderProps {
@@ -56,7 +57,12 @@ const Profile = () => {
       render={(renderProps: IRenderProps) => {
         const { error, props } = renderProps;
         if (error) return <div>Error!</div>;
-        if (!props) return <Loading />;
+        if (!props) return (
+          <React.Fragment>
+            <Loading />
+            <Typography align="center">Loading...</Typography>
+          </React.Fragment>
+        );
 
         switch (props.profile?.__typename) {
           case 'User': return <UserProfile {...props as any} tabName={tabName as TUserTabs} />;

@@ -7,16 +7,16 @@ import Image from 'components/Image/Image';
 import LinkIcon from 'components/Icons/Link';
 import LocationIcon from 'components/Icons/Location';
 import Title from 'components/Title/Title';
-import { useStyles } from './OrganizationHeader.styles';
 import { IOrganization } from 'utils/interfaces';
 import { fragmentSpec } from './OrganizationHeader.relay';
+import { useStyles } from './OrganizationHeader.styles';
 
 
 interface IProps {
   profile: IOrganization
 }
 
-const OrganizationHeader = (props: IProps) => {
+export const OrganizationHeader = (props: IProps) => {
   const { profile } = props;
   const classes = useStyles();
 

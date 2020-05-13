@@ -22,11 +22,12 @@ export interface IRepository {
   description: string
   forkCount: number
   id: string
-  licenseInfo?: ILicense
+  licenseInfo: ILicense | null
   name: string
   owner: IRepositoryOwner
   primaryLanguage?: ILanguage
   url: string
+  __typename: 'Repository'
 }
 
 interface INode {
@@ -38,7 +39,7 @@ export interface IProfileOwner extends INode {
   login: string
   name?: string
   url: string
-  __typename: string
+  __typename?: string
 }
 
 export interface IRepositoryOwner extends INode {

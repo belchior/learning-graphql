@@ -32,7 +32,7 @@ The server implement the [GraphQL Cursor Connections Specification](https://rela
 
 ### Server
 
-the data used by this server is strongly based on the [GraphQL API of Github](https://developer.github.com/v4/explorer/), I don't know if I have legal right to share the data that I copy to develop this project, so you must provide your on data.
+The data used by this server is strongly based on the [GraphQL API of Github](https://developer.github.com/v4/explorer/), I don't know if I have legal right to share the data that I copy to develop this project, so you must provide your on data.
 
 After clone this repo you can enter in server directory and then install all dependencies
 
@@ -89,7 +89,10 @@ Below are some links that have somehow helped to develop this project or influen
 - [GitHub GraphQL API](https://developer.github.com/v4/explorer/)
 - [GraphQL Specification](http://spec.graphql.org/June2018/)
 - [GraphQL Cursor Connections Specification](https://relay.dev/graphql/connections.htm)
-- [GraphQL Server Specification](https://relay.dev/docs/en/graphql-server-specification.html)
+- [Relay - GraphQL Server Specification](https://relay.dev/docs/en/graphql-server-specification.html)
+- [Relay - Fragment Container](https://relay.dev/docs/en/fragment-container)
+- [Relay - Pagination Container](https://relay.dev/docs/en/pagination-container)
+- [Relay - Testing Relay Components](https://relay.dev/docs/en/testing-relay-components#relay_test_operation)
 - [Getting Started With GraphQL.js](https://graphql.org/graphql-js/)
 - [DataLoader](https://github.com/graphql/dataloader)
 - [GraphQL Foundation](https://foundation.graphql.org/)
