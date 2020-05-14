@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPaginationContainer } from 'react-relay';
 
-import List from './List';
+import List from '../List/List';
 import UserItem from 'pages/profile/components/UserItem/UserItem';
 import { IRelay, IUser } from 'utils/interfaces';
 import { connectionConfig, fragmentSpec } from './FollowingList.relay';

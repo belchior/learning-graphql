@@ -14,7 +14,7 @@ export const repositoryMockResolvers = {
 export const userMockResolvers = {
   ID: () => user.id,
   User: () => user,
-  Repository: repositoryMockResolvers.Repository
+  Repository: repositoryMockResolvers.Repository,
 };
 
 export const  profileOwnerUser: IUser = {
@@ -39,11 +39,7 @@ export const organization: IOrganization = {
   location: 'The web',
   login: 'tc39',
   name: 'Ecma TC39',
-  people: {
-    edges: [
-      { node: profileOwnerUser },
-    ]
-  },
+  people: { edges: [ { node: profileOwnerUser }, ] },
   url: 'https://github.com/tc39',
   websiteUrl: 'https://www.ecma-international.org/memento/tc39-rf-tg.htm',
 };
@@ -70,19 +66,14 @@ export const user: IUser = {
   avatarUrl: 'path/to/avatarUrl.png',
   bio: 'Software developer',
   email: 'belchior@email.com',
+  followers: { edges: [ { node: profileOwnerUser } ] },
+  following: { edges: [ { node: profileOwnerUser } ] },
   id: '48ce',
   login: 'belchior',
   name: 'Belchior Oliveira',
-  organizations: {
-    edges: [
-      { node: organization }
-    ]
-  },
-  repositories: {
-    edges: [
-      { node: repository }
-    ]
-  },
+  organizations: { edges: [ { node: organization } ] },
+  repositories: { edges: [ { node: repository } ] },
+  starredRepositories: { edges: [ { node: repository } ] },
   url: '/belchior',
   websiteUrl: 'https://github.com/belchior',
 };

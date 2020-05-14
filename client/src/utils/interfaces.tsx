@@ -27,7 +27,7 @@ export interface IRepository {
   owner: IRepositoryOwner
   primaryLanguage?: ILanguage
   url: string
-  __typename: 'Repository'
+  __typename?: 'Repository'
 }
 
 interface INode {
@@ -78,7 +78,7 @@ export interface IOrganization extends IProfileOwner, IRepositoryOwner {
   repositories?: CursorConnection
   url: string
   websiteUrl?: string
-  __typename: 'Organization'
+  __typename?: 'Organization'
 }
 
 

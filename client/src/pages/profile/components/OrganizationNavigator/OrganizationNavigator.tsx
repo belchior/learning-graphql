@@ -5,9 +5,9 @@ import Typography from '@material-ui/core/Typography';
 
 import Label from 'components/Label/Label';
 import PeopleIcon from 'components/Icons/People';
-import PeopleList from 'pages/profile/components/List/PeopleList';
+import PeopleList from 'pages/profile/components/PeopleList/PeopleList';
 import QueryRendererTabList from 'pages/profile/components/QueryRendererTabList/QueryRendererTabList';
-import RepositoriesList from 'pages/profile/components/List/RepositoriesList';
+import RepositoriesList from 'pages/profile/components/RepositoriesList/RepositoriesList';
 import RepositoryIcon from 'components/Icons/Repository';
 import RepositoryItemSkeleton from 'pages/profile/components/RepositoryItem/RepositoryItem.skeleton';
 import UserItemSkeleton from 'pages/profile/components/UserItem/UserItem.skeleton';

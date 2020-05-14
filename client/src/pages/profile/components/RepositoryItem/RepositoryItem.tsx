@@ -21,7 +21,7 @@ export const RepositoryItem = (props: IProps) => {
   const language = repository.primaryLanguage;
 
   return (
-    <div className={classes.repositoryItem}>
+    <div className={classes.repositoryItem} data-testid="repository-item">
       <Title className={classes.name} variant="h3">{repository.name}</Title>
 
       { repository.description &&

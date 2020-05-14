@@ -3,19 +3,19 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 
-import FollowersList from 'pages/profile/components/List/FollowersList';
-import FollowingList from 'pages/profile/components/List/FollowingList';
+import FollowersList from 'pages/profile/components/FollowersList/FollowersList';
+import FollowingList from 'pages/profile/components/FollowingList/FollowingList';
 import Label from 'components/Label/Label';
 import PeopleIcon from 'components/Icons/People';
 import QueryRendererTabList from 'pages/profile/components/QueryRendererTabList/QueryRendererTabList';
-import RepositoriesList from 'pages/profile/components/List/RepositoriesList';
+import RepositoriesList from 'pages/profile/components/RepositoriesList/RepositoriesList';
 import RepositoryIcon from 'components/Icons/Repository';
 import RepositoryItemSkeleton from 'pages/profile/components/RepositoryItem/RepositoryItem.skeleton';
-import StarredRepositoriesList from 'pages/profile/components/List/StarredRepositoriesList';
+import StarredRepositoriesList from 'pages/profile/components/StarredRepositoriesList/StarredRepositoriesList';
 import UserItemSkeleton from 'pages/profile/components/UserItem/UserItem.skeleton';
+import { TEventFn, IUser, TUserTabs } from 'utils/interfaces';
 import { useQueryString } from 'utils/hooks';
 import { useStyles } from './UserNavigator.styles';
-import { TEventFn, IUser, TUserTabs } from 'utils/interfaces';
 
 
 interface TabPanelProps {

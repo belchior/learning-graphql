@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPaginationContainer } from 'react-relay';
 
-import List from './List';
+import List from '../List/List';
 import RepositoryItem from '../RepositoryItem/RepositoryItem';
 import { IRelay, IRepositoryOwner } from 'utils/interfaces';
 import { connectionConfig, fragmentSpec } from './RepositoriesList.relay';

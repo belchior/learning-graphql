@@ -22,7 +22,7 @@ export const UserItem = (props: IProps) => {
   const localUrl = user.url.replace(/https?:\/\/github\.com/, '');
 
   return (
-    <div className={classes.userItem}>
+    <div className={classes.userItem} data-testid="user-item">
       <Image
         alt={user.login}
         className={classes.avatar}
