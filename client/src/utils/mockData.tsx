@@ -17,6 +17,20 @@ export const userMockResolvers = {
   Repository: repositoryMockResolvers.Repository
 };
 
+export const  profileOwnerUser: IUser = {
+  __typename: 'User',
+  avatarUrl: 'path/to/avatarUrl.png',
+  bio: 'Software developer',
+  company: 'Company',
+  email: 'belchior@email.com',
+  id: '48ce',
+  location: 'Brazil',
+  login: 'belchior',
+  name: 'Belchior Oliveira',
+  url: '/belchior',
+  websiteUrl: 'https://github.com/belchior',
+};
+
 export const organization: IOrganization = {
   __typename: 'Organization',
   avatarUrl: 'path/to/avatarUrl.png',
@@ -25,20 +39,13 @@ export const organization: IOrganization = {
   location: 'The web',
   login: 'tc39',
   name: 'Ecma TC39',
+  people: {
+    edges: [
+      { node: profileOwnerUser },
+    ]
+  },
   url: 'https://github.com/tc39',
   websiteUrl: 'https://www.ecma-international.org/memento/tc39-rf-tg.htm',
-};
-
-export const  profileOwnerUser = {
-  __typename: 'User',
-  avatarUrl: 'path/to/avatarUrl.png',
-  bio: 'Software developer',
-  email: 'belchior@email.com',
-  id: '48ce',
-  login: 'belchior',
-  name: 'Belchior Oliveira',
-  url: '/belchior',
-  websiteUrl: 'https://github.com/belchior',
 };
 
 export const repository: IRepository = {
@@ -66,6 +73,11 @@ export const user: IUser = {
   id: '48ce',
   login: 'belchior',
   name: 'Belchior Oliveira',
+  organizations: {
+    edges: [
+      { node: organization }
+    ]
+  },
   repositories: {
     edges: [
       { node: repository }

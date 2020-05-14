@@ -18,7 +18,7 @@ interface IProps {
   profile: IUser
 }
 
-const UserSidebar = (props: IProps) => {
+export const UserSidebar = (props: IProps) => {
   const { profile } = props;
   const classes = useStyles();
   const organizations = edgesToArray(profile.organizations || { edges: [] });

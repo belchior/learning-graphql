@@ -64,7 +64,7 @@ export interface IUser extends IProfileOwner, IRepositoryOwner {
   organizations?: CursorConnection
   url: string
   websiteUrl?: string
-  __typename: 'User'
+  __typename?: 'User'
 }
 
 export interface IOrganization extends IProfileOwner, IRepositoryOwner {
