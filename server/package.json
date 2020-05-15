@@ -20,7 +20,7 @@
     "start:ts": "nodemon",
     "start:debug": "cross-env DEBUG='*' npm run start:ts",
     "test": "jest --watch",
-    "test:ci": "jest --coverage --ci",
+    "test:ci": "jest --verbose --coverage --ci",
     "write-schema": "ts-node scripts/write-schema"
   },
   "dependencies": {
