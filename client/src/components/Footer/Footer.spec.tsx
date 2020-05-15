@@ -6,7 +6,7 @@ import Footer from './Footer';
 
 
 describe('Footer', () => {
-  it('should render without crashing', () => {
+  it('should render info about project', () => {
     const { getByText } = render(
       <MemoryRouter>
         <Footer />

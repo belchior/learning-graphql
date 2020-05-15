@@ -5,10 +5,8 @@ import Label from './Label';
 
 
 describe('Label', () => {
-  it('should render without crashing', () => {
-    const { getByText } = render(
-      <Label>label text</Label>
-    );
+  it('should render text provided as children', () => {
+    const { getByText } = render(<Label>label text</Label>);
     expect(getByText('label text')).toBeInTheDocument();
   });
 });

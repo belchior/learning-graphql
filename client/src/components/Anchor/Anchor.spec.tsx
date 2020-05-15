@@ -6,13 +6,14 @@ import Anchor from './Anchor';
 
 
 describe('Anchor', () => {
-  it('should render without crashing', () => {
+  it('should render the text provided as children prop', () => {
     const { getByText } = render(
       <MemoryRouter>
         <Anchor href="/user">User name</Anchor>
       </MemoryRouter>
     );
-    expect(getByText('User name')).toBeInTheDocument();
+    const anchor = getByText('User name');
+    expect(anchor).toBeInTheDocument();
   });
 
   it('shouldn\'t change the attribute href when the attribute external is provided', () => {
@@ -23,7 +24,6 @@ describe('Anchor', () => {
       </MemoryRouter>
     );
     const anchorElement = getByText('external').closest('a');
-
     expect(anchorElement).toHaveAttribute('href', href);
   });
 });

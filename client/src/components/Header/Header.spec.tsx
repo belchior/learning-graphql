@@ -6,12 +6,14 @@ import Header from './Header';
 
 
 describe('Header', () => {
-  it('should render without crashing', () => {
+  it('should render an anchor representing the home route', () => {
     const { getByTitle } = render(
       <MemoryRouter>
         <Header />
       </MemoryRouter>
     );
-    expect(getByTitle('Go to home')).toBeInTheDocument();
+    const anchor = getByTitle('Go to home');
+    expect(anchor).toBeInTheDocument();
+    expect(anchor).toHaveAttribute('href', '/');
   });
 });

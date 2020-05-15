@@ -5,7 +5,7 @@ import Title from './Title';
 
 
 describe('Title', () => {
-  it('should render without crashing', () => {
+  it('should render text provided as children', () => {
     const { getByText } = render(
       <Title>title text</Title>
     );
