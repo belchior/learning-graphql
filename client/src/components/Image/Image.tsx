@@ -18,7 +18,7 @@ interface IImageProps {
   width?: number
 }
 
-const Fallback = (props: IFallbackProps) => {
+export const Fallback = (props: IFallbackProps) => {
   const { alt, className = '', width = 32, height = 32 } = props;
   const classes = useStyles();
   const classnames = `${classes.fallback} ${className}`;
