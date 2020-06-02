@@ -3,7 +3,7 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 
-import { DATABASE_URL, CLIENT_URL, SERVER_URL, PORT, NODE_ENV } from './enviroment';
+import { DATABASE_URL, CLIENT_URL, SERVER_URL, PORT, NODE_ENV } from './environment';
 import { createLoaders } from './entities/loaders';
 import { debugGraphqlQuery, debugValues } from './utils/debug';
 import { schema } from './graphql/schema';

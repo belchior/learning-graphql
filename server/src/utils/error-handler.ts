@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { NODE_ENV } from '../enviroment';
+import { NODE_ENV } from '../environment';
 
 
 interface MongoError extends Error {
