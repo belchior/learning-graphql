@@ -2,7 +2,7 @@
 
 > The purpose of this repository is to practice GraphQL acquired knowledge as well as your ecosystem
 
-[Demo](https://belchior-learning-graphql.azurewebsites.net)
+[Demo](http://ec2-3-133-112-31.us-east-2.compute.amazonaws.com)
 
 The purpose of this **branch** is to find out the best setup and usage of the specified stack. Each branch at this repo has a unique stack, take a look at [all branches](https://github.com/belchior/learning-graphql/branches/all).
 
@@ -24,7 +24,7 @@ The `client` is based on
 - [Material-UI](https://github.com/mui-org/material-ui)
 - [Create React App](https://github.com/facebook/create-react-app)
 
-Both server and client are hosted by [Azure](https://azure.microsoft.com).
+Both server and client are hosted by [AWS](https://aws.amazon.com/pt/).
 
 The server implement the [GraphQL Cursor Connections Specification](https://relay.dev/graphql/connections.htm) to handle paginated list and are compliance with [Relay GraphQL Server Specification](https://relay.dev/docs/en/graphql-server-specification.html) to take's advantages of Relay Modern features.
 
