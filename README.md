@@ -74,7 +74,7 @@ npm run start
 
 ### Integration between server and client
 
-After server change some definition inside `server/src/graphql` the client must run the below script to update the `client/src/schema.graphql`.
+After change some definition inside `server/src/graphql` the client must run the script below to update the `client/src/schema.graphql`.
 
 ```shell
 npm run get-schema
@@ -82,7 +82,7 @@ npm run get-schema
 
 ## References
 
-Below are some links that have somehow helped to develop this project or influenced my decisions
+Some links that have somehow helped to develop this project or influenced my decisions
 
 ### Docs
 
