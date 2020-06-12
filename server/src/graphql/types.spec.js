@@ -23,13 +23,13 @@ jest.mock('../entities/user/model');
 describe('Organization type', () => {
   describe('field people', () => {
     beforeEach(() => {
-      (OrganizationModel.find as jest.Mock).mockReset();
-      (OrganizationModel.aggregate as jest.Mock).mockReset();
+      OrganizationModel.find.mockReset();
+      OrganizationModel.aggregate.mockReset();
     });
 
     it('should execute successfully', async () => {
-      (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
-      (OrganizationModel.aggregate as jest.Mock)
+      OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
+      OrganizationModel.aggregate
         .mockImplementationOnce(() => Promise.resolve(organizationData.people))
         .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -69,8 +69,8 @@ describe('Organization type', () => {
     });
 
     it('should return empty connection when organization has no user', async () => {
-      (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
-      (OrganizationModel.aggregate as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+      OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
+      OrganizationModel.aggregate.mockImplementationOnce(() => Promise.resolve([]));
 
       const query = `
         {
@@ -105,7 +105,7 @@ describe('Organization type', () => {
     });
 
     it('should return error when the pagination arguments was not provided', async () => {
-      (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
+      OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
       const query = `
         {
           organization(login: "acme") {
@@ -132,14 +132,14 @@ describe('Organization type', () => {
 
   describe('field repositories', () => {
     beforeEach(() => {
-      (OrganizationModel.find as jest.Mock).mockReset();
-      (OrganizationModel.aggregate as jest.Mock).mockReset();
-      (RepositoryModel.aggregate as jest.Mock).mockReset();
+      OrganizationModel.find.mockReset();
+      OrganizationModel.aggregate.mockReset();
+      RepositoryModel.aggregate.mockReset();
     });
 
     it('should execute successfully', async () => {
-      (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
-      (RepositoryModel.aggregate as jest.Mock)
+      OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
+      RepositoryModel.aggregate
         .mockImplementationOnce(() => Promise.resolve(organizationData.repositories))
         .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -179,8 +179,8 @@ describe('Organization type', () => {
     });
 
     it('should return empty connection when there is no repository', async () => {
-      (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
-      (RepositoryModel.aggregate as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+      OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
+      RepositoryModel.aggregate.mockImplementationOnce(() => Promise.resolve([]));
 
       const query = `
         {
@@ -215,7 +215,7 @@ describe('Organization type', () => {
     });
 
     it('should return error when the pagination arguments was not provided', async () => {
-      (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
+      OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
       const query = `
         {
           organization(login: "acme") {
@@ -243,14 +243,14 @@ describe('Organization type', () => {
 
 describe('Repository type', () => {
   beforeEach(() => {
-    (OrganizationModel.find as jest.Mock).mockReset();
-    (RepositoryModel.aggregate as jest.Mock).mockReset();
-    (UserModel.find as jest.Mock).mockReset();
+    OrganizationModel.find.mockReset();
+    RepositoryModel.aggregate.mockReset();
+    UserModel.find.mockReset();
   });
 
   it('field id should return string type', async () => {
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-    (RepositoryModel.aggregate as jest.Mock)
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+    RepositoryModel.aggregate
       .mockImplementationOnce(() => Promise.resolve(userData.repositories))
       .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -290,9 +290,9 @@ describe('Repository type', () => {
   });
 
   it('field owner should be able to resolve to a Organization', async () => {
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-    (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([ownerDataOrganization]));
-    (RepositoryModel.aggregate as jest.Mock)
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+    OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([ownerDataOrganization]));
+    RepositoryModel.aggregate
       .mockImplementationOnce(() => Promise.resolve([repositoryDataOrganization]))
       .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -342,10 +342,10 @@ describe('Repository type', () => {
   });
 
   it('field owner should be able to resolve to a User', async () => {
-    (UserModel.find as jest.Mock)
+    UserModel.find
       .mockImplementationOnce(() => Promise.resolve([userData]))
       .mockImplementationOnce(() => Promise.resolve([ownerDataUser]));
-    (RepositoryModel.aggregate as jest.Mock)
+    RepositoryModel.aggregate
       .mockImplementationOnce(() => Promise.resolve(userData.repositories))
       .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -395,10 +395,10 @@ describe('Repository type', () => {
 
   it('field owner should throw un error when the received data don\'t match known implementors', async () => {
     const unknownType = { name: 'unknown', __typename: 'unknown' };
-    (UserModel.find as jest.Mock)
+    UserModel.find
       .mockImplementationOnce(() => Promise.resolve([userData]))
       .mockImplementationOnce(() => Promise.resolve([unknownType]));
-    (RepositoryModel.aggregate as jest.Mock)
+    RepositoryModel.aggregate
       .mockImplementationOnce(() => Promise.resolve(userData.repositories))
       .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -445,13 +445,13 @@ describe('Repository type', () => {
 describe('User type', () => {
   describe('field followers', () => {
     beforeEach(() => {
-      (UserModel.find as jest.Mock).mockReset();
-      (UserModel.aggregate as jest.Mock).mockReset();
+      UserModel.find.mockReset();
+      UserModel.aggregate.mockReset();
     });
 
     it('should execute successfully', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (UserModel.aggregate as jest.Mock)
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.aggregate
         .mockImplementationOnce(() => Promise.resolve(userData.followers))
         .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -491,8 +491,8 @@ describe('User type', () => {
     });
 
     it('should return empty connection when there is no followers', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (UserModel.aggregate as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve([]));
 
       const query = `
         {
@@ -527,7 +527,7 @@ describe('User type', () => {
     });
 
     it('should return error when the pagination arguments was not provided', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
       const query = `
         {
           user(login: "johndoe") {
@@ -553,13 +553,13 @@ describe('User type', () => {
 
   describe('field following', () => {
     beforeEach(() => {
-      (UserModel.find as jest.Mock).mockReset();
-      (UserModel.aggregate as jest.Mock).mockReset();
+      UserModel.find.mockReset();
+      UserModel.aggregate.mockReset();
     });
 
     it('should execute successfully', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (UserModel.aggregate as jest.Mock)
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.aggregate
         .mockImplementationOnce(() => Promise.resolve(userData.following))
         .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -599,8 +599,8 @@ describe('User type', () => {
     });
 
     it('should return empty connection when there is no following', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (UserModel.aggregate as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve([]));
 
       const query = `
         {
@@ -635,7 +635,7 @@ describe('User type', () => {
     });
 
     it('should return error when the pagination arguments was not provided', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
       const query = `
         {
           user(login: "johndoe") {
@@ -661,13 +661,13 @@ describe('User type', () => {
 
   describe('field organizations', () => {
     beforeEach(() => {
-      (UserModel.find as jest.Mock).mockReset();
-      (UserModel.aggregate as jest.Mock).mockReset();
+      UserModel.find.mockReset();
+      UserModel.aggregate.mockReset();
     });
 
     it('should execute successfully', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (UserModel.aggregate as jest.Mock)
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.aggregate
         .mockImplementationOnce(() => Promise.resolve(userData.organizations))
         .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -707,8 +707,8 @@ describe('User type', () => {
     });
 
     it('should return empty connection when there is no organization', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (UserModel.aggregate as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve([]));
 
       const query = `
         {
@@ -743,7 +743,7 @@ describe('User type', () => {
     });
 
     it('should return error when the pagination arguments was not provided', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
       const query = `
         {
           user(login: "johndoe") {
@@ -769,13 +769,13 @@ describe('User type', () => {
 
   describe('field repositories', () => {
     beforeEach(() => {
-      (UserModel.find as jest.Mock).mockReset();
-      (RepositoryModel.aggregate as jest.Mock).mockReset();
+      UserModel.find.mockReset();
+      RepositoryModel.aggregate.mockReset();
     });
 
     it('should execute successfully', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (RepositoryModel.aggregate as jest.Mock)
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      RepositoryModel.aggregate
         .mockImplementationOnce(() => Promise.resolve(userData.repositories))
         .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -815,8 +815,8 @@ describe('User type', () => {
     });
 
     it('should return empty connection when there is no repository', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (RepositoryModel.aggregate as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      RepositoryModel.aggregate.mockImplementationOnce(() => Promise.resolve([]));
 
       const query = `
         {
@@ -851,7 +851,7 @@ describe('User type', () => {
     });
 
     it('should return error when the pagination arguments was not provided', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
       const query = `
         {
           user(login: "johndoe") {
@@ -877,13 +877,13 @@ describe('User type', () => {
 
   describe('field starredRepositories', () => {
     beforeEach(() => {
-      (UserModel.find as jest.Mock).mockReset();
-      (UserModel.aggregate as jest.Mock).mockReset();
+      UserModel.find.mockReset();
+      UserModel.aggregate.mockReset();
     });
 
     it('should execute successfully', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (UserModel.aggregate as jest.Mock)
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.aggregate
         .mockImplementationOnce(() => Promise.resolve(userData.starredRepositories))
         .mockImplementationOnce(() => Promise.resolve([pageInfo]));
 
@@ -923,8 +923,8 @@ describe('User type', () => {
     });
 
     it('should return empty connection when there is no repository', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
-      (UserModel.aggregate as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.aggregate.mockImplementationOnce(() => Promise.resolve([]));
 
       const query = `
         {
@@ -959,7 +959,7 @@ describe('User type', () => {
     });
 
     it('should return error when the pagination arguments was not provided', async () => {
-      (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
+      UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
       const query = `
         {
           user(login: "johndoe") {

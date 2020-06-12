@@ -1,5 +1,3 @@
-import { Types } from 'mongoose';
-
 import { User as UserModel } from './model';
 import { handleError } from '../../utils/error-handler';
 
@@ -11,8 +9,8 @@ export const userProjection = {
   starredRepositories: 0
 };
 
-export const findUsersByIds = async (ids: readonly Types.ObjectId[]) => {
-  const query: any = { _id: { $in: ids } };
+export const findUsersByIds = async (ids) => {
+  const query = { _id: { $in: ids } };
   return UserModel
     .find(query, userProjection)
     .then(users => (
@@ -21,8 +19,8 @@ export const findUsersByIds = async (ids: readonly Types.ObjectId[]) => {
     .catch(handleError);
 };
 
-export const findUsersByLogins = async (logins: readonly string[]) => {
-  const query: any = { login: { $in: logins } };
+export const findUsersByLogins = async (logins) => {
+  const query = { login: { $in: logins } };
   return UserModel
     .find(query, userProjection)
     .then(users => (

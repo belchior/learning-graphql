@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "sourceMap": false,
-    "removeComments": true
-  },
-  "exclude": ["node_modules", "build", "src/**/*.spec.ts", "src/utils/mockData.ts"]
-}

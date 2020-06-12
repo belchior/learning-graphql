@@ -1,9 +1,7 @@
 import { GraphQLError } from 'graphql';
 
-import { IPaginationArgs } from '../graphql/interfaces';
 
-
-export const validateArgs = (callback: Function) => (args: IPaginationArgs) => {
+export const validateArgs = (callback) => (args) => {
   if (
     typeof args != 'object' ||
     (args.first == undefined && args.last == undefined)

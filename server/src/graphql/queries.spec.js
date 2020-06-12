@@ -14,11 +14,11 @@ jest.mock('../entities/repository/model');
 
 describe('organization query', () => {
   beforeEach(() => {
-    (OrganizationModel.find as jest.Mock).mockReset();
+    OrganizationModel.find.mockReset();
   });
 
   it('should resolve to an Organization', async () => {
-    (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
+    OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
 
     const query = `
       {
@@ -64,13 +64,13 @@ describe('organization query', () => {
 
 describe('profile query', () => {
   beforeEach(() => {
-    (OrganizationModel.find as jest.Mock).mockReset();
-    (UserModel.find as jest.Mock).mockReset();
+    OrganizationModel.find.mockReset();
+    UserModel.find.mockReset();
   });
 
   it('should resolve to UserType when login match a User', async () => {
-    (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
+    OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([]));
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
 
     const query = `
       {
@@ -97,8 +97,8 @@ describe('profile query', () => {
   });
 
   it('should resolve to OrganizationType when login match an Organization', async () => {
-    (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+    OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([]));
 
     const query = `
       {
@@ -126,8 +126,8 @@ describe('profile query', () => {
 
   it('should throw un error when the received data don\'t match known implementors', async () => {
     const unknownType = { login: 'unknown', __typename: 'unknown' };
-    (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([unknownType]));
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([]));
+    OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([unknownType]));
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([]));
 
     const query = `
       {
@@ -167,11 +167,11 @@ describe('profile query', () => {
 
 describe('user query', () => {
   beforeEach(() => {
-    (UserModel.find as jest.Mock).mockReset();
+    UserModel.find.mockReset();
   });
 
   it('should resolve to a User', async () => {
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
     const query = `
       {
         user(login: "johndoe") {

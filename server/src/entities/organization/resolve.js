@@ -1,15 +1,12 @@
-import { Types } from 'mongoose';
-
-import { IOrganizationDocument, Organization as OrganizationModel } from '../organization/model';
-import { IPaginationArgs, TArgs, IGraphQLContext } from '../../graphql/interfaces';
-import { IRepositoryDocument, Repository as RepositoryModel } from '../repository/model';
+import { Organization as OrganizationModel } from '../organization/model';
+import { Repository as RepositoryModel } from '../repository/model';
 import { getCursorPagination, paginationArgs, } from '../../cursor-connection/referencePagination';
 import { handleError } from '../../utils/error-handler';
 import { userProjection } from '../user/find';
 
 
 export const Organization = {
-  people: async (parent: IOrganizationDocument, args: IPaginationArgs) => {
+  people: async (parent, args) => {
     const pagination = paginationArgs(args);
     const itemsPipeline = [
       { $match: { _id: parent._id } },
@@ -35,7 +32,7 @@ export const Organization = {
       } },
       { $project: userProjection }
     ];
-    const getPageInfoStage = (operator: string, key: Types.ObjectId) => ([
+    const getPageInfoStage = (operator, key) => ([
       { $match: { _id: parent._id } },
       { $project: { people: 1 } },
       { $unwind: '$people' },
@@ -44,14 +41,14 @@ export const Organization = {
       { $match: { _id: { [operator]: key } } },
     ]);
 
-    return getCursorPagination<IRepositoryDocument>({
+    return getCursorPagination({
       Model: OrganizationModel,
       getPageInfoStage,
       itemsPipeline,
     });
   },
 
-  repositories: async (parent: IOrganizationDocument, args: IPaginationArgs) => {
+  repositories: async (parent, args) => {
     try {
       const pagination = paginationArgs(args);
       const itemsPipeline = [
@@ -67,7 +64,7 @@ export const Organization = {
         { $limit : pagination.limit },
         { $sort : { _id: 1 } },
       ];
-      const getPageInfoStage = (operator: string, key: Types.ObjectId) => ([
+      const getPageInfoStage = (operator, key) => ([
         { $match: {
           'owner.ref': 'organizations',
           'owner._id': parent._id,
@@ -75,7 +72,7 @@ export const Organization = {
         } }
       ]);
 
-      return getCursorPagination<IRepositoryDocument>({
+      return getCursorPagination({
         Model: RepositoryModel,
         getPageInfoStage,
         itemsPipeline,
@@ -87,7 +84,7 @@ export const Organization = {
 };
 
 export const Query = {
-  organization: async (parent: any, args: TArgs, context: IGraphQLContext) => {
+  organization: async (parent, args, context) => {
     return context.loader.findOrganizationByLogin.load(args.login);
   }
 };

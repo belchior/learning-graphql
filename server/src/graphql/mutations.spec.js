@@ -6,7 +6,6 @@ import {
   graphql,
 } from 'graphql';
 
-import { IPaginationArgs } from './interfaces';
 import { Repository as RepositoryModel } from '../entities/repository/model';
 import { User as UserModel } from '../entities/user/model';
 import { mutationFields } from './mutations';
@@ -15,7 +14,7 @@ import { userData, repositoryData } from '../utils/mockData';
 jest.mock('../entities/user/model');
 jest.mock('../entities/repository/model');
 
-(UserModel.findOneAndUpdate as jest.Mock).mockImplementation(() => Promise.resolve(userData));
+UserModel.findOneAndUpdate.mockImplementation(() => Promise.resolve(userData));
 
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -47,7 +46,7 @@ describe('addUserFollower', () => {
     let error = new GraphQLError(
       'Field "addUserFollower" argument "id" of type "ID!" is required, but it was not provided.'
     );
-    let expectedData: any = { errors: [ error ] };
+    let expectedData = { errors: [ error ] };
     let receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);
 
@@ -100,8 +99,8 @@ describe('addUserFollower', () => {
 
 describe('createRepository', () => {
   it('should receive input argument representing RepositoryInput', async () => {
-    (RepositoryModel as any).mockImplementationOnce((arg: IPaginationArgs) => {
-      const promise: any = Promise.resolve(arg);
+    RepositoryModel.mockImplementationOnce((arg) => {
+      const promise = Promise.resolve(arg);
       promise.save = function(){return this;};
       return promise;
     });
@@ -145,8 +144,8 @@ describe('createUser mutation', () => {
       name: 'Travis Way',
       url: 'https://github.com/travis'
     };
-    (UserModel as any).mockImplementationOnce((arg: IPaginationArgs) => {
-      const promise: any = Promise.resolve(arg);
+    UserModel.mockImplementationOnce((arg) => {
+      const promise = Promise.resolve(arg);
       promise.save = function(){return this;};
       return promise;
     });
@@ -171,7 +170,7 @@ describe('removeUserFollower mutation', () => {
     let error = new GraphQLError(
       'Field "removeUserFollower" argument "id" of type "ID!" is required, but it was not provided.'
     );
-    let expectedData: any = { errors: [ error ] };
+    let expectedData = { errors: [ error ] };
     let receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);
 
@@ -214,7 +213,7 @@ describe('updateUserName mutation', () => {
     let error = new GraphQLError(
       'Field "updateUserName" argument "id" of type "ID!" is required, but it was not provided.'
     );
-    let expectedData: any = { errors: [ error ] };
+    let expectedData = { errors: [ error ] };
     let receivedData = await graphql(schema, query);
     expect(receivedData).toEqual(expectedData);
 
@@ -262,7 +261,7 @@ describe('updateUserName mutation', () => {
     const user = {
       name: 'New user name',
     };
-    (UserModel.findOneAndUpdate as jest.Mock).mockImplementation(() => Promise.resolve(user));
+    UserModel.findOneAndUpdate.mockImplementation(() => Promise.resolve(user));
 
     const variableValues = { user };
     const expectedData = { data: { updateUserName: { name: user.name } } };

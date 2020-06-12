@@ -1,19 +1,5 @@
-import { Document, model, Model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
-import { IDBRef } from '../interfaces';
-
-export interface IOrganizationDocument extends Document {
-  avatarUrl: string
-  description: string
-  email: string
-  location: string
-  login: string
-  name: string
-  people: IDBRef[]
-  url: string
-  websiteUrl: string
-  __typename: 'Organization'
-}
 
 const OrganizationSchema = new Schema(
   {
@@ -31,7 +17,4 @@ const OrganizationSchema = new Schema(
   { timestamps: true }
 );
 
-export const Organization: Model<IOrganizationDocument> = model<IOrganizationDocument>(
-  'organizations',
-  OrganizationSchema
-);
+export const Organization = model('organizations', OrganizationSchema);

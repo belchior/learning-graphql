@@ -1,22 +1,15 @@
-import { Types } from 'mongoose';
-
-import { Organization as OrganizationModel, IOrganizationDocument } from '../organization/model';
-import { Ref } from '../interfaces';
-import { User as UserModel, IUserDocument } from '../user/model';
+import { Organization as OrganizationModel } from '../organization/model';
+import { User as UserModel } from '../user/model';
 import { handleError } from '../../utils/error-handler';
 import { userProjection } from '../user/find';
 
 
-type TProfileOwnerRef = Exclude<Ref, 'repositories'>
-type TProfileOwnerDBRef = { _id: Types.ObjectId, ref: TProfileOwnerRef }
-type TProfileOwnerIds = Record<TProfileOwnerRef, Types.ObjectId[]>
-
-const unserializeOwners = (serializedOwners: readonly string[]): TProfileOwnerDBRef[] => {
+const unserializeOwners = (serializedOwners) => {
   return serializedOwners.map(item => JSON.parse(item));
 };
 
-const idsOfOwners = (owners: TProfileOwnerDBRef[]) => {
-  const ids: TProfileOwnerIds = {
+const idsOfOwners = (owners) => {
+  const ids = {
     users: [],
     organizations: [],
   };
@@ -28,7 +21,7 @@ const idsOfOwners = (owners: TProfileOwnerDBRef[]) => {
   return ids;
 };
 
-export const findRepositoriesOwners = async (serializedOwners: readonly string[]) => {
+export const findRepositoriesOwners = async (serializedOwners) => {
   const ids = idsOfOwners(unserializeOwners(serializedOwners));
 
   const organizationsPromise = ids.organizations.length > 0
@@ -41,7 +34,7 @@ export const findRepositoriesOwners = async (serializedOwners: readonly string[]
 
   try {
     const result = await Promise.all([usersPromise, organizationsPromise]);
-    const items: Array<IUserDocument | IOrganizationDocument> = result.flat();
+    const items = result.flat();
     return items;
   } catch (error) {
     return handleError(error);

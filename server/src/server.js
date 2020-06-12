@@ -10,7 +10,7 @@ import { schema } from './graphql/schema';
 
 const server = express();
 const debug = debugValues();
-const connectionOptions: mongoose.ConnectionOptions = {
+const connectionOptions = {
   useNewUrlParser: true,
   useFindAndModify: false,
   useCreateIndex: true,
@@ -21,7 +21,7 @@ const startServer = () => {
   if (NODE_ENV === 'development' && debug.query) debugGraphqlQuery(server);
   server.use(cors({ origin: CLIENT_URL }));
   server.use('/graphql', graphqlHTTP(() => {
-    const graphqlHTTPOptions: graphqlHTTP.Options = {
+    const graphqlHTTPOptions = {
       schema: schema,
       graphiql: NODE_ENV === 'development',
       context: {

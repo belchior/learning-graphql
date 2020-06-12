@@ -1,6 +1,5 @@
-import mongoose, { Types, Model as IModel, Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-import { IEdge, IPageInfo, IPaginationArgs, ICursorConnection } from '../graphql/interfaces';
 import { base64ToString, stringToBase64 } from '../utils/converter';
 import { validateArgs } from './arguments';
 
@@ -31,48 +30,31 @@ import { validateArgs } from './arguments';
                                   3     CURSOR
 */
 
-interface IGetCursorPaginationConfig {
-  Model: IModel<any>
-  getPageInfoStage: ((operator: ('$gt' | '$lt'), key: Types.ObjectId) => object[]),
-  itemsPipeline: object[]
-}
 
-interface IGetPageInfoNew<T extends Document> {
-  Model: IModel<T>
-  getPageInfoStage: ((operator: ('$gt' | '$lt'), key: Types.ObjectId) => object[]),
-  items: T[]
-}
+export const cursorToKey = (cursor) => mongoose.Types.ObjectId(base64ToString(cursor));
+export const keyToCursor = (key) => stringToBase64(key.toString());
 
-interface IGetPageInfoPipelineConfig {
-  stagePrevious: object[]
-  stageNext: object[]
-}
-
-
-export const cursorToKey = (cursor: string) => mongoose.Types.ObjectId(base64ToString(cursor));
-export const keyToCursor = (key: Types.ObjectId) => stringToBase64(key.toString());
-
-const forwardPagination = (args: IPaginationArgs) => ({
+const forwardPagination = (args) => ({
   limit: args.first,
   operator: '$gt',
   key: args.after ? cursorToKey(args.after) : undefined,
   sort: { _id: 1 },
 });
 
-const backwardPagination = (args: IPaginationArgs) => ({
+const backwardPagination = (args) => ({
   limit: args.last,
   operator: '$lt',
   key: args.before ? cursorToKey(args.before) : undefined,
   sort: { _id: -1 },
 });
 
-export const paginationArgs = validateArgs((args: IPaginationArgs) => (
+export const paginationArgs = validateArgs((args) => (
   args.first
     ? forwardPagination(args)
     : backwardPagination(args)
 ));
 
-export const emptyCursorConnection = <T>(): ICursorConnection<T> => ({
+export const emptyCursorConnection = () => ({
   edges: [],
   pageInfo: {
     hasPreviousPage: false,
@@ -80,26 +62,26 @@ export const emptyCursorConnection = <T>(): ICursorConnection<T> => ({
   }
 });
 
-export async function getCursorPagination <T extends Document>(config: IGetCursorPaginationConfig) {
+export async function getCursorPagination (config) {
   const { Model, getPageInfoStage, itemsPipeline } = config;
 
-  const items = await Model.aggregate<T>(itemsPipeline);
-  if (items.length === 0) return emptyCursorConnection<T>();
+  const items = await Model.aggregate(itemsPipeline);
+  if (items.length === 0) return emptyCursorConnection();
 
-  const pageInfo = await getPageInfo<T>({ Model, getPageInfoStage, items, });
-  const edges = getEdges<T>(items);
+  const pageInfo = await getPageInfo({ Model, getPageInfoStage, items, });
+  const edges = getEdges(items);
 
   return { pageInfo, edges };
 }
 
-function getEdges <T extends Document>(items: T[]): IEdge<T>[] {
+function getEdges (items) {
   return items.map((value) => ({
     cursor: keyToCursor(value._id),
     node: value,
   }));
 }
 
-async function getPageInfo<T extends Document>(config: IGetPageInfoNew<T>) {
+async function getPageInfo(config) {
   const { Model, getPageInfoStage, items } = config;
 
   const firstItem = items[0];
@@ -109,7 +91,7 @@ async function getPageInfo<T extends Document>(config: IGetPageInfoNew<T>) {
   const pipeline = getPageInfoPipeline({ stagePrevious, stageNext, });
 
   const [data] = await Model.aggregate(pipeline);
-  const pageInfo: IPageInfo<T> = {
+  const pageInfo = {
     endCursor: keyToCursor(items[items.length -1]._id),
     hasNextPage: data.hasNextPage,
     hasPreviousPage: data.hasPreviousPage,
@@ -118,7 +100,7 @@ async function getPageInfo<T extends Document>(config: IGetPageInfoNew<T>) {
   return pageInfo;
 }
 
-function getPageInfoPipeline(config: IGetPageInfoPipelineConfig) {
+function getPageInfoPipeline(config) {
   const { stagePrevious, stageNext } = config;
 
   return [

@@ -4,14 +4,14 @@ import { queryFields } from './queries';
 import { mutationFields } from './mutations';
 
 
-export const query: GraphQLObjectType = new GraphQLObjectType({
+export const query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
     ...queryFields,
   }),
 });
 
-export const mutation: GraphQLObjectType = new GraphQLObjectType({
+export const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
     ...mutationFields,

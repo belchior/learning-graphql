@@ -29,7 +29,7 @@ describe('Error handlers', () => {
   describe('handleNotFound', () => {
     it('should return rejected promise when data is invalid or empty array', async () => {
       const message = 'not found';
-      let data: any = undefined;
+      let data = undefined;
       let promise = handleNotFound(message)(data);
       await expect(promise).rejects.toThrow(message);
 
@@ -40,7 +40,7 @@ describe('Error handlers', () => {
 
     it('should return the data argument when it is valid', async () => {
       const message = 'not found';
-      let data: any = { name: 'test handleNotFound' };
+      let data = { name: 'test handleNotFound' };
       let promise = handleNotFound(message)(data);
       await expect(promise).resolves.toEqual(data);
 

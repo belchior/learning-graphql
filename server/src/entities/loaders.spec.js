@@ -13,12 +13,12 @@ const loader = createLoaders();
 
 describe('findOrganizationByLogin', () => {
   beforeEach(() => {
-    (OrganizationModel.find as jest.Mock).mockReset();
+    OrganizationModel.find.mockReset();
     loader.findOrganizationByLogin.clearAll();
   });
 
   it('should return organization that match with the provided login', async () => {
-    (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
+    OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
 
     const login = organizationData.login;
     const organizationPromise = loader.findOrganizationByLogin.load(login);
@@ -30,13 +30,13 @@ describe('findOrganizationByLogin', () => {
 
 describe('findRepositoryOwner', () => {
   beforeEach(() => {
-    (OrganizationModel.find as jest.Mock).mockReset();
-    (UserModel.find as jest.Mock).mockReset();
+    OrganizationModel.find.mockReset();
+    UserModel.find.mockReset();
     loader.findRepositoryOwner.clearAll();
   });
 
   it('should be able to return user as repostory owner', async () => {
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData]));
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([userData]));
 
     const serializedOwner = JSON.stringify({ _id: userData._id, ref: 'users' });
     const userPromise = loader.findRepositoryOwner.load(serializedOwner);
@@ -46,7 +46,7 @@ describe('findRepositoryOwner', () => {
   });
 
   it('should be able to return organization as repostory owner', async () => {
-    (OrganizationModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([organizationData]));
+    OrganizationModel.find.mockImplementationOnce(() => Promise.resolve([organizationData]));
 
     const owner = JSON.stringify({ _id: organizationData._id, ref: 'organizations' });
     const userPromise = loader.findRepositoryOwner.load(owner);
@@ -58,12 +58,12 @@ describe('findRepositoryOwner', () => {
 
 describe('findUserById', () => {
   beforeEach(() => {
-    (UserModel.find as jest.Mock).mockReset();
+    UserModel.find.mockReset();
     loader.findUserById.clearAll();
   });
 
   it('should return user that math with the provided id', async () => {
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData, ownerDataUser]));
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([userData, ownerDataUser]));
     const id = userData._id;
     const userPromise = loader.findUserById.load(id);
 
@@ -74,12 +74,12 @@ describe('findUserById', () => {
 
 describe('findUserByLogin', () => {
   beforeEach(() => {
-    (UserModel.find as jest.Mock).mockReset();
+    UserModel.find.mockReset();
     loader.findUserByLogin.clearAll();
   });
 
   it('should return user that math with the provided login', async () => {
-    (UserModel.find as jest.Mock).mockImplementationOnce(() => Promise.resolve([userData, ownerDataUser]));
+    UserModel.find.mockImplementationOnce(() => Promise.resolve([userData, ownerDataUser]));
     const login = userData.login;
     const userPromise = loader.findUserByLogin.load(login);
 

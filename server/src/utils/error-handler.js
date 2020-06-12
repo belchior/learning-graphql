@@ -2,23 +2,14 @@ import { GraphQLError } from 'graphql';
 import { NODE_ENV } from '../environment';
 
 
-interface MongoError extends Error {
-  code: string
-  keyPattern: { [key: string]: string }
-  name: 'MongoError'
-}
-interface MongoErrorHandler {
-  [code: string]: (error: MongoError) => string
-}
-
-const mongoError: MongoErrorHandler = {
-  '11000': (error: MongoError) => {
+const mongoError = {
+  '11000': (error) => {
     const keys = Object.keys(error.keyPattern).join(', ');
     return `Duplicate key error: The following keys should be unique: ${keys}`;
   }
 };
 
-export const handleError = (error: any) => {
+export const handleError = (error) => {
   if (NODE_ENV !== 'test') console.error(error);
 
   let message = error.message;
@@ -31,7 +22,7 @@ export const handleError = (error: any) => {
   return Promise.reject(new GraphQLError(message));
 };
 
-export const handleNotFound = (message: string) => async (data: any) => {
+export const handleNotFound = (message) => async (data) => {
   if (data == undefined || (Array.isArray(data) && data.length === 0)) {
     return handleError(new Error(message));
   }

@@ -6,20 +6,17 @@ module.exports = {
   },
   'extends': [
     'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:jest/recommended'
   ],
   'globals': {
     'Atomics': 'readonly',
     'SharedArrayBuffer': 'readonly',
   },
-  'parser': '@typescript-eslint/parser',
   'parserOptions': {
     'ecmaVersion': 2018,
     'sourceType': 'module',
   },
   'plugins': [
-    '@typescript-eslint',
     'jest',
   ],
   'rules': {
@@ -29,11 +26,5 @@ module.exports = {
     'object-curly-spacing': [ 'error', 'always' ],
     'quotes': [ 'error', 'single' ],
     'semi': [ 'error', 'always' ],
-    'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', {
-      'vars': 'all',
-      'args': 'after-used',
-      'ignoreRestSiblings': false
-    }],
   }
 };

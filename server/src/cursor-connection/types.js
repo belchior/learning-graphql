@@ -5,7 +5,6 @@ import {
   GraphQLBoolean,
   GraphQLString,
   GraphQLList,
-  GraphQLFieldConfigArgumentMap,
 } from 'graphql';
 
 
@@ -19,7 +18,7 @@ export const PageInfoType = new GraphQLObjectType({
   }),
 });
 
-export const connectionType = (Type: GraphQLObjectType) => {
+export const connectionType = (Type) => {
   const EdgeType = new GraphQLObjectType({
     name: `${Type.name}Edge`,
     fields: () => ({
@@ -37,7 +36,7 @@ export const connectionType = (Type: GraphQLObjectType) => {
   return new GraphQLNonNull(ConnectionType);
 };
 
-export const connectionTypeArgs: () => GraphQLFieldConfigArgumentMap = () => ({
+export const connectionTypeArgs = () => ({
   after: { type: GraphQLString },
   before: { type: GraphQLString },
   first: { type: GraphQLInt },

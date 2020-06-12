@@ -1,27 +1,7 @@
-import { Document, model, Model, Schema, Types } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 import { RepositoryOwnerSchema } from '../owner/model';
-import { IDBRef } from '../interfaces';
 
-
-interface ILicese extends Document {
-  name: string
-}
-interface ILanguage extends Document {
-  color: string
-  name: string
-}
-export interface IRepositoryDocument extends Document {
-  id: Types.ObjectId
-  description: string
-  forkCount: number
-  licenseInfo: ILicese
-  name: string
-  owner: IDBRef
-  primaryLanguage: ILanguage
-  url: string
-  __typename: 'Repository'
-}
 
 const LiceseSchema = new Schema({
   name: { type: String, trim: true, required: true, maxlength: 120, minlength: 3 },
@@ -47,4 +27,4 @@ export const RepositorySchema = new Schema(
 );
 
 
-export const Repository: Model<IRepositoryDocument> = model<IRepositoryDocument>('repositories', RepositorySchema);
+export const Repository = model('repositories', RepositorySchema);

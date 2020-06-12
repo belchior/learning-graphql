@@ -1,33 +1,18 @@
-import mongoose, { Types, Model as IModel, Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-import { IOrganizationDocument } from '../organization/model';
-import { IPaginationArgs, TArgs, IGraphQLContext } from '../../graphql/interfaces';
-import { IRepositoryDocument, Repository as RepositoryModel } from '../repository/model';
-import { IUserDocument, User as UserModel } from './model';
+import { Repository as RepositoryModel } from '../repository/model';
+import { User as UserModel } from './model';
 import { handleError, handleNotFound } from '../../utils/error-handler';
 import { paginationArgs, getCursorPagination, } from '../../cursor-connection/referencePagination';
 
 
-interface IUpdateAttributeConfig {
-  Model: IModel<IUserDocument>
-  query: object
-  update: object
-  messageNotFound: string
-}
-interface IPaginatedQueryUserFieldConfig {
-  parent: IUserDocument
-  args: IPaginationArgs
-  fieldName: string
-  collectionName: string
-}
-
-const handleInvalidId = (fn: (p: IUserDocument, a: any) => Promise<unknown>) => (...args: [IUserDocument, any]) => {
+const handleInvalidId = (fn) => (...args) => {
   return mongoose.Types.ObjectId.isValid(args[1].id)
     ? fn(...args)
     : handleError(new Error(`Invalid args.: ${args[1].id}`));
 };
 
-const updateAttribute = async (config: IUpdateAttributeConfig) => {
+const updateAttribute = async (config) => {
   const { Model, query, update, messageNotFound } = config;
   const options = { new: true, runValidators: true };
   return Model
@@ -36,7 +21,7 @@ const updateAttribute = async (config: IUpdateAttributeConfig) => {
     .catch(handleError);
 };
 
-const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQueryUserFieldConfig) => {
+const paginatedQueryUserField = async (config) => {
   const { parent, args, fieldName, collectionName } = config;
   const pagination = paginationArgs(args);
   const itemsPipeline = [
@@ -62,7 +47,7 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
       }
     } },
   ];
-  const getPageInfoStage = (operator: string, key: Types.ObjectId) => ([
+  const getPageInfoStage = (operator, key) => ([
     { $match: { _id: parent._id } },
     { $project: { [fieldName]: 1 } },
     { $unwind: `$${fieldName}` },
@@ -71,7 +56,7 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
     { $match: { _id: { [operator]: key } } },
   ]);
 
-  return getCursorPagination<T>({
+  return getCursorPagination({
     Model: UserModel,
     getPageInfoStage,
     itemsPipeline,
@@ -79,34 +64,34 @@ const paginatedQueryUserField = async <T extends Document>(config: IPaginatedQue
 };
 
 export const User = {
-  followers: async (parent: IUserDocument, args: IPaginationArgs) => {
+  followers: async (parent, args) => {
     try {
       const config = { parent, args, fieldName: 'followers', collectionName: 'users' };
-      return paginatedQueryUserField<IUserDocument>(config);
+      return paginatedQueryUserField(config);
     } catch (error) {
       return handleError(error);
     }
   },
 
-  following: async (parent: IUserDocument, args: IPaginationArgs) => {
+  following: async (parent, args) => {
     try {
       const config = { parent, args, fieldName: 'following', collectionName: 'users' };
-      return paginatedQueryUserField<IUserDocument>(config);
+      return paginatedQueryUserField(config);
     } catch (error) {
       return handleError(error);
     }
   },
 
-  organizations: async (parent: IUserDocument, args: IPaginationArgs) => {
+  organizations: async (parent, args) => {
     try {
       const config = { parent, args, fieldName: 'organizations', collectionName: 'organizations' };
-      return paginatedQueryUserField<IOrganizationDocument>(config);
+      return paginatedQueryUserField(config);
     } catch (error) {
       return handleError(error);
     }
   },
 
-  repositories: async (parent: IUserDocument, args: IPaginationArgs) => {
+  repositories: async (parent, args) => {
     try {
       const pagination = paginationArgs(args);
       const itemsPipeline = [
@@ -122,7 +107,7 @@ export const User = {
         { $limit : pagination.limit },
         { $sort : { _id: 1 } },
       ];
-      const getPageInfoStage = (operator: string, key: Types.ObjectId) => ([
+      const getPageInfoStage = (operator, key) => ([
         { $match: {
           'owner.ref': 'users',
           'owner._id': parent._id,
@@ -130,7 +115,7 @@ export const User = {
         } }
       ]);
 
-      return getCursorPagination<IRepositoryDocument>({
+      return getCursorPagination({
         Model: RepositoryModel,
         getPageInfoStage,
         itemsPipeline,
@@ -140,10 +125,10 @@ export const User = {
     }
   },
 
-  starredRepositories: async (parent: IUserDocument, args: IPaginationArgs) => {
+  starredRepositories: async (parent, args) => {
     try {
       const config = { parent, args, fieldName: 'starredRepositories', collectionName: 'repositories' };
-      return paginatedQueryUserField<IRepositoryDocument>(config);
+      return paginatedQueryUserField(config);
     } catch (error) {
       return handleError(error);
     }
@@ -152,14 +137,14 @@ export const User = {
 
 
 export const Query = {
-  user: async (parent: any, args: TArgs, context: IGraphQLContext) => {
+  user: async (parent, args, context) => {
     return context.loader.findUserByLogin.load(args.login);
   },
 };
 
 
 export const Mutation = {
-  addUserFollower: handleInvalidId(async (parent: any, args: any) => {
+  addUserFollower: handleInvalidId(async (parent, args) => {
     const query = { _id: args.id };
     const update = { $addToSet: { followers: args.input } };
     const messageNotFound = 'User not found';
@@ -167,12 +152,12 @@ export const Mutation = {
     return updateAttribute(config);
   }),
 
-  createUser: async (parent: any, args: any) => {
+  createUser: async (parent, args) => {
     const user = new UserModel(args.input);
     return user.save().catch(handleError);
   },
 
-  removeUserFollower: handleInvalidId(async (parent: any, args: any) => {
+  removeUserFollower: handleInvalidId(async (parent, args) => {
     const query = { _id: args.id };
     const update = { $pull: { followers: { login: args.input } } };
     const messageNotFound = 'User not found';
@@ -180,7 +165,7 @@ export const Mutation = {
     return updateAttribute(config);
   }),
 
-  updateUserName: handleInvalidId(async (parent: any, args: any) => {
+  updateUserName: handleInvalidId(async (parent, args) => {
     const query = { _id: args.id };
     const update = { $set: { name: args.input } };
     const messageNotFound = 'User not found';
