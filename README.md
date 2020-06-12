@@ -10,7 +10,7 @@ The purpose of this **branch** is to find out the best setup and usage of the sp
 
 The `server` is based on
 
-- [TypeScript](https://github.com/microsoft/TypeScript)
+- JavaScript
 - [Node.js](https://github.com/nodejs/node)
 - [Express](https://github.com/expressjs/express)
 - [GraphQL.js](https://github.com/graphql/graphql-js)
@@ -18,7 +18,7 @@ The `server` is based on
 
 The `client` is based on
 
-- [TypeScript](https://github.com/microsoft/TypeScript)
+- JavaScript
 - [React.js](https://github.com/facebook/react)
 - [Relay Modern](https://github.com/facebook/relay)
 - [Material-UI](https://github.com/mui-org/material-ui)
@@ -44,7 +44,7 @@ npm ci
 start server in develop mode
 
 ```shell
-npm run start:ts
+npm start
 ```
 
 #### Debug
@@ -59,7 +59,7 @@ You can use the environment variable `DEBUG` to enable some level of debug, it's
 
 ### Client
 
-In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency to enable the `--watch` feature, you must install it first and make it available at `PATH` environment variable after that you are ready to install client dependencies.
+In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency to enable the `--watch` feature, you must install it first and make it available at `PATH` environment variable, after that you are ready to install client dependencies.
 
 ```shell
 cd ./client
@@ -69,12 +69,12 @@ npm ci
 start client in development mode
 
 ```shell
-npm run start
+npm start
 ```
 
 ### Integration between server and client
 
-After change some definition inside `server/src/graphql` the client must run the script below to update the `client/src/schema.graphql`.
+After change some definition inside `server/src/graphql` the client must run the script below to update the `client/src/schema.graphql` definition.
 
 ```shell
 npm run get-schema
@@ -96,7 +96,6 @@ Some links that have somehow helped to develop this project or influenced my dec
 - [Getting Started With GraphQL.js](https://graphql.org/graphql-js/)
 - [DataLoader](https://github.com/graphql/dataloader)
 - [GraphQL Foundation](https://foundation.graphql.org/)
-- [The TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/)
 
 ### Articles
 
@@ -106,10 +105,7 @@ Some links that have somehow helped to develop this project or influenced my dec
 - [Solving the N+1 Problem for GraphQL through Batching](https://engineering.shopify.com/blogs/engineering/solving-the-n-1-problem-for-graphql-through-batching)
 - [Fast and Efficient Pagination in MongoDB](https://www.codementor.io/@arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr)
 - [Debugging complex GraphQL queries with shortlinks to GraphiQL](https://nilsnh.no/2018/08/04/debugging-complex-graphql-queries-with-shortlinks-to-graphiql/)
-- [React+TypeScript Cheatsheets](https://github.com/typescript-cheatsheets/react-typescript-cheatsheet)
-- [React.ComponentType](https://flow.org/en/docs/react/types/#toc-react-componenttype)
 - [Modularizing your GraphQL schema code](https://www.apollographql.com/blog/modularizing-your-graphql-schema-code-d7f71d5ed5f2)
-- [stackoverflow - TypeScript: Interfaces vs Types](https://stackoverflow.com/questions/37233735/typescript-interfaces-vs-types#answer-52682220)
 
 ### Videos
 
