@@ -6,12 +6,12 @@
   "license": "MIT",
   "scripts": {
     "client:lint": "cd client && npm run lint && cd ..",
-    "client:start": "cd client && npm run start",
-    "client:test": "cd client && npm run test:ci && cd ..",
+    "client:start": "cd client && npm start",
+    "client:test": "cd client && npm test && cd ..",
     "lint": "npm run client:lint && npm run server:lint",
     "server:lint": "cd server && npm run lint && cd ..",
-    "server:start": "cd server && npm run start:ts",
-    "server:test": "cd server && npm run test:ci && cd ..",
+    "server:start": "cd server && npm start",
+    "server:test": "cd server && npm test && cd ..",
     "test": "npm run client:test && npm run server:test"
   },
   "devDependencies": {

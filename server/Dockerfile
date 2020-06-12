@@ -5,7 +5,7 @@ COPY package*.json ./
 RUN ["npm", "ci"]
 COPY . ./
 RUN ["npm", "run", "build"]
-RUN ["npm", "run", "test:ci"]
+RUN ["npm", "test"]
 
 
 FROM node:12-alpine

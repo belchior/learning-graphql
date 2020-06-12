@@ -15,8 +15,8 @@
     "lint": "tsc --noEmit && eslint 'src/**/*.tsx'",
     "get-schema": "cd ../server && npm run write-schema && cd ../client",
     "relay": "relay-compiler --src ./src --schema ./src/schema.graphql --language typescript",
-    "test": "react-scripts test",
-    "test:ci": "cross-env CI=true react-scripts test --verbose --coverage --color"
+    "test": "cross-env CI=true react-scripts test --coverage --color",
+    "test:watch": "react-scripts test"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.14",

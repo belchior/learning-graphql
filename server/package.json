@@ -4,7 +4,6 @@
   "version": "0.1.0",
   "author": "Belchior Oliveira",
   "license": "MIT",
-  "homepage": "https://belchior-learning-graphql.herokuapp.com",
   "engines": {
     "node": "12.x"
   },
@@ -17,10 +16,9 @@
     "build": "tsc --project tsconfig.prod.json",
     "lint": "tsc --noEmit && eslint 'src/**/*.ts'",
     "start": "node build/server.js",
-    "start:ts": "nodemon",
-    "start:debug": "cross-env DEBUG='*' npm run start:ts",
-    "test": "jest --watch",
-    "test:ci": "jest --verbose --coverage --ci",
+    "start:watch": "nodemon",
+    "test": "jest --coverage --ci --color",
+    "test:watch": "jest --watch",
     "write-schema": "ts-node scripts/write-schema"
   },
   "dependencies": {
