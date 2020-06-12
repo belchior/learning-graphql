@@ -10,14 +10,12 @@ module.exports = {
   'extends': [
     'react-app',
     'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:jest/recommended'
   ],
   'globals': {
     'Atomics': 'readonly',
     'SharedArrayBuffer': 'readonly',
   },
-  'parser': '@typescript-eslint/parser',
   'parserOptions': {
     'ecmaVersion': 2018,
     'sourceType': 'module'
@@ -30,6 +28,5 @@ module.exports = {
     'object-curly-spacing': [ 'error', 'always' ],
     'quotes': [ 'error', 'single' ],
     'semi': [ 'error', 'always' ],
-    'no-unused-vars': 'off',
   }
 };

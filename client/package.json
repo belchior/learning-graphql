@@ -3,20 +3,19 @@
   "description": "client",
   "version": "0.1.0",
   "author": "Belchior Oliveira",
-  "homepage": "https://belchior-learning-graphql.herokuapp.com",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/belchior/learning-graphql.git"
   },
   "scripts": {
-    "start": "concurrently -k 'react-scripts start' 'npm run relay -- --watch'",
     "build": "npm run relay && react-scripts build",
-    "lint": "tsc --noEmit && eslint 'src/**/*.tsx'",
     "get-schema": "cd ../server && npm run write-schema && cd ../client",
-    "relay": "relay-compiler --src ./src --schema ./src/schema.graphql --language typescript",
-    "test": "react-scripts test",
-    "test:ci": "cross-env CI=true react-scripts test --verbose --coverage --color"
+    "lint": "eslint src",
+    "relay": "relay-compiler --src ./src --schema ./src/schema.graphql",
+    "start": "concurrently -k 'react-scripts start' 'npm run relay -- --watch'",
+    "test": "cross-env CI=true react-scripts test --coverage",
+    "test:watch": "react-scripts test"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.14",
@@ -24,41 +23,29 @@
     "@material-ui/lab": "^4.0.0-alpha.53",
     "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^10.0.1",
-    "@testing-library/user-event": "^10.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-relay": "^9.0.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.1",
-    "typescript": "^3.9.2"
+    "react-scripts": "^3.4.1"
   },
   "devDependencies": {
-    "@types/jest": "^25.2.1",
-    "@types/node": "^13.13.6",
-    "@types/react": "^16.9.34",
-    "@types/react-dom": "^16.9.6",
-    "@types/react-relay": "^7.0.3",
-    "@types/react-router-dom": "^5.1.4",
-    "@types/relay-runtime": "^8.0.8",
-    "@types/relay-test-utils": "^6.0.2",
-    "@typescript-eslint/eslint-plugin": "^2.33.0",
-    "@typescript-eslint/parser": "^2.33.0",
+    "@testing-library/user-event": "^11.4.0",
     "babel-plugin-relay": "^9.0.0",
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-plugin-jest": "^23.11.0",
-    "esm": "^3.2.25",
     "graphql": "^15.0.0",
     "relay-compiler": "^9.0.0",
-    "relay-compiler-language-typescript": "^12.0.0",
     "relay-config": "^9.0.0",
     "relay-test-utils": "^9.1.0"
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.tsx"
+      "src/**/*.js",
+      "!src/**/__generated__/*.js"
     ]
   },
   "browserslist": {
