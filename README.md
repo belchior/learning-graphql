@@ -2,7 +2,7 @@
 
 > The purpose of this repository is to practice GraphQL acquired knowledge as well as your ecosystem
 
-[Demo](http://ec2-3-133-112-31.us-east-2.compute.amazonaws.com)
+[Demo](http://ec2-3-21-92-159.us-east-2.compute.amazonaws.com/)
 
 The purpose of this **branch** is to find out the best setup and usage of the specified stack. Each branch at this repo has a unique stack, take a look at [all branches](https://github.com/belchior/learning-graphql/branches/all).
 
