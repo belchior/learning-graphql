@@ -24,7 +24,6 @@ CMD [ "npm", "start"]
 # --name learning-graphql-server \
 # --network myNetwork \
 # -e CLIENT_URL='http://localhost:3000' \
-# -e DATABASE_URL='mongodb://host.docker.internal:27017/learning-graphql' \
 # -e NODE_ENV='production' \
 # -e PORT='4000' \
 # -e SERVER_URL='http://localhost:4000' \

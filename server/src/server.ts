@@ -1,31 +1,29 @@
 import cors from 'cors';
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
-import mongoose from 'mongoose';
+import { Pool, PoolClient } from 'pg';
 
-import { DATABASE_URL, CLIENT_URL, SERVER_URL, PORT, NODE_ENV } from './environment';
+import { CLIENT_URL, SERVER_URL, PORT, NODE_ENV } from './environment';
 import { createLoaders } from './entities/loaders';
 import { debugGraphqlQuery, debugValues } from './utils/debug';
 import { schema } from './graphql/schema';
 
 const server = express();
 const debug = debugValues();
-const connectionOptions: mongoose.ConnectionOptions = {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-};
+const postgres = new Pool();
 
-const startServer = () => {
+
+const startServer = (client: PoolClient) => {
   if (NODE_ENV === 'development' && debug.query) debugGraphqlQuery(server);
+
   server.use(cors({ origin: CLIENT_URL }));
   server.use('/graphql', graphqlHTTP(() => {
     const graphqlHTTPOptions: graphqlHTTP.Options = {
       schema: schema,
       graphiql: NODE_ENV === 'development',
       context: {
-        loader: createLoaders()
+        loader: createLoaders(),
+        dbClient: client,
       },
     };
     return graphqlHTTPOptions;
@@ -36,7 +34,6 @@ const startServer = () => {
   });
 };
 
-mongoose.set('debug', debug.db);
-mongoose.connect(DATABASE_URL, connectionOptions);
-mongoose.connection.once('open', startServer);
-mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+postgres.connect()
+  .then(startServer)
+  .catch(console.error);
