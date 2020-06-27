@@ -4,7 +4,7 @@ import querystring from 'querystring';
 import { intersection } from 'ramda';
 import { Express } from 'express-serve-static-core';
 
-import { DEBUG, SERVER_URL } from '../environment';
+import { DEBUG, SERVER_URL } from './environment';
 
 
 type TDebugMap = {

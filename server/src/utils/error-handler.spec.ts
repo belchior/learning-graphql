@@ -10,20 +10,6 @@ describe('Error handlers', () => {
       const promise = handleError(error);
       await expect(promise).rejects.toThrow(GraphQLError);
     });
-
-    it('should return a custom message when mongodb return "duplicate key error"', async () => {
-      const error = {
-        code: '11000',
-        keyPattern: {
-          login: 'error message',
-          name: 'error message',
-        },
-        message: 'mongodb message',
-        name: 'MongoError',
-      };
-      const promise = handleError(error);
-      await expect(promise).rejects.toThrow(/The following keys should be unique: login, name/);
-    });
   });
 
   describe('handleNotFound', () => {

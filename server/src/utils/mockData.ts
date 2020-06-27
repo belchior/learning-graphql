@@ -1,8 +1,7 @@
-import { Types } from 'mongoose';
 
 export const ownerDataOrganization = {
   __typename: 'Organization',
-  _id: Types.ObjectId('5e61c002081d28c0fd5c3489'),
+  id: '5e61c002081d28c0fd5c3489',
   avatarUrl: 'http://acme.com/avatar.jpg',
   email: 'contact@acme.com',
   login: 'acme',
@@ -12,7 +11,7 @@ export const ownerDataOrganization = {
 
 export const ownerDataUser = {
   __typename: 'User',
-  _id: Types.ObjectId('5e5580d6f72291487ec648cf'),
+  id: '5e5580d6f72291487ec648cf',
   avatarUrl: 'http://johndoe.com/avatar.jpg',
   email: 'johndoe@email.com',
   login: 'johndoe',
@@ -22,31 +21,31 @@ export const ownerDataUser = {
 
 export const repositoryDataOrganization = {
   __typename: 'Repository',
-  _id: Types.ObjectId('5e74ce7ff3bb02311c781c0e'),
+  id: '5e74ce7ff3bb02311c781c0e',
   description: 'repo description',
   forkCount: 2,
   licenseInfo: { name: 'MIT License' },
   name: 'Repo name',
-  owner: { _id: ownerDataOrganization._id, ref: 'organizations' },
+  owner: { id: ownerDataOrganization.id, ref: 'organizations' },
   primaryLanguage: { name: 'JavaScript', color: '#f1e05a', },
   url: 'https://github.com/userLogin/repo-name',
 };
 
 export const repositoryData = {
   __typename: 'Repository',
-  _id: Types.ObjectId('5e74ce7ff3bb02311c781c0e'),
+  id: '5e74ce7ff3bb02311c781c0e',
   description: 'repo description',
   forkCount: 2,
   licenseInfo: { name: 'MIT License' },
   name: 'Repo name',
-  owner: { _id: ownerDataUser._id, ref: 'users' },
+  owner: { id: ownerDataUser.id, ref: 'users' },
   primaryLanguage: { name: 'JavaScript', color: '#f1e05a', },
   url: 'https://github.com/userLogin/repo-name',
 };
 
 export const starredRepositoryData = {
   __typename: 'Repository',
-  _id: Types.ObjectId('5e74ce7ff3bb02311c781c0e'),
+  id: '5e74ce7ff3bb02311c781c0e',
   description: 'starred repo description',
   forkCount: 2,
   licenseInfo: { name: 'MIT License' },
@@ -58,7 +57,7 @@ export const starredRepositoryData = {
 
 export const organizationData = {
   __typename: 'Organization',
-  _id: Types.ObjectId('5e61c002081d28c0fd5c3489'),
+  id: '5e61c002081d28c0fd5c3489',
   avatarUrl: 'http://acme.com/avatar.jpg',
   email: 'contact@acme.com',
   location: 'world',
@@ -72,7 +71,7 @@ export const organizationData = {
 
 export const followerData = {
   __typename: 'User',
-  _id: Types.ObjectId('5e5580d6f72291487ec648d1'),
+  id: '5e5580d6f72291487ec648d1',
   avatarUrl: 'http://richardroe.com/avatar.jpg',
   email: 'richardroe@email.com',
   login: 'richardroe',
@@ -82,7 +81,7 @@ export const followerData = {
 
 export const followingData = {
   __typename: 'User',
-  _id: Types.ObjectId('5e74ce7ff3bb02311c781c20'),
+  id: '5e74ce7ff3bb02311c781c20',
   avatarUrl: 'http://charlydoe.com/avatar.jpg',
   email: 'charlydoe@email.com',
   login: 'charlydoe',
@@ -91,20 +90,20 @@ export const followingData = {
 };
 
 export const userData = {
+  // followers: [followerData],
+  // following: [followingData],
+  // organizations: [organizationData],
+  // repositories: [repositoryData],
+  // starredRepositories: [starredRepositoryData],
   __typename: 'User',
-  _id: Types.ObjectId('5e5580d6f72291487ec648cf'),
   avatarUrl: 'http://johndoe.com/avatar.jpg',
   bio: 'bio description',
   company: 'Company',
   email: 'johndoe@email.com',
-  followers: [followerData],
-  following: [followingData],
+  id: '5e5580d6f72291487ec648cf',
   location: 'Brazil',
   login: 'johndoe',
   name: 'John Doe',
-  organizations: [organizationData],
-  repositories: [repositoryData],
-  starredRepositories: [starredRepositoryData],
   url: 'https://github.com/johndoe',
   websiteUrl: 'http://johndoe.com',
 };

@@ -11,6 +11,7 @@
     "lint": "npm run client:lint && npm run server:lint",
     "server:lint": "cd server && npm run lint && cd ..",
     "server:start": "cd server && npm start",
+    "server:watch": "cd server && npm run start:watch",
     "server:test": "cd server && npm test && cd ..",
     "test": "npm run client:test && npm run server:test"
   },

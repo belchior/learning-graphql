@@ -1,33 +1,22 @@
-import { Types } from 'mongoose';
-
-import { User as UserModel } from './model';
+import { find } from '../../db';
+import { IUser } from '../interfaces';
 import { handleError } from '../../utils/error-handler';
 
 
-export const userProjection = {
-  followers: 0,
-  following: 0,
-  organizations: 0,
-  starredRepositories: 0
-};
-
-export const findUsersByIds = async (ids: readonly Types.ObjectId[]) => {
-  const query: any = { _id: { $in: ids } };
-  return UserModel
-    .find(query, userProjection)
-    .then(users => (
-      ids.map(id => users.find(user => user._id === id))
-    ))
-    .catch(handleError);
-};
-
 export const findUsersByLogins = async (logins: readonly string[]) => {
-  const query: any = { login: { $in: logins } };
-  return UserModel
-    .find(query, userProjection)
-    .then(users => (
-      logins.map(login => users.find(user => user.login === login))
-    ))
-    .catch(handleError);
+  const query = 'SELECT * FROM users WHERE login in ($1)';
+  const args = [logins.join()];
+
+  try {
+    const result = await find<IUser>(query, args);
+    const users = logins.map(login => (
+      result.rows.find(user => user.login === login) ||
+      new Error(`No user found with login: ${login}`)
+    ));
+
+    return users;
+  } catch (error) {
+    return handleError(error);
+  }
 };
 

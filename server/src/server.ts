@@ -1,19 +1,18 @@
 import cors from 'cors';
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
-import { Pool, PoolClient } from 'pg';
 
-import { CLIENT_URL, SERVER_URL, PORT, NODE_ENV } from './environment';
+import { CLIENT_URL, NODE_ENV, PORT, SERVER_URL } from './utils/environment';
+import { connect as dbConnect } from './db';
 import { createLoaders } from './entities/loaders';
 import { debugGraphqlQuery, debugValues } from './utils/debug';
 import { schema } from './graphql/schema';
 
+
 const server = express();
 const debug = debugValues();
-const postgres = new Pool();
 
-
-const startServer = (client: PoolClient) => {
+const startServer = () => {
   if (NODE_ENV === 'development' && debug.query) debugGraphqlQuery(server);
 
   server.use(cors({ origin: CLIENT_URL }));
@@ -23,7 +22,6 @@ const startServer = (client: PoolClient) => {
       graphiql: NODE_ENV === 'development',
       context: {
         loader: createLoaders(),
-        dbClient: client,
       },
     };
     return graphqlHTTPOptions;
@@ -34,6 +32,6 @@ const startServer = (client: PoolClient) => {
   });
 };
 
-postgres.connect()
+dbConnect()
   .then(startServer)
   .catch(console.error);
