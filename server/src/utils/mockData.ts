@@ -1,3 +1,4 @@
+import { IUser } from './interfaces';
 
 export const ownerDataOrganization = {
   __typename: 'Organization',
@@ -90,16 +91,16 @@ export const followingData = {
 };
 
 export const userData = {
-  // followers: [followerData],
-  // following: [followingData],
   // organizations: [organizationData],
   // repositories: [repositoryData],
   // starredRepositories: [starredRepositoryData],
-  __typename: 'User',
+  __typename: 'User' as const,
   avatarUrl: 'http://johndoe.com/avatar.jpg',
   bio: 'bio description',
   company: 'Company',
   email: 'johndoe@email.com',
+  followers: [followerData],
+  following: [followingData],
   id: '5e5580d6f72291487ec648cf',
   location: 'Brazil',
   login: 'johndoe',

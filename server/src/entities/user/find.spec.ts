@@ -26,7 +26,7 @@ describe('findUsersByLogins', () => {
 
     const logins = ['johndoe', 'gina'];
     const receivedResult = await findUsersByLogins(logins);
-    const expectedResult = [userData, new Error('No user found with login: gina')];
+    const expectedResult = [userData, new Error('User not found for login: gina')];
 
     expect(receivedResult).toEqual(expectedResult);
     expect(find).toHaveBeenCalledTimes(1);

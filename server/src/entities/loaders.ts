@@ -1,6 +1,6 @@
 import Dataloader from 'dataloader';
 
-import { IUser } from './interfaces';
+import { IUser } from '../utils/interfaces';
 import { findUsersByLogins } from './user/find';
 
 

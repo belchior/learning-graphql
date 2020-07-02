@@ -1,5 +1,5 @@
 import { find } from '../../db';
-import { IUser } from '../interfaces';
+import { IUser } from '../../utils/interfaces';
 import { handleError } from '../../utils/error-handler';
 
 
@@ -11,7 +11,7 @@ export const findUsersByLogins = async (logins: readonly string[]) => {
     const result = await find<IUser>(query, args);
     const users = logins.map(login => (
       result.rows.find(user => user.login === login) ||
-      new Error(`No user found with login: ${login}`)
+      new Error(`User not found for login: ${login}`)
     ));
 
     return users;

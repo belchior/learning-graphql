@@ -7,6 +7,8 @@ type User implements Node {
   bio: String
   company: String
   email: String!
+  followers(after: String, before: String, first: Int, last: Int): UserConnection!
+  following(after: String, before: String, first: Int, last: Int): UserConnection!
   id: ID!
   location: String
   login: String!
@@ -17,4 +19,21 @@ type User implements Node {
 
 interface Node {
   id: ID!
+}
+
+type UserConnection {
+  edges: [UserEdge]!
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  cursor: String!
+  node: User
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
 }

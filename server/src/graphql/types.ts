@@ -1,10 +1,13 @@
 import {
   GraphQLID,
+  GraphQLInterfaceType,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLInterfaceType,
 } from 'graphql';
+
+import * as userResolve from '../entities/user/resolve';
+import { connectionType, connectionTypeArgs } from '../cursor-connection/types';
 
 
 export const idType = () => ({
@@ -26,6 +29,16 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
     bio: { type: GraphQLString },
     company: { type: GraphQLString },
     email: { type: new GraphQLNonNull(GraphQLString) },
+    followers: {
+      type: UserConnectionType,
+      args: connectionTypeArgs(),
+      resolve: userResolve.User.followers,
+    },
+    following: {
+      type: UserConnectionType,
+      args: connectionTypeArgs(),
+      resolve: userResolve.User.following,
+    },
     id: idType(),
     location: { type: GraphQLString },
     login: { type: new GraphQLNonNull(GraphQLString) },
@@ -34,3 +47,5 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
     websiteUrl: { type: GraphQLString },
   }),
 });
+
+const UserConnectionType = connectionType(UserType);

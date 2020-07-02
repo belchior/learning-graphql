@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
+import { PoolClient } from 'pg';
 
 import { CLIENT_URL, NODE_ENV, PORT, SERVER_URL } from './utils/environment';
 import { connect as dbConnect } from './db';
@@ -12,7 +13,8 @@ import { schema } from './graphql/schema';
 const server = express();
 const debug = debugValues();
 
-const startServer = () => {
+const startServer = (client: PoolClient) => {
+  client.release();
   if (NODE_ENV === 'development' && debug.query) debugGraphqlQuery(server);
 
   server.use(cors({ origin: CLIENT_URL }));
