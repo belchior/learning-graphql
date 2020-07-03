@@ -14,7 +14,7 @@ The `server` is based on
 - [Node.js](https://github.com/nodejs/node)
 - [Express](https://github.com/expressjs/express)
 - [GraphQL.js](https://github.com/graphql/graphql-js)
-- [MongoDB](https://www.mongodb.com/)
+- [PostgreSQL](https://www.postgresql.org/)
 
 The `client` is based on
 
@@ -104,7 +104,7 @@ Some links that have somehow helped to develop this project or influenced my dec
 - [GraphQL Resolvers: Best Practices](https://medium.com/paypal-engineering/graphql-resolvers-best-practices-cd36fdbcef55)
 - [Code-first vs. schema-first development in GraphQL](https://blog.logrocket.com/code-first-vs-schema-first-development-graphql/)
 - [Solving the N+1 Problem for GraphQL through Batching](https://engineering.shopify.com/blogs/engineering/solving-the-n-1-problem-for-graphql-through-batching)
-- [Fast and Efficient Pagination in MongoDB](https://www.codementor.io/@arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr)
+- [https://www.citusdata.com/blog/2016/03/30/five-ways-to-paginate/](Five ways to paginate in Postgres, from the basic to the exotic)
 - [Debugging complex GraphQL queries with shortlinks to GraphiQL](https://nilsnh.no/2018/08/04/debugging-complex-graphql-queries-with-shortlinks-to-graphiql/)
 - [React+TypeScript Cheatsheets](https://github.com/typescript-cheatsheets/react-typescript-cheatsheet)
 - [React.ComponentType](https://flow.org/en/docs/react/types/#toc-react-componenttype)
