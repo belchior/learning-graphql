@@ -2,6 +2,7 @@
 import { findUsersByLogins } from './find';
 import { find } from '../../db';
 import { userData } from '../../utils/mockData';
+
 jest.mock('../../db');
 
 

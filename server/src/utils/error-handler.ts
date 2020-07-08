@@ -4,9 +4,7 @@ import { NODE_ENV } from './environment';
 
 export const handleError = (error: any) => {
   if (NODE_ENV !== 'test') console.error(error);
-
-  let message = error.message;
-  return Promise.reject(new GraphQLError(message));
+  return Promise.reject(new GraphQLError(error.message));
 };
 
 export const handleNotFound = (message: string) => async (data: any) => {

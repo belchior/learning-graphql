@@ -3,7 +3,7 @@ import { graphql, GraphQLError } from 'graphql';
 import { createLoaders } from '../entities/loaders';
 import { find } from '../db';
 import { schema } from './schema';
-import { userData } from '../utils/mockData';
+import { userData, organizationData } from '../utils/mockData';
 
 jest.mock('../db');
 
@@ -37,7 +37,7 @@ describe('UserType', () => {
       data: {
         user: {
           __typename: userData.__typename,
-          avatarUrl: userData.avatarUrl,
+          avatarUrl: userData.avatar_url,
           bio: userData.bio,
           company: userData.company,
           email: userData.email,
@@ -46,7 +46,7 @@ describe('UserType', () => {
           login: userData.login,
           name: userData.name,
           url: userData.url,
-          websiteUrl: userData.websiteUrl,
+          websiteUrl: userData.website_url,
         }
       }
     };
@@ -58,10 +58,6 @@ describe('UserType', () => {
   });
 
   describe('field followers', () => {
-    beforeEach(() => {
-      (find as jest.Mock).mockReset();
-    });
-
     it('should return a list of followers in a cursor connection structure', async () => {
       (find as jest.Mock)
         .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
@@ -173,10 +169,6 @@ describe('UserType', () => {
   });
 
   describe('field following', () => {
-    beforeEach(() => {
-      (find as jest.Mock).mockReset();
-    });
-
     it('should return a list of followers in a cursor connection structure', async () => {
       (find as jest.Mock)
         .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
@@ -279,6 +271,277 @@ describe('UserType', () => {
       `;
       const error = new GraphQLError('Missing pagination boundaries');
       const expectedData = { data: { user: null }, errors: [ error ] };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('field organizations', () => {
+    it('should return a list of organization in a cursor connection structure', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: userData.organizations }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            name
+            organizations(first: 1) {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            name: userData.name,
+            organizations: {
+              edges: [
+                { node: { name: userData.organizations[0].name } }
+              ]
+            },
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(3);
+    });
+
+    it('should return empty connection when no organization is found', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            login
+            organizations(first: 1) {
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+              }
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            login: userData.login,
+            organizations: {
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+              },
+              edges: []
+            },
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return error when the pagination arguments was not provided', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            organizations {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const error = new GraphQLError('Missing pagination boundaries');
+      const expectedData = { data: { user: null }, errors: [ error ] };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+
+
+describe('OrganizationType', () => {
+  beforeEach(() => {
+    (find as jest.Mock).mockReset();
+  });
+
+  it('should return the flattened part of data', async () => {
+    (find as jest.Mock).mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
+
+    const query = `
+      {
+        organization(login: "acme") {
+          __typename
+          avatarUrl
+          description
+          email
+          id
+          location
+          login
+          name
+          url
+          websiteUrl
+        }
+      }
+    `;
+    const expectedData = {
+      data: {
+        organization: {
+          __typename: organizationData.__typename,
+          avatarUrl: organizationData.avatar_url,
+          description: organizationData.description,
+          email: organizationData.email,
+          id: organizationData.id,
+          location: organizationData.location,
+          login: organizationData.login,
+          name: organizationData.name,
+          url: organizationData.url,
+          websiteUrl: organizationData.website_url,
+        }
+      }
+    };
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(1);
+  });
+
+  describe('field followers', () => {
+    it('should return a list of followers in a cursor connection structure', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: organizationData.people }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          organization(login: "acme") {
+            name
+            people(first: 1) {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          organization: {
+            name: organizationData.name,
+            people: {
+              edges: [
+                { node: { name: organizationData.people[0].name } }
+              ]
+            },
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(3);
+    });
+
+    it('should return empty connection when no follower is found', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          organization(login: "acme") {
+            login
+            people(first: 1) {
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+              }
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          organization: {
+            login: organizationData.login,
+            people: {
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+              },
+              edges: []
+            },
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return error when the pagination arguments was not provided', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
+
+      const query = `
+        {
+          organization(login: "acme") {
+            people {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const error = new GraphQLError('Missing pagination boundaries');
+      const expectedData = { data: { organization: null }, errors: [ error ] };
       const context = { loader: createLoaders() };
       const receivedData = await graphql(schema, query, undefined, context);
 

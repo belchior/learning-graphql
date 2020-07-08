@@ -1,9 +1,11 @@
 import Dataloader from 'dataloader';
 
-import { IUser } from '../utils/interfaces';
+import { TOrganization, TUser } from '../utils/interfaces';
+import { findOrganizationsByLogins } from './organization/find';
 import { findUsersByLogins } from './user/find';
 
 
 export const createLoaders = () => ({
-  findUserByLogin: new Dataloader<string, IUser>(findUsersByLogins),
+  findOrganizationByLogin: new Dataloader<string, TOrganization>(findOrganizationsByLogins),
+  findUserByLogin: new Dataloader<string, TUser>(findUsersByLogins),
 });

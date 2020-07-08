@@ -1,6 +1,6 @@
 import cors from 'cors';
 import express from 'express';
-import graphqlHTTP from 'express-graphql';
+import { graphqlHTTP, Options } from 'express-graphql';
 import { PoolClient } from 'pg';
 
 import { CLIENT_URL, NODE_ENV, PORT, SERVER_URL } from './utils/environment';
@@ -19,7 +19,7 @@ const startServer = (client: PoolClient) => {
 
   server.use(cors({ origin: CLIENT_URL }));
   server.use('/graphql', graphqlHTTP(() => {
-    const graphqlHTTPOptions: graphqlHTTP.Options = {
+    const graphqlHTTPOptions: Options = {
       schema: schema,
       graphiql: NODE_ENV === 'development',
       context: {

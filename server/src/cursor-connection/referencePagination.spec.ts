@@ -1,164 +1,150 @@
+
 import {
-  cursorToKey,
-  emptyCursorConnection,
-  getCursorConnection,
-  keyToCursor,
-  paginationArgs,
-} from './referencePagination';
-import {
-  ICursorConnectionConfig,
-  IPaginationArgs,
-  TOrder,
-  TOperator,
-  IPageInfo,
-  IUser,
-  IEdge,
-  ICursorConnection,
+  TCursorConnection,
+  TFindPageInfoArgs,
+  TOrganization,
+  TPageInfoFnQueryArgs,
+  TPageInfoItem,
+  TPaginationArgs,
+  TPaginationQueryArgs,
+  TUser,
 } from '../utils/interfaces';
-import { userData } from '../utils/mockData';
+import {
+  emptyCursorConnection,
+  itemsToCursorConnection,
+  itemsToPageInfoQuery,
+  paginationArgsToQueryArgs,
+} from './referencePagination';
+import { organizationData, userData } from '../utils/mockData';
 
 
-describe('cursorToKey', () => {
-  it('should convert cursor to key', () => {
-    const receivedValue = cursorToKey('c3RyaW5nIHRvIGJhc2U2NA==');
-    const expectedValue = 'string to base64';
-    expect(receivedValue).toEqual(expectedValue);
+const removeWhitespace = (str: string) => str.replace(/\s+/g, ' ');
+
+
+describe('paginationArgsToQueryArgs', () => {
+  describe('forward function', () => {
+    it('should receive a pagination arg and return an object to be used to compose forward pagination query', () => {
+      const args: TPaginationArgs = {
+        first: 50,
+        after: 'MTE5',
+      };
+      const expectedQueryArgs: TPaginationQueryArgs = {
+        limit: 50,
+        operator: '>',
+        order: 'ASC',
+        reference: '119',
+      };
+      const receivedQueryArgs = paginationArgsToQueryArgs(args);
+
+      expect(receivedQueryArgs).toEqual(expectedQueryArgs);
+    });
   });
-});
 
-describe('keyToCursor', () => {
-  it('should convert key to cursor', () => {
-    const receivedValue = keyToCursor('string to base64');
-    const expectedValue = 'c3RyaW5nIHRvIGJhc2U2NA==';
-    expect(receivedValue).toEqual(expectedValue);
+  describe('backward function', () => {
+    it('should receive a pagination arg and return an object to be used to compose backward pagination query', () => {
+      const args: TPaginationArgs = {
+        last: 50,
+        before: 'MTIw',
+      };
+      const expectedQueryArgs: TPaginationQueryArgs = {
+        limit: 50,
+        operator: '<',
+        order: 'DESC',
+        reference: '120',
+      };
+      const receivedQueryArgs = paginationArgsToQueryArgs(args);
+
+      expect(receivedQueryArgs).toEqual(expectedQueryArgs);
+    });
   });
 });
 
 describe('emptyCursorConnection', () => {
-  it('should represent em empty cursor connection', () => {
-    const connection = emptyCursorConnection();
-    expect(connection).toEqual({
+  it('should return a empty cursor connection structure', () => {
+    const expectedEmptyCursorConnection: TCursorConnection<TUser> = {
       edges: [],
       pageInfo: {
         hasPreviousPage: false,
         hasNextPage: false,
       }
-    });
+    };
+    const receivedEmptyCursorConnection = emptyCursorConnection<TUser>();
+
+    expect(receivedEmptyCursorConnection).toEqual(expectedEmptyCursorConnection);
   });
 });
 
-describe('paginationArgs', () => {
-  describe('paginationArgs forwardPagination should return un object', () => {
-    it('the limit attribute should be equal to argument first', () => {
-      const args: IPaginationArgs = { first: 10 };
-      const expectedLimit = 10;
-      const pagination = paginationArgs(args);
-      expect(pagination.limit).toEqual(expectedLimit);
-    });
+describe('itemsToPageInfoQuery', () => {
+  it('should return a SQL query generated base a list of items', () => {
+    const items = [userData];
+    const pageInfoFnQuery = (args: TPageInfoFnQueryArgs) => (`
+      SELECT users.login, '${args.row}' AS row
+      FROM organizations_users
+      JOIN users ON user_login = users.login
+      WHERE
+        organization_login = 'johndoe'
+        and users.id ${args.operator} ${args.reference}
+      ORDER BY users.id ${args.order}
+      LIMIT 1
+    `);
 
-    it('the operator attribute should be the mongo operator greater than', () => {
-      const args: IPaginationArgs = { first: 10 };
-      const expectedOperator: TOperator = '>';
-      const pagination = paginationArgs(args);
-      expect(pagination.operator).toEqual(expectedOperator);
-    });
+    const args: TFindPageInfoArgs<TUser> = { items, pageInfoFnQuery };
+    const expectedSQLQuery = removeWhitespace(`
+      SELECT * FROM (
+        SELECT users.login, 'prev' AS row
+          FROM organizations_users
+          JOIN users ON user_login = users.login
+          WHERE
+            organization_login = 'johndoe'
+            and users.id < 5e5580d6f72291487ec648cf
+          ORDER BY users.id DESC
+          LIMIT 1
+      ) as prev
+      UNION
+      SELECT * FROM (
+        SELECT users.login, 'next' AS row
+          FROM organizations_users
+          JOIN users ON user_login = users.login
+          WHERE
+            organization_login = 'johndoe'
+            and users.id > 5e5580d6f72291487ec648cf
+          ORDER BY users.id ASC
+          LIMIT 1
+      ) as next
+    `);
+    const receivedSQLQuery = removeWhitespace(itemsToPageInfoQuery(args));
 
-    it('the key attribute should be a cursor when the argument "after" is provided', () => {
-      const args: IPaginationArgs = { first: 10, after: 'OTU=' };
-      const expectedKey = '95';
-      const pagination = paginationArgs(args);
-      expect(pagination.key).toEqual(expectedKey);
-    });
-
-    it('the order attribute should represent order by id in ascendent order', () => {
-      const args: IPaginationArgs = { first: 10 };
-      const expectedOrder: TOrder = 'ASC';
-      const pagination = paginationArgs(args);
-      expect(pagination.order).toEqual(expectedOrder);
-    });
-  });
-
-  describe('paginationArgs backwardPagination should return un object', () => {
-    it('the limit attribute should be equal to argument last', () => {
-      const args: IPaginationArgs = { last: 10 };
-      const expectedLimit = 10;
-      const pagination = paginationArgs(args);
-      expect(pagination.limit).toEqual(expectedLimit);
-    });
-
-    it('the operator attribute should be the mongo operator less than', () => {
-      const args: IPaginationArgs = { last: 10 };
-      const expectedOperator: TOperator = '<';
-      const pagination = paginationArgs(args);
-      expect(pagination.operator).toEqual(expectedOperator);
-    });
-
-    it('the key attribute should be a cursor when the argument before is provided', () => {
-      const args: IPaginationArgs = { last: 10, before: 'OTY=' };
-      const expectedKey = '96';
-      const pagination = paginationArgs(args);
-      expect(pagination.key).toEqual(expectedKey);
-    });
-
-    it('the order attribute should represent order by id in decendent order', () => {
-      const args: IPaginationArgs = { last: 10 };
-      const expectedOrder: TOrder = 'DESC';
-      const pagination = paginationArgs(args);
-      expect(pagination.order).toEqual(expectedOrder);
-    });
+    expect(receivedSQLQuery).toEqual(expectedSQLQuery);
   });
 });
 
-
-describe('getCursorConnection', () => {
-  describe('getEdges', () => {
-    it('should convert a list of itens to list of edges', () => {
-      const items = [ userData ];
-      const pageInfo: IPageInfo = { hasNextPage: false, hasPreviousPage: true, };
-      const config: ICursorConnectionConfig<IUser> = { items, pageInfo };
-
-      const { edges } = getCursorConnection(config);
-      const expectedEdges: IEdge<IUser>[] = [{
-        cursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNm',
-        node: userData
-      }];
-
-      expect(edges).toEqual(expectedEdges);
-    });
-  });
-
-  describe('getCursorConnection', () => {
-    it('should return an empty cursor connection when an empty item list are provided', () => {
-      const items: IUser[] = [];
-      const pageInfo: IPageInfo = { hasNextPage: false, hasPreviousPage: true, };
-      const config: ICursorConnectionConfig<IUser> = { items, pageInfo };
-
-      const cursorConnection = getCursorConnection(config);
-      const expectedCursorConnection: ICursorConnection<IUser> = emptyCursorConnection();
-
-      expect(cursorConnection).toEqual(expectedCursorConnection);
-    });
-
-    it('should return valid cursor connection', () => {
-      const items: IUser[] = [ userData ];
-      const pageInfo: IPageInfo = {
-        endCursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNm',
+describe('itemsToCursorConnection', () => {
+  it('should convert a list of items into a cursor connection structure', () => {
+    const items: TOrganization[] = [organizationData];
+    const pageInfoItems: TPageInfoItem[] = [];
+    const expectedCursorConnection: TCursorConnection<TOrganization> = {
+      edges: [{
+        cursor: 'NWU2MWMwMDIwODFkMjhjMGZkNWMzNDg5',
+        node: organizationData,
+      }],
+      pageInfo: {
+        endCursor: 'NWU2MWMwMDIwODFkMjhjMGZkNWMzNDg5',
         hasNextPage: false,
         hasPreviousPage: false,
-        startCursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNm',
-      };
-      const config: ICursorConnectionConfig<IUser> = { items, pageInfo };
+        startCursor: 'NWU2MWMwMDIwODFkMjhjMGZkNWMzNDg5',
+      }
+    };
+    const cursorConnection = itemsToCursorConnection(items, pageInfoItems);
 
-      const cursorConnection = getCursorConnection(config);
-      const expectedCursorConnection: ICursorConnection<IUser> = {
-        pageInfo,
-        edges: [{
-          cursor: 'NWU1NTgwZDZmNzIyOTE0ODdlYzY0OGNm',
-          node: userData
-        }]
-      };
+    expect(cursorConnection).toEqual(expectedCursorConnection);
+  });
 
-      expect(cursorConnection).toEqual(expectedCursorConnection);
-    });
+  it('should return empty cursor connection when the item list is empty', () => {
+    const items: TOrganization[] = [];
+    const pageInfoItems: TPageInfoItem[] = [];
+    const expectedCursorConnection: TCursorConnection<TOrganization> = emptyCursorConnection();
+    const cursorConnection = itemsToCursorConnection(items, pageInfoItems);
+
+    expect(cursorConnection).toEqual(expectedCursorConnection);
   });
 });

@@ -1,177 +1,165 @@
 
 import {
-  ICursorConnectionConfig,
-  IGraphQLContext,
-  IPageInfo,
-  IPaginationArgs,
-  IUser,
+  TGraphQLContext,
+  TPaginationArgs,
+  TUser,
   TArgs,
-  TOperator,
-  TOrder,
+  TPageInfoFnQueryArgs,
+  TPageInfoItem,
+  TOrganization,
 } from '../../utils/interfaces';
-import { find } from '../../db';
 import {
-  getCursorConnection,
-  keyToCursor,
-  paginationArgs,
+  emptyCursorConnection,
+  itemsToCursorConnection,
+  itemsToPageInfoQuery,
+  paginationArgsToQueryArgs,
 } from '../../cursor-connection/referencePagination';
+import { find } from '../../db';
 import { handleError } from '../../utils/error-handler';
 
 
-type TPrevOrNext = 'prev' | 'next';
-interface IGetPageInfoConfig {
-  key: string
-  operator: TOperator
-  order: TOrder
-  row: TPrevOrNext
-}
-interface IPageInfoRow {
-  row: TPrevOrNext
-}
-
-const getPageInfoQuery = (getRowQuery: Function) => (firstItem: IUser, lastItem: IUser) => {
-  const prevQuery = getRowQuery({
-    key: firstItem.id,
-    operator: '<',
-    order: 'DESC',
-    row: 'prev',
-  });
-  const nextQuery = getRowQuery({
-    key: lastItem.id,
-    operator: '>',
-    order: 'ASC',
-    row: 'next',
-  });
-
-  return `
-    SELECT * FROM (${prevQuery}) as prev
-    UNION
-    SELECT * FROM (${nextQuery}) as next
-  `;
-};
-
-const getPageInfo = async (getPageInfoQuery: Function, items: IUser[]) => {
-  if (items.length === 0) {
-    const pageInfo: IPageInfo = {
-      hasNextPage: false,
-      hasPreviousPage: false,
-    };
-    return pageInfo;
-  }
-
-  const hasRow = (name: TPrevOrNext, items: IPageInfoRow[]) => items.reduce(
-    (acc: boolean, item: IPageInfoRow) => (acc === true || item.row === name),
-    false
-  );
-
-  const firstItem = items[0];
-  const lastItem = items[items.length -1];
-  const query = getPageInfoQuery(firstItem, lastItem);
-
-  const result = await find<IPageInfoRow>(query);
-
-  const pageInfo: IPageInfo = {
-    endCursor: keyToCursor(lastItem.id),
-    hasNextPage: hasRow('prev', result.rows),
-    hasPreviousPage: hasRow('next', result.rows),
-    startCursor: keyToCursor(firstItem.id),
-  };
-  return pageInfo;
-};
-
-
 export const User = {
-  followers: async (parent: IUser, args: IPaginationArgs) => {
-    const pagination = paginationArgs(args);
-    const startFrom = pagination.key
-      ? `and users.id ${pagination.operator} ${pagination.key}`
-      : '';
+  followers: async (parent: TUser, args: TPaginationArgs) => {
+    try {
+      const pagination = paginationArgsToQueryArgs(args);
+      const startFrom = Number.isSafeInteger(Number(pagination.reference))
+        ? `and users.id ${pagination.operator} '${pagination.reference}'`
+        : '';
 
-    const query = `
-      SELECT *
-      FROM (
-        SELECT users.*
+      const itemsQuery = `
+        SELECT *
+        FROM (
+          SELECT users.*
+          FROM users
+          INNER JOIN users_followers on
+            users.login = users_followers.follower_login
+          WHERE
+            user_login = '${parent.login}'
+            ${startFrom}
+          ORDER BY users.id ${pagination.order}
+          LIMIT ${pagination.limit}
+        ) as users
+        ORDER BY users.id ASC
+      `;
+
+      const pageInfoFnQuery = (queryArgs: TPageInfoFnQueryArgs) => `
+        SELECT users.login, '${queryArgs.row}' as row
         FROM users
-        INNER JOIN users_followers on
-          users.login = users_followers.follower_login
+        INNER JOIN users_followers on users_followers.follower_login = users.login
         WHERE
           user_login = '${parent.login}'
-          ${startFrom}
-        ORDER BY users.id ${pagination.order}
-        LIMIT ${pagination.limit}
-      ) as users
-      ORDER BY users.id ASC
-    `;
+          and users.id ${queryArgs.operator} ${queryArgs.reference}
+        ORDER BY users.id ${queryArgs.order}
+        LIMIT 1
+      `;
 
-    const getRowQuery = (config: IGetPageInfoConfig) => `
-      SELECT users.login, '${config.row}' as row
-      FROM users
-      INNER JOIN users_followers on users_followers.follower_login = users.login
-      WHERE
-        user_login = '${parent.login}'
-        and users.id ${config.operator} ${config.key}
-      ORDER BY users.id ${config.order}
-      LIMIT 1
-    `;
+      const { rows: items } = await find<TUser>(itemsQuery);
+      if (items.length === 0) return emptyCursorConnection<TUser>();
 
-    try {
-      const { rows: items } = await find<IUser>(query);
-      const pageInfo = await getPageInfo(getPageInfoQuery(getRowQuery), items);
-      const config: ICursorConnectionConfig<IUser> = { items, pageInfo };
+      const pageInfoItemsQuery = itemsToPageInfoQuery({ items, pageInfoFnQuery });
+      const { rows: pageInfoItems } = await find<TPageInfoItem>(pageInfoItemsQuery);
 
-      return getCursorConnection<IUser>(config);
+      return itemsToCursorConnection<TUser>(items, pageInfoItems);
     } catch (error) {
       return handleError(error);
     }
   },
 
-  following: async (parent: IUser, args: IPaginationArgs) => {
-    const pagination = paginationArgs(args);
-    const startFrom = pagination.key
-      ? `and users.id ${pagination.operator} ${pagination.key}`
-      : '';
+  following: async (parent: TUser, args: TPaginationArgs) => {
+    try {
+      const pagination = paginationArgsToQueryArgs(args);
+      const startFrom = Number.isSafeInteger(Number(pagination.reference))
+        ? `and users.id ${pagination.operator} '${pagination.reference}'`
+        : '';
 
-    const query = `
-      SELECT *
-      FROM (
-        SELECT users.*
+      const itemsQuery = `
+        SELECT *
+        FROM (
+          SELECT users.*
+          FROM users
+          INNER JOIN users_following ON
+            users.login = users_following.following_login
+          WHERE
+            user_login = '${parent.login}'
+            ${startFrom}
+          ORDER BY users.id ${pagination.order}
+          LIMIT ${pagination.limit}
+        ) AS users
+        ORDER BY users.id ASC
+      `;
+
+      const pageInfoFnQuery = (queryArgs: TPageInfoFnQueryArgs) => `
+        SELECT users.login, '${queryArgs.row}' AS row
         FROM users
-        INNER JOIN users_following on
-          users.login = users_following.following_login
+        INNER JOIN users_following ON
+          users_following.following_login = users.login
         WHERE
           user_login = '${parent.login}'
-          ${startFrom}
-        ORDER BY users.id ${pagination.order}
-        LIMIT ${pagination.limit}
-      ) as users
-      ORDER BY users.id ASC
-    `;
+          and users.id ${queryArgs.operator} ${queryArgs.reference}
+        ORDER BY users.id ${queryArgs.order}
+        LIMIT 1
+      `;
 
-    const getRowQuery = (config: IGetPageInfoConfig) => `
-      SELECT users.login, '${config.row}' as row
-      FROM users
-      INNER JOIN users_following on users_following.following_login = users.login
-      WHERE
-        user_login = '${parent.login}'
-        and users.id ${config.operator} ${config.key}
-      ORDER BY users.id ${config.order}
-      LIMIT 1
-    `;
+      const { rows: items } = await find<TUser>(itemsQuery);
+      if (items.length === 0) return emptyCursorConnection<TUser>();
 
-    try {
-      const { rows: items } = await find<IUser>(query);
-      const pageInfo = await getPageInfo(getPageInfoQuery(getRowQuery), items);
-      const config: ICursorConnectionConfig<IUser> = { items, pageInfo };
+      const pageInfoItemsQuery = itemsToPageInfoQuery({ items, pageInfoFnQuery });
+      const { rows: pageInfoItems } = await find<TPageInfoItem>(pageInfoItemsQuery);
 
-      return getCursorConnection<IUser>(config);
+      return itemsToCursorConnection<TUser>(items, pageInfoItems);
     } catch (error) {
       return handleError(error);
     }
   },
+
+  organizations: async (parent: TUser, args: TPaginationArgs) => {
+    try {
+      const pagination = paginationArgsToQueryArgs(args);
+      const startFrom = Number.isSafeInteger(Number(pagination.reference))
+        ? `and organizations.id ${pagination.operator} '${pagination.reference}'`
+        : '';
+
+      const itemsQuery = `
+        SELECT *
+        FROM (
+          SELECT organizations.*
+          FROM organizations_users
+          JOIN organizations ON organizations.login = organization_login
+          WHERE
+            user_login = '${parent.login}'
+            ${startFrom}
+          ORDER BY organizations.id ${pagination.order}
+          LIMIT ${pagination.limit}
+        ) as organizations
+        ORDER BY organizations.id ASC
+      `;
+
+      const pageInfoFnQuery = (queryArgs: TPageInfoFnQueryArgs) => `
+        SELECT organizations.login, '${queryArgs.row}' AS row
+        FROM organizations_users
+        JOIN organizations ON organizations.login = organization_login
+        WHERE
+          user_login = '${parent.login}'
+          AND organizations.id ${queryArgs.operator} ${queryArgs.reference}
+        ORDER BY organizations.id ${queryArgs.order}
+        LIMIT 1
+      `;
+
+      const { rows: items } = await find<TOrganization>(itemsQuery);
+      if (items.length === 0) return emptyCursorConnection<TUser>();
+
+      const pageInfoItemsQuery = itemsToPageInfoQuery({ items, pageInfoFnQuery });
+      const { rows: pageInfoItems } = await find<TPageInfoItem>(pageInfoItemsQuery);
+
+      return itemsToCursorConnection<TOrganization>(items, pageInfoItems);
+    } catch (error) {
+      return handleError(error);
+    }
+  }
 };
 
 export const Query = {
-  user: async (parent: any, args: TArgs, context: IGraphQLContext) => {
+  user: async (parent: any, args: TArgs, context: TGraphQLContext) => {
     return context.loader.findUserByLogin.load(args.login);
   },
 };
