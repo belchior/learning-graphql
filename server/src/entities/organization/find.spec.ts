@@ -27,7 +27,7 @@ describe('findOrganizationsByLogins', () => {
 
     const logins = ['acme', 'company'];
     const receivedResult = await findOrganizationsByLogins(logins);
-    const expectedResult = [organizationData, new Error('Organization not found for login: company')];
+    const expectedResult = [organizationData, new Error('Organization not found with login: company')];
 
     expect(receivedResult).toEqual(expectedResult);
     expect(find).toHaveBeenCalledTimes(1);

@@ -23,8 +23,23 @@ const NodeInterface = new GraphQLInterfaceType({
   }),
 });
 
+export const ProfileOwnerInterface = new GraphQLInterfaceType({
+  name: 'ProfileOwner',
+  fields: () => ({
+    id: idType(),
+    login: { type: new GraphQLNonNull(GraphQLString) },
+  }),
+  resolveType: value => {
+    switch (value.__typename) {
+      case 'User': return UserType;
+      case 'Organization': return OrganizationType;
+      default: throw new Error(`Invalid typename: ${value.__typename}`);
+    }
+  },
+});
+
 export const UserType: GraphQLObjectType = new GraphQLObjectType({
-  interfaces: [NodeInterface],
+  interfaces: [NodeInterface, ProfileOwnerInterface],
   name: 'User',
   fields: () => ({
     avatarUrl: {
@@ -64,7 +79,7 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
 const UserConnectionType = connectionType(UserType);
 
 export const OrganizationType: GraphQLObjectType = new GraphQLObjectType({
-  interfaces: [NodeInterface],
+  interfaces: [NodeInterface, ProfileOwnerInterface],
   name: 'Organization',
   fields: () => ({
     avatarUrl: {

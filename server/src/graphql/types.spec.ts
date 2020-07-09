@@ -8,12 +8,107 @@ import { userData, organizationData } from '../utils/mockData';
 jest.mock('../db');
 
 
+describe('ProfileOwnerInterface', () => {
+  beforeEach(() => {
+    (find as jest.Mock).mockReset();
+  });
+
+  it('should resolve to UserType when login match to User', async () => {
+    (find as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
+
+    const query = `
+      {
+        profile(login: "johndoe") {
+          login
+          ... on User {
+            bio
+          }
+        }
+      }
+    `;
+    const expectedData = {
+      data: {
+        profile: {
+          login: userData.login,
+          bio: userData.bio,
+        }
+      }
+    };
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(2);
+  });
+
+  it('should resolve to OrganizationType when login match to Organization', async () => {
+    (find as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
+
+    const query = `
+      {
+        profile(login: "acme") {
+          login
+          ... on Organization {
+            description
+          }
+        }
+      }
+    `;
+    const expectedData = {
+      data: {
+        profile: {
+          login: organizationData.login,
+          description: organizationData.description,
+        }
+      }
+    };
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(2);
+  });
+
+  it('should return an error when the resolved type is not a UserType or OrganizationType', async () => {
+    const wrongUserData = {
+      ...userData,
+      login: 'wronguser',
+      __typename: 'WrongUser'
+    };
+    (find as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve({ rows: [wrongUserData] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
+
+    const query = `
+      {
+        profile(login: "wronguser") {
+          login
+          ... on User {
+            bio
+          }
+        }
+      }
+    `;
+    const error = new GraphQLError('Invalid typename: WrongUser');
+    const expectedData = { data: { profile: null }, errors: [ error ] };
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('UserType', () => {
   beforeEach(() => {
     (find as jest.Mock).mockReset();
   });
 
-  it('should return the flattened part of data', async () => {
+  it('should return the flattened part of the data', async () => {
     (find as jest.Mock).mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
 
     const query = `
@@ -51,6 +146,25 @@ describe('UserType', () => {
       }
     };
     const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return a "not found" error when no user match with the provided login', async () => {
+    (find as jest.Mock).mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
+
+    const query = `
+      {
+        user(login: "noone") {
+          login
+        }
+      }
+    `;
+    const error = new GraphQLError('User not found with login: noone');
+    const context = { loader: createLoaders() };
+    const expectedData = { data: { user: null }, errors: [ error ] };
     const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
@@ -141,7 +255,7 @@ describe('UserType', () => {
       expect(find).toHaveBeenCalledTimes(2);
     });
 
-    it('should return error when the pagination arguments was not provided', async () => {
+    it('should return an error when the pagination arguments was not provided', async () => {
       (find as jest.Mock)
         .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
 
@@ -252,7 +366,7 @@ describe('UserType', () => {
       expect(find).toHaveBeenCalledTimes(2);
     });
 
-    it('should return error when the pagination arguments was not provided', async () => {
+    it('should return an error when the pagination arguments was not provided', async () => {
       (find as jest.Mock)
         .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
 
@@ -363,7 +477,7 @@ describe('UserType', () => {
       expect(find).toHaveBeenCalledTimes(2);
     });
 
-    it('should return error when the pagination arguments was not provided', async () => {
+    it('should return an error when the pagination arguments was not provided', async () => {
       (find as jest.Mock)
         .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
 
@@ -397,7 +511,7 @@ describe('OrganizationType', () => {
     (find as jest.Mock).mockReset();
   });
 
-  it('should return the flattened part of data', async () => {
+  it('should return the flattened part of the data', async () => {
     (find as jest.Mock).mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
 
     const query = `
@@ -433,6 +547,25 @@ describe('OrganizationType', () => {
       }
     };
     const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return a "not found" error when no user match with the provided login', async () => {
+    (find as jest.Mock).mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
+
+    const query = `
+      {
+        organization(login: "noone") {
+          login
+        }
+      }
+    `;
+    const error = new GraphQLError('Organization not found with login: noone');
+    const context = { loader: createLoaders() };
+    const expectedData = { data: { organization: null }, errors: [ error ] };
     const receivedData = await graphql(schema, query, undefined, context);
 
     expect(receivedData).toEqual(expectedData);
@@ -523,7 +656,7 @@ describe('OrganizationType', () => {
       expect(find).toHaveBeenCalledTimes(2);
     });
 
-    it('should return error when the pagination arguments was not provided', async () => {
+    it('should return an error when the pagination arguments was not provided', async () => {
       (find as jest.Mock)
         .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
 

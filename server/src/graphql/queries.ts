@@ -1,8 +1,9 @@
 import { GraphQLNonNull, GraphQLString, } from 'graphql';
 
 import * as organizationResolve from '../entities/organization/resolve';
+import * as ownerResolve from '../entities/owner/resolve';
 import * as userResolve from '../entities/user/resolve';
-import { OrganizationType, UserType, } from './types';
+import { OrganizationType, ProfileOwnerInterface, UserType, } from './types';
 
 
 export const queryFields = {
@@ -10,6 +11,12 @@ export const queryFields = {
     type: OrganizationType,
     args: { login: { type: new GraphQLNonNull(GraphQLString) } },
     resolve: organizationResolve.Query.organization
+  },
+
+  profile: {
+    type: ProfileOwnerInterface,
+    args: { login: { type: new GraphQLNonNull(GraphQLString) } },
+    resolve: ownerResolve.Query.profile
   },
 
   user: {

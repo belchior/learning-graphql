@@ -11,7 +11,7 @@ export const findUsersByLogins = async (logins: readonly string[]) => {
     const result = await find<TUser>(query, args);
     const users = logins.map(login => (
       result.rows.find(user => user.login === login) ||
-      new Error(`User not found for login: ${login}`)
+      new Error(`User not found with login: ${login}`)
     ));
 
     return users;

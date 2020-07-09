@@ -44,7 +44,7 @@ export type TArgs = {
 
 export type TGraphQLContext = {
   loader: {
-    [key: string]: DataLoader<string, TUser>
+    [key: string]: DataLoader<string, TEntity>
   }
 }
 
