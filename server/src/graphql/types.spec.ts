@@ -3,9 +3,373 @@ import { graphql, GraphQLError } from 'graphql';
 import { createLoaders } from './loaders';
 import { find } from '../db';
 import { schema } from './schema';
-import { userData, organizationData } from '../utils/mockData';
+import { userData, organizationData, ownerDataUser, ownerDataOrganization } from '../utils/mockData';
+
 
 jest.mock('../db');
+
+
+describe('RepositoryType', () => {
+  beforeEach(() => {
+    (find as jest.Mock).mockReset();
+  });
+
+  it('should return the flattened part of the data', async () => {
+    (find as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: userData.repositories }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+    const query = `
+      {
+        user(login: "johndoe") {
+          repositories(first: 1) {
+            edges {
+              node {
+                description
+                forkCount
+                id
+                name
+                url
+                __typename
+              }
+            }
+          }
+        }
+      }
+    `;
+    const expectedData = {
+      data: {
+        user: {
+          repositories: {
+            edges: [{
+              node: {
+                __typename: userData.repositories[0].__typename,
+                description: userData.repositories[0].description,
+                forkCount: userData.repositories[0].fork_count,
+                id: String(userData.repositories[0].id),
+                name: userData.repositories[0].name,
+                url: userData.repositories[0].url,
+              }
+            }]
+          }
+        }
+      }
+    };
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(3);
+  });
+
+  describe('field licenseInfo', () => {
+    it('should resolve to un object with a attribute "name" contaning the name of license', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: userData.repositories }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            repositories(first: 1) {
+              edges {
+                node {
+                  licenseInfo {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            repositories: {
+              edges: [{
+                node: {
+                  licenseInfo: {
+                    name: userData.repositories[0].license_name
+                  }
+                }
+              }]
+            }
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe('field owner', () => {
+    it('should resolve to RepositoryOwner', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: userData.repositories }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            repositories(first: 1) {
+              edges {
+                node {
+                  owner {
+                    avatarUrl
+                    id
+                    login
+                    name
+                    url
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            repositories: {
+              edges: [{
+                node: {
+                  owner: {
+                    avatarUrl: userData.avatar_url,
+                    id: String(userData.id),
+                    login: userData.login,
+                    name: userData.name,
+                    url: userData.url,
+                  }
+                }
+              }]
+            }
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(4);
+    });
+  });
+
+  describe('field primaryLanguage', () => {
+    it('should resolve to un object that contains a color and a name', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: userData.repositories }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            repositories(first: 1) {
+              edges {
+                node {
+                  primaryLanguage {
+                    color
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            repositories: {
+              edges: [{
+                node: {
+                  primaryLanguage: {
+                    color: userData.repositories[0].language_color,
+                    name: userData.repositories[0].language_name
+                  }
+                }
+              }]
+            }
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(3);
+    });
+  });
+});
+
+
+describe('RepositoryOwnerInterface', () => {
+  beforeEach(() => {
+    (find as jest.Mock).mockReset();
+  });
+
+  it('should resolve to UserType when login match to User', async () => {
+    (find as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: userData.repositories }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [ownerDataUser] }));
+
+    const query = `
+      {
+        user(login: "johndoe") {
+          repositories(first: 1) {
+            edges {
+              node {
+                owner {
+                  avatarUrl
+                  id
+                  login
+                  name
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+    const expectedData = {
+      data: {
+        user: {
+          repositories: {
+            edges: [{
+              node: {
+                owner: {
+                  avatarUrl: ownerDataUser.avatar_url,
+                  id: String(ownerDataUser.id),
+                  login: ownerDataUser.login,
+                  name: ownerDataUser.name,
+                  url: ownerDataUser.url,
+                }
+              }
+            }]
+          }
+        }
+      }
+    };
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(4);
+  });
+
+  it('should resolve to OrganizationType when login match to Organization', async () => {
+    (find as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: organizationData.repositories }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [ownerDataOrganization] }));
+
+    const query = `
+      {
+        organization(login: "acme") {
+          repositories(first: 1) {
+            edges {
+              node {
+                owner {
+                  avatarUrl
+                  id
+                  login
+                  name
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+    const expectedData = {
+      data: {
+        organization: {
+          repositories: {
+            edges: [{
+              node: {
+                owner: {
+                  avatarUrl: ownerDataOrganization.avatar_url,
+                  id: String(ownerDataOrganization.id),
+                  login: ownerDataOrganization.login,
+                  name: ownerDataOrganization.name,
+                  url: ownerDataOrganization.url,
+                }
+              }
+            }]
+          }
+        }
+      }
+    };
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(4);
+  });
+
+  it('should return an error when the resolved type is not a UserType or OrganizationType', async () => {
+    const wrongUserData = {
+      ...userData,
+      __typename: 'WrongUser'
+    };
+    (find as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: userData.repositories }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [wrongUserData] }));
+
+    const query = `
+      {
+        user(login: "johndoe") {
+          repositories(first: 1) {
+            edges {
+              node {
+                owner {
+                  avatarUrl
+                  id
+                  login
+                  name
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+    const error = new GraphQLError('Invalid typename: WrongUser');
+    const expectedData = {
+      data: {
+        user: {
+          repositories: {
+            edges: [{
+              node: null
+            }]
+          }
+        }
+      },
+      errors: [ error ],
+    };
+    const context = { loader: createLoaders() };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(4);
+  });
+});
 
 
 describe('ProfileOwnerInterface', () => {
@@ -101,7 +465,29 @@ describe('ProfileOwnerInterface', () => {
     expect(receivedData).toEqual(expectedData);
     expect(find).toHaveBeenCalledTimes(2);
   });
+
+  it('should return a "not found" error when no profile match with the provided login', async () => {
+    (find as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+      .mockImplementationOnce(() => Promise.resolve({ rows: [organizationData] }));
+
+    const query = `
+      {
+        profile(login: "noone") {
+          login
+        }
+      }
+    `;
+    const error = new GraphQLError('Profile not found with login: noone');
+    const context = { loader: createLoaders() };
+    const expectedData = { data: { profile: null }, errors: [ error ] };
+    const receivedData = await graphql(schema, query, undefined, context);
+
+    expect(receivedData).toEqual(expectedData);
+    expect(find).toHaveBeenCalledTimes(2);
+  });
 });
+
 
 describe('UserType', () => {
   beforeEach(() => {
@@ -136,7 +522,7 @@ describe('UserType', () => {
           bio: userData.bio,
           company: userData.company,
           email: userData.email,
-          id: userData.id,
+          id: String(userData.id),
           location: userData.location,
           login: userData.login,
           name: userData.name,
@@ -503,6 +889,117 @@ describe('UserType', () => {
       expect(find).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('field repositories', () => {
+    it('should return a list of repositories in a cursor connection structure', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: userData.repositories }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            name
+            repositories(first: 1) {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            name: userData.name,
+            repositories: {
+              edges: [
+                { node: { name: userData.repositories[0].name } }
+              ]
+            },
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(3);
+    });
+
+    it('should return empty connection when no repository is found', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            login
+            repositories(first: 1) {
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+              }
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            login: userData.login,
+            repositories: {
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+              },
+              edges: []
+            },
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return an error when the pagination arguments was not provided', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            repositories {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const error = new GraphQLError('Missing pagination boundaries');
+      const expectedData = { data: { user: null }, errors: [ error ] };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(1);
+    });
+  });
 });
 
 
@@ -537,7 +1034,7 @@ describe('OrganizationType', () => {
           avatarUrl: organizationData.avatar_url,
           description: organizationData.description,
           email: organizationData.email,
-          id: organizationData.id,
+          id: String(organizationData.id),
           location: organizationData.location,
           login: organizationData.login,
           name: organizationData.name,

@@ -16,6 +16,7 @@ import {
 } from '../../cursor-connection/referencePagination';
 import { find } from '../../db';
 import { handleError } from '../../utils/error-handler';
+import { Repository } from '../repository/resolve';
 
 
 export const Organization = {
@@ -63,6 +64,8 @@ export const Organization = {
       return handleError(error);
     }
   },
+
+  repositories: Repository.repositories,
 };
 
 export const Query = {
