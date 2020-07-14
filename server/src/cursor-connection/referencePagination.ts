@@ -86,13 +86,13 @@ export function itemsToPageInfoQuery <T extends TEntity>(args: TFindPageInfoArgs
   const lastItem = items[items.length -1];
 
   const prevQuery = pageInfoFnQuery({
-    reference: firstItem.id,
+    reference: String(firstItem.id),
     operator: '<',
     order: 'DESC',
     row: 'prev',
   });
   const nextQuery = pageInfoFnQuery({
-    reference: lastItem.id,
+    reference: String(lastItem.id),
     operator: '>',
     order: 'ASC',
     row: 'next',
@@ -123,10 +123,10 @@ function itemsToPageInfo <T extends TEntity>(items: T[], pageInfoItems: TPageInf
   const lastItem = items[items.length -1];
 
   const pageInfo: TPageInfo = {
-    endCursor: referenceToCursor(lastItem.id),
+    endCursor: referenceToCursor(String(lastItem.id)),
     hasNextPage: hasItem('next', pageInfoItems),
     hasPreviousPage: hasItem('prev', pageInfoItems),
-    startCursor: referenceToCursor(firstItem.id),
+    startCursor: referenceToCursor(String(firstItem.id)),
   };
 
   return pageInfo;
@@ -134,7 +134,7 @@ function itemsToPageInfo <T extends TEntity>(items: T[], pageInfoItems: TPageInf
 
 function itemsToEdges <T extends TEntity>(items: T[]) {
   const edges: TEdge<T>[] = items.map(item => ({
-    cursor: referenceToCursor(item.id),
+    cursor: referenceToCursor(String(item.id)),
     node: item,
   }));
 

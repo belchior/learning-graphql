@@ -5,7 +5,7 @@ import { PoolClient } from 'pg';
 
 import { CLIENT_URL, NODE_ENV, PORT, SERVER_URL } from './utils/environment';
 import { connect as dbConnect } from './db';
-import { createLoaders } from './entities/loaders';
+import { createLoaders } from './graphql/loaders';
 import { debugGraphqlQuery, debugValues } from './utils/debug';
 import { schema } from './graphql/schema';
 

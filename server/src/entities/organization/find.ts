@@ -8,9 +8,9 @@ export const findOrganizationsByLogins = async (logins: readonly string[]) => {
   const args = [logins.join()];
 
   try {
-    const result = await find<TOrganization>(query, args);
+    const { rows: items } = await find<TOrganization>(query, args);
     return logins.map(login => (
-      result.rows.find(org => org.login === login) ||
+      items.find(org => org.login === login) ||
       new Error(`Organization not found with login: ${login}`)
     ));
   } catch (error) {

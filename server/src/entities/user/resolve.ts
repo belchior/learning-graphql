@@ -146,7 +146,7 @@ export const User = {
       `;
 
       const { rows: items } = await find<TOrganization>(itemsQuery);
-      if (items.length === 0) return emptyCursorConnection<TUser>();
+      if (items.length === 0) return emptyCursorConnection<TOrganization>();
 
       const pageInfoItemsQuery = itemsToPageInfoQuery({ items, pageInfoFnQuery });
       const { rows: pageInfoItems } = await find<TPageInfoItem>(pageInfoItemsQuery);
@@ -159,7 +159,7 @@ export const User = {
 };
 
 export const Query = {
-  user: async (parent: any, args: TArgs, context: TGraphQLContext) => {
+  user: async (parent: undefined, args: TArgs, context: TGraphQLContext) => {
     return context.loader.findUserByLogin.load(args.login);
   },
 };

@@ -1,18 +1,18 @@
 
 import {
+  TArgs,
   TGraphQLContext,
   TOrganization,
-  TPaginationArgs,
-  TUser,
-  TArgs,
   TPageInfoFnQueryArgs,
   TPageInfoItem,
+  TPaginationArgs,
+  TUser,
 } from '../../utils/interfaces';
 import {
-  paginationArgsToQueryArgs,
   emptyCursorConnection,
   itemsToCursorConnection,
   itemsToPageInfoQuery,
+  paginationArgsToQueryArgs,
 } from '../../cursor-connection/referencePagination';
 import { find } from '../../db';
 import { handleError } from '../../utils/error-handler';
@@ -66,7 +66,7 @@ export const Organization = {
 };
 
 export const Query = {
-  organization: async (parent: any, args: TArgs, context: TGraphQLContext) => {
+  organization: async (parent: undefined, args: TArgs, context: TGraphQLContext) => {
     return context.loader.findOrganizationByLogin.load(args.login);
   },
 };

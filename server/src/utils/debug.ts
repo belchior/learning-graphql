@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import hash from 'object-hash';
 import querystring from 'querystring';
 import { intersection } from 'ramda';
-import { Express } from 'express-serve-static-core';
+import { Express, Request, Response } from 'express-serve-static-core';
 
 import { DEBUG, SERVER_URL } from './environment';
 
@@ -14,12 +14,12 @@ type TPredicate = (i: string) => boolean
 
 
 export const debugGraphqlQuery = (server: Express) => {
-  const queryLog: any = {};
+  const queryLog: { [key: string]: string } = {};
 
   server.use(bodyParser.json());
 
-  server.use('/goto', (req: any, res: any) => {
-    const { id } = req.query;
+  server.use('/goto', (req: Request, res: Response) => {
+    const id = req.query.id as string;
     if (!queryLog[id]) {
       console.error('Failed to find a stored query');
       return res.status(404).end();
@@ -27,7 +27,7 @@ export const debugGraphqlQuery = (server: Express) => {
     return res.redirect(queryLog[id]);
   });
 
-  server.use('/graphql', (req: any, res: any, next: Function) => {
+  server.use('/graphql', (req: Request, res: Response, next: Function) => {
     const { query, variables } = req.body;
     const queryParams = querystring.stringify({
       query,

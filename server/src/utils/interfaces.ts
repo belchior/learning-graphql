@@ -4,13 +4,14 @@ import DataLoader from 'dataloader';
 /*
   Entities
 */
+
 export type TUser = {
   __typename: 'User'
   avatar_url: string
   bio?: string
   company?: string
   email: string
-  id: string
+  id: number
   location?: string
   login: string
   name?: string
@@ -23,7 +24,7 @@ export type TOrganization = {
   avatar_url: string
   description?: string
   email?: string
-  id: string
+  id: number
   location?: string
   login: string
   name?: string
@@ -31,7 +32,39 @@ export type TOrganization = {
   website_url?: string
 }
 
-export type TEntity = TUser | TOrganization
+export type TOwner = {
+  __typename: TUser['__typename'] | TOrganization['__typename']
+  avatar_url: string
+  id: number
+  login: string
+  url: string
+}
+
+export type TOwnerIdentifier = {
+  owner_login: string
+  owner_ref: 'users' | 'organizations'
+}
+
+export type TRepository = {
+  __typename: 'Repository'
+  description?: string
+  fork_count: number
+  id: number
+  license_name: string
+  owner_login: TOwnerIdentifier['owner_login']
+  owner_ref: TOwnerIdentifier['owner_ref']
+  language_color: string
+  language_name: string
+  name: string
+  url: string
+}
+
+export type TRepositoryOwner = TOwner
+
+export type TEntity =
+  | TUser
+  | TOrganization
+  | TRepository
 
 
 /*

@@ -4,13 +4,14 @@ import { handleError } from '../../utils/error-handler';
 
 
 export const findUsersByLogins = async (logins: readonly string[]) => {
-  const query = 'SELECT * FROM users WHERE login in ($1)';
-  const args = [logins.join()];
-
   try {
-    const result = await find<TUser>(query, args);
+    const query = 'SELECT * FROM users WHERE login IN ($1)';
+    const args = [logins.join()];
+
+    const { rows: items } = await find<TUser>(query, args);
+
     const users = logins.map(login => (
-      result.rows.find(user => user.login === login) ||
+      items.find(user => user.login === login) ||
       new Error(`User not found with login: ${login}`)
     ));
 

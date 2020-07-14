@@ -6,7 +6,7 @@ import { handleError, handleNotFound } from './error-handler';
 describe('Error handlers', () => {
   describe('handleError', () => {
     it('should return rejected promise with a graphql error instance', async () => {
-      const error = { message: 'test error' };
+      const error = new Error('test error');
       const promise = handleError(error);
       await expect(promise).rejects.toThrow(GraphQLError);
     });

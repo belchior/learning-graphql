@@ -1,6 +1,6 @@
 import { graphql, GraphQLError } from 'graphql';
 
-import { createLoaders } from '../entities/loaders';
+import { createLoaders } from './loaders';
 import { find } from '../db';
 import { schema } from './schema';
 import { userData, organizationData } from '../utils/mockData';

@@ -96,7 +96,7 @@ describe('itemsToPageInfoQuery', () => {
           JOIN users ON user_login = users.login
           WHERE
             organization_login = 'johndoe'
-            and users.id < 5e5580d6f72291487ec648cf
+            and users.id < 5558
           ORDER BY users.id DESC
           LIMIT 1
       ) as prev
@@ -107,7 +107,7 @@ describe('itemsToPageInfoQuery', () => {
           JOIN users ON user_login = users.login
           WHERE
             organization_login = 'johndoe'
-            and users.id > 5e5580d6f72291487ec648cf
+            and users.id > 5558
           ORDER BY users.id ASC
           LIMIT 1
       ) as next
@@ -124,14 +124,14 @@ describe('itemsToCursorConnection', () => {
     const pageInfoItems: TPageInfoItem[] = [];
     const expectedCursorConnection: TCursorConnection<TOrganization> = {
       edges: [{
-        cursor: 'NWU2MWMwMDIwODFkMjhjMGZkNWMzNDg5',
+        cursor: 'NTYxMA==',
         node: organizationData,
       }],
       pageInfo: {
-        endCursor: 'NWU2MWMwMDIwODFkMjhjMGZkNWMzNDg5',
+        endCursor: 'NTYxMA==',
         hasNextPage: false,
         hasPreviousPage: false,
-        startCursor: 'NWU2MWMwMDIwODFkMjhjMGZkNWMzNDg5',
+        startCursor: 'NTYxMA==',
       }
     };
     const cursorConnection = itemsToCursorConnection(items, pageInfoItems);
