@@ -53,13 +53,15 @@ export const Organization = {
         LIMIT 1
       `;
 
+      const referenceFrom = (item: TUser) => String(item.id);
+
       const { rows: items } = await find<TUser>(itemsQuery);
       if (items.length === 0) return emptyCursorConnection<TUser>();
 
-      const pageInfoItemsQuery = itemsToPageInfoQuery({ items, pageInfoFnQuery });
-      const { rows: pageInfoItems } = await find<TPageInfoItem>(pageInfoItemsQuery);
+      const pageInfoQuery = itemsToPageInfoQuery({ items, pageInfoFnQuery, referenceFrom });
+      const { rows: pageInfoItems } = await find<TPageInfoItem>(pageInfoQuery);
 
-      return itemsToCursorConnection<TUser>(items, pageInfoItems);
+      return itemsToCursorConnection<TUser>({ items, pageInfoItems, referenceFrom, });
     } catch (error) {
       return handleError(error);
     }

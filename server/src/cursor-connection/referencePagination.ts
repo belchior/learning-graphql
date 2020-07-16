@@ -1,18 +1,39 @@
 import {
+  TBackwardPaginationArgs,
   TEdge,
-  TPaginationArgs,
-  TCursorConnection,
   TEntity,
-  TFindPageInfoArgs,
+  TForwardPaginationArgs,
   TPageInfo,
+  TPageInfoFnQueryArgs,
   TPageInfoItem,
+  TPaginationArgs,
   TPaginationQueryArgs,
   TPrevOrNext,
-  TForwardPaginationArgs,
-  TBackwardPaginationArgs,
 } from '../utils/interfaces';
 import { base64ToString, stringToBase64 } from '../utils/converter';
 import { validateArgs } from './arguments';
+
+
+type TReferenceFrom<T> = (item: T) => string
+
+type TItemsToCursorConnectionArgs<T> = {
+ referenceFrom: TReferenceFrom<T>
+ items: T[]
+ pageInfoItems: TPageInfoItem[]
+}
+
+type TPageInfoFnQuery = (args: TPageInfoFnQueryArgs) => string
+
+export type TFindPageInfoArgs<T> = {
+  items: T[]
+  pageInfoFnQuery: TPageInfoFnQuery
+  referenceFrom: TReferenceFrom<T>
+}
+export type TCursorConnection<T> = {
+  edges: TEdge<T>[],
+  pageInfo: TPageInfo
+}
+
 
 
 /*
@@ -80,19 +101,19 @@ export function emptyCursorConnection <T>() {
 }
 
 export function itemsToPageInfoQuery <T extends TEntity>(args: TFindPageInfoArgs<T>) {
-  const { items, pageInfoFnQuery } = args;
+  const { items, pageInfoFnQuery, referenceFrom } = args;
 
   const firstItem = items[0];
   const lastItem = items[items.length -1];
 
   const prevQuery = pageInfoFnQuery({
-    reference: String(firstItem.id),
+    reference: referenceFrom(firstItem),
     operator: '<',
     order: 'DESC',
     row: 'prev',
   });
   const nextQuery = pageInfoFnQuery({
-    reference: String(lastItem.id),
+    reference: referenceFrom(lastItem),
     operator: '>',
     order: 'ASC',
     row: 'next',
@@ -105,7 +126,9 @@ export function itemsToPageInfoQuery <T extends TEntity>(args: TFindPageInfoArgs
   `;
 }
 
-function itemsToPageInfo <T extends TEntity>(items: T[], pageInfoItems: TPageInfoItem[]) {
+function itemsToPageInfo <T>(args: TItemsToCursorConnectionArgs<T>) {
+  const { referenceFrom, items, pageInfoItems } = args;
+
   if (items.length === 0) {
     const pageInfo: TPageInfo = {
       hasNextPage: false,
@@ -123,27 +146,28 @@ function itemsToPageInfo <T extends TEntity>(items: T[], pageInfoItems: TPageInf
   const lastItem = items[items.length -1];
 
   const pageInfo: TPageInfo = {
-    endCursor: referenceToCursor(String(lastItem.id)),
+    endCursor: referenceToCursor(referenceFrom(lastItem)),
     hasNextPage: hasItem('next', pageInfoItems),
     hasPreviousPage: hasItem('prev', pageInfoItems),
-    startCursor: referenceToCursor(String(firstItem.id)),
+    startCursor: referenceToCursor(referenceFrom(firstItem)),
   };
 
   return pageInfo;
 }
 
-function itemsToEdges <T extends TEntity>(items: T[]) {
+function itemsToEdges <T>(items: T[], referenceFrom: TReferenceFrom<T>) {
   const edges: TEdge<T>[] = items.map(item => ({
-    cursor: referenceToCursor(String(item.id)),
+    cursor: referenceToCursor(referenceFrom(item)),
     node: item,
   }));
 
   return edges;
 }
 
-export function itemsToCursorConnection <T extends TEntity>(items: T[], pageInfoItems: TPageInfoItem[]) {
-  const edges = itemsToEdges<T>(items);
-  const pageInfo = itemsToPageInfo<T>(items, pageInfoItems);
+export function itemsToCursorConnection <T>(args: TItemsToCursorConnectionArgs<T>) {
+  const { referenceFrom, items } = args;
+  const edges = itemsToEdges<T>(items, referenceFrom);
+  const pageInfo = itemsToPageInfo<T>(args);
   const cursorConnection: TCursorConnection<T> = { edges, pageInfo };
   return cursorConnection;
 }

@@ -106,6 +106,51 @@ describe('RepositoryType', () => {
       expect(receivedData).toEqual(expectedData);
       expect(find).toHaveBeenCalledTimes(3);
     });
+
+    it('should resolve to null when the repository has no license defined', async () => {
+      const repositories = [{
+        ...userData.repositories[0],
+        license_name: undefined
+      }];
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [repositories] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            repositories(first: 1) {
+              edges {
+                node {
+                  licenseInfo {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            repositories: {
+              edges: [{
+                node: {
+                  licenseInfo: null
+                }
+              }]
+            }
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('field owner', () => {
@@ -195,6 +240,51 @@ describe('RepositoryType', () => {
                     color: userData.repositories[0].language_color,
                     name: userData.repositories[0].language_name
                   }
+                }
+              }]
+            }
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(3);
+    });
+
+    it('should resolve to null when the repository has no primaryLanguage defined', async () => {
+      const repositories = [{
+        ...userData.repositories[0],
+        language_name: undefined
+      }];
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [repositories] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            repositories(first: 1) {
+              edges {
+                node {
+                  primaryLanguage {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            repositories: {
+              edges: [{
+                node: {
+                  primaryLanguage: null
                 }
               }]
             }
@@ -982,6 +1072,117 @@ describe('UserType', () => {
         {
           user(login: "johndoe") {
             repositories {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const error = new GraphQLError('Missing pagination boundaries');
+      const expectedData = { data: { user: null }, errors: [ error ] };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('field starredRepositories', () => {
+    it('should return a list of repositories in a cursor connection structure', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: userData.starredRepositories }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            name
+            starredRepositories(first: 1) {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            name: userData.name,
+            starredRepositories: {
+              edges: [
+                { node: { name: userData.starredRepositories[0].name } }
+              ]
+            },
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(3);
+    });
+
+    it('should return empty connection when no repository is found', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            login
+            starredRepositories(first: 1) {
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+              }
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const expectedData = {
+        data: {
+          user: {
+            login: userData.login,
+            starredRepositories: {
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+              },
+              edges: []
+            },
+          }
+        }
+      };
+      const context = { loader: createLoaders() };
+      const receivedData = await graphql(schema, query, undefined, context);
+
+      expect(receivedData).toEqual(expectedData);
+      expect(find).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return an error when the pagination arguments was not provided', async () => {
+      (find as jest.Mock)
+        .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }));
+
+      const query = `
+        {
+          user(login: "johndoe") {
+            starredRepositories {
               edges {
                 node {
                   name

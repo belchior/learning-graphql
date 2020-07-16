@@ -59,6 +59,8 @@ export type TRepository = {
   url: string
 }
 
+export type TStarredRepository = TRepository & { starred_at: Date }
+
 export type TRepositoryOwner = TOwner
 
 export type TEntity =
@@ -124,21 +126,4 @@ export type TPageInfoFnQueryArgs = {
   operator: TOperator
   order: TOrder
   row: TPrevOrNext
-}
-
-export type TPageInfoFnQuery = (args: TPageInfoFnQueryArgs) => string
-
-export type TFindPageInfoArgs<T> = {
-  items: T[]
-  pageInfoFnQuery: TPageInfoFnQuery
-}
-
-export type TCursorConnectionArgs = {
-  itemsQuery: string
-  pageInfoFnQuery: TPageInfoFnQuery
-}
-
-export type TCursorConnection<T> = {
-  edges: TEdge<T>[],
-  pageInfo: TPageInfo
 }

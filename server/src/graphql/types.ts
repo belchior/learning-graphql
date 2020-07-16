@@ -144,6 +144,11 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
       args: connectionTypeArgs(),
       resolve: userResolve.User.repositories,
     },
+    starredRepositories: {
+      type: RepositoryConnectionType,
+      args: connectionTypeArgs(),
+      resolve: userResolve.User.starredRepositories,
+    },
     url: { type: new GraphQLNonNull(GraphQLString) },
     websiteUrl: {
       type: GraphQLString,

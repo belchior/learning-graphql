@@ -58,6 +58,7 @@ export const starredRepositoryData = {
   owner_ref: 'users',
   language_name: 'JavaScript',
   language_color: '#f1e05a',
+  starred_at: new Date('2020-01-01T16:18:26.479Z'),
   url: 'https://github.com/userLogin/repo-name',
 };
 
@@ -97,7 +98,6 @@ export const followingData = {
 };
 
 export const userData = {
-  // starredRepositories: [starredRepositoryData],
   __typename: 'User' as const,
   avatar_url: 'http://johndoe.com/avatar.jpg',
   bio: 'bio description',
@@ -111,6 +111,7 @@ export const userData = {
   name: 'John Doe',
   organizations: [organizationData],
   repositories: [repositoryData],
+  starredRepositories: [starredRepositoryData],
   url: 'https://github.com/johndoe',
   website_url: 'http://johndoe.com',
 };

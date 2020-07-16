@@ -1,7 +1,5 @@
 
 import {
-  TCursorConnection,
-  TFindPageInfoArgs,
   TOrganization,
   TPageInfoFnQueryArgs,
   TPageInfoItem,
@@ -10,6 +8,8 @@ import {
   TUser,
 } from '../utils/interfaces';
 import {
+  TCursorConnection,
+  TFindPageInfoArgs,
   emptyCursorConnection,
   itemsToCursorConnection,
   itemsToPageInfoQuery,
@@ -87,8 +87,9 @@ describe('itemsToPageInfoQuery', () => {
       ORDER BY users.id ${args.order}
       LIMIT 1
     `);
+    const referenceFrom = (item: TUser) => String(item.id);
 
-    const args: TFindPageInfoArgs<TUser> = { items, pageInfoFnQuery };
+    const args: TFindPageInfoArgs<TUser> = { items, pageInfoFnQuery, referenceFrom };
     const expectedSQLQuery = removeWhitespace(`
       SELECT * FROM (
         SELECT users.login, 'prev' AS row
@@ -122,6 +123,7 @@ describe('itemsToCursorConnection', () => {
   it('should convert a list of items into a cursor connection structure', () => {
     const items: TOrganization[] = [organizationData];
     const pageInfoItems: TPageInfoItem[] = [];
+    const referenceFrom = (item: TOrganization) => String(item.id);
     const expectedCursorConnection: TCursorConnection<TOrganization> = {
       edges: [{
         cursor: 'NTYxMA==',
@@ -134,7 +136,8 @@ describe('itemsToCursorConnection', () => {
         startCursor: 'NTYxMA==',
       }
     };
-    const cursorConnection = itemsToCursorConnection(items, pageInfoItems);
+
+    const cursorConnection = itemsToCursorConnection({ items, pageInfoItems, referenceFrom });
 
     expect(cursorConnection).toEqual(expectedCursorConnection);
   });
@@ -142,8 +145,9 @@ describe('itemsToCursorConnection', () => {
   it('should return empty cursor connection when the item list is empty', () => {
     const items: TOrganization[] = [];
     const pageInfoItems: TPageInfoItem[] = [];
+    const referenceFrom = (item: TOrganization) => String(item.id);
     const expectedCursorConnection: TCursorConnection<TOrganization> = emptyCursorConnection();
-    const cursorConnection = itemsToCursorConnection(items, pageInfoItems);
+    const cursorConnection = itemsToCursorConnection({ items, pageInfoItems, referenceFrom });
 
     expect(cursorConnection).toEqual(expectedCursorConnection);
   });
