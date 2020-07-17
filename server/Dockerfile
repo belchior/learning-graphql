@@ -9,9 +9,9 @@ RUN ["npm", "test"]
 
 FROM node:14-alpine
 WORKDIR /usr/app
-COPY package*.json ./
 COPY --from=dependencies /usr/app/build ./build
+COPY package*.json ./
 RUN ["npm", "ci", "--production"]
 
 EXPOSE 4000
-CMD ["npx", "nodemon", "build/server.js"]
+CMD ["node", "build/server.js"]

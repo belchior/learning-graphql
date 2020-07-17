@@ -3,7 +3,7 @@ import express from 'express';
 import { graphqlHTTP, Options } from 'express-graphql';
 import { PoolClient } from 'pg';
 
-import { CLIENT_URL, NODE_ENV, PORT, SERVER_URL } from './utils/environment';
+import { CLIENT_URL, NODE_ENV, SERVER_PORT, SERVER_URL } from './utils/environment';
 import { connect as dbConnect } from './db';
 import { createLoaders } from './graphql/loaders';
 import { debugGraphqlQuery, debugValues } from './utils/debug';
@@ -28,7 +28,7 @@ const startServer = (client: PoolClient) => {
     };
     return graphqlHTTPOptions;
   }));
-  server.listen(PORT, () => {
+  server.listen(SERVER_PORT, () => {
     console.log(`Running a GraphQL API server at ${SERVER_URL}/graphql`);
     console.log(`Accepting requests from ${CLIENT_URL}`);
   });
