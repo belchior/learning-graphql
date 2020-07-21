@@ -114,7 +114,7 @@ describe('RepositoryType', () => {
       }];
       (find as jest.Mock)
         .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
-        .mockImplementationOnce(() => Promise.resolve({ rows: [repositories] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: repositories }))
         .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
 
       const query = `
@@ -260,7 +260,7 @@ describe('RepositoryType', () => {
       }];
       (find as jest.Mock)
         .mockImplementationOnce(() => Promise.resolve({ rows: [userData] }))
-        .mockImplementationOnce(() => Promise.resolve({ rows: [repositories] }))
+        .mockImplementationOnce(() => Promise.resolve({ rows: repositories }))
         .mockImplementationOnce(() => Promise.resolve({ rows: [] }));
 
       const query = `

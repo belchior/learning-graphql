@@ -7,10 +7,11 @@ import { Express, Request, Response } from 'express-serve-static-core';
 import { DEBUG, SERVER_URL } from './environment';
 
 
-type TDebugMap = {
-  [key: string]: boolean
+type TDebugValues = {
+  db: boolean
+  query: boolean
 }
-type TPredicate = (i: string) => boolean
+type TPredicate<T> = (i: keyof T) => T[keyof T]
 
 
 export const debugGraphqlQuery = (server: Express) => {
@@ -18,7 +19,7 @@ export const debugGraphqlQuery = (server: Express) => {
 
   server.use(bodyParser.json());
 
-  server.use('/goto', (req: Request, res: Response) => {
+  server.use('/goto', function goto(req: Request, res: Response) {
     const id = req.query.id as string;
     if (!queryLog[id]) {
       console.error('Failed to find a stored query');
@@ -27,7 +28,7 @@ export const debugGraphqlQuery = (server: Express) => {
     return res.redirect(queryLog[id]);
   });
 
-  server.use('/graphql', (req: Request, res: Response, next: Function) => {
+  server.use('/graphql', function graphql(req: Request, res: Response, next: Function) {
     const { query, variables } = req.body;
     const queryParams = querystring.stringify({
       query,
@@ -42,17 +43,43 @@ export const debugGraphqlQuery = (server: Express) => {
   return server;
 };
 
-const toObject = (list: string[], predicate: TPredicate) => {
-  return list.reduce((obj: TDebugMap, i) => {
-    obj[i] = predicate(i);
-    return obj;
-  }, {});
+const toObject = <T>(predicate: TPredicate<T>, list: (keyof T)[]) => {
+  const emptyObject = {} as T;
+
+  return list.reduce(
+    (obj, i) => {
+      obj[i] = predicate(i);
+      return obj;
+    },
+    emptyObject
+  );
 };
 
-const debugOptions = ['*', 'db', 'query'];
+export const debugValues = (debug = DEBUG): TDebugValues => {
+  const debugOptions = ['*', 'db', 'query'] as Array<keyof TDebugValues>;
+  const debugValues = intersection(debugOptions, (debug || '').split(/[,\s]+/));
+  if (debugValues.includes('*')) return toObject(() => true, debugOptions);
+  return toObject(i => debugValues.includes(i), debugOptions);
+};
 
-export const debugValues = () => {
-  const debugValues = intersection(debugOptions, (DEBUG || '').split(/[,\s]+/));
-  if (debugValues.includes('*')) return toObject(debugOptions, () => true);
-  return toObject(debugOptions, i => debugValues.includes(i));
+
+const sanitizeSQL = (value: string) => value.replace(/[']+/, "''") // eslint-disable-line
+
+const normalizeSQL = (value: unknown) => {
+  if (Array.isArray(value)) return `'{${sanitizeSQL(String(value))}}'`;
+  return sanitizeSQL(String(value));
+};
+
+const parseSQLQuery = (query: string, args?: unknown[]) => {
+  if (!args || args.length === 0) return query;
+
+  return args.reduce((acc: string, value, index) => {
+    const reg = new RegExp(`\\$${index + 1}`, 'g');
+    const normalizedValue = normalizeSQL(value);
+    return acc.replace(reg, normalizedValue);
+  }, query);
+};
+
+export const logQuery = (query: string, args?: unknown[]) => {
+  console.log(parseSQLQuery(query, args));
 };

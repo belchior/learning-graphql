@@ -93,24 +93,24 @@ describe('itemsToPageInfoQuery', () => {
     const expectedSQLQuery = removeWhitespace(`
       SELECT * FROM (
         SELECT users.login, 'prev' AS row
-          FROM organizations_users
-          JOIN users ON user_login = users.login
-          WHERE
-            organization_login = 'johndoe'
-            and users.id < 5558
-          ORDER BY users.id DESC
-          LIMIT 1
+        FROM organizations_users
+        JOIN users ON user_login = users.login
+        WHERE
+          organization_login = 'johndoe'
+          and users.id < 5558
+        ORDER BY users.id DESC
+        LIMIT 1
       ) as prev
       UNION
       SELECT * FROM (
         SELECT users.login, 'next' AS row
-          FROM organizations_users
-          JOIN users ON user_login = users.login
-          WHERE
-            organization_login = 'johndoe'
-            and users.id > 5558
-          ORDER BY users.id ASC
-          LIMIT 1
+        FROM organizations_users
+        JOIN users ON user_login = users.login
+        WHERE
+          organization_login = 'johndoe'
+          and users.id > 5558
+        ORDER BY users.id ASC
+        LIMIT 1
       ) as next
     `);
     const receivedSQLQuery = removeWhitespace(itemsToPageInfoQuery(args));

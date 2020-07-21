@@ -1,4 +1,5 @@
-import { Pool, QueryConfig, QueryResult } from 'pg';
+import { Pool, QueryResult } from 'pg';
+import { debugValues, logQuery } from './utils/debug';
 
 
 const pool = new Pool();
@@ -7,7 +8,9 @@ pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
 });
 
-export const find = <T>(query: string | QueryConfig, args?: unknown[]): Promise<QueryResult<T>> => {
+export const find = <T>(query: string, args?: unknown[]): Promise<QueryResult<T>> => {
+  const debug = debugValues();
+  if (debug.db === true) logQuery(query, args);
   return pool.query(query, args);
 };
 

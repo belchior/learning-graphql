@@ -7,6 +7,7 @@ import {
   TGraphQLContext,
   TOwnerIdentifier,
   TStarredRepository,
+  TRepositoryOwner,
 } from '../../utils/interfaces';
 import {
   emptyCursorConnection,
@@ -16,8 +17,8 @@ import {
 } from '../../cursor-connection/referencePagination';
 import { find } from '../../db';
 import { handleError } from '../../utils/error-handler';
-import { serialize } from '../../utils/converter';
 import { isISOString } from '../../utils/boolean';
+import { serialize } from '../../utils/converter';
 
 
 export const Repository = {
@@ -42,29 +43,32 @@ export const Repository = {
       owner_login: parent.owner_login,
       owner_ref: parent.owner_ref,
     });
+
     return context.loader.findRepositoryOwner.load(serializedOwner);
   },
 
-  repositories: async (parent: { login: string }, args: TPaginationArgs) => {
+  repositories: async (parent: TRepositoryOwner, args: TPaginationArgs) => {
     try {
+      const referenceFrom = (item: TRepository) => item.created_at.toISOString();
+
       const pagination = paginationArgsToQueryArgs(args);
-      const startFrom = Number.isSafeInteger(Number(pagination.reference))
-        ? `AND id ${pagination.operator} '${pagination.reference}'`
+      const startFrom = pagination.reference && isISOString(pagination.reference)
+        ? `AND created_at ${pagination.operator} TIMESTAMP WITH TIME ZONE '${pagination.reference}'`
         : '';
 
       const itemsQuery = `
         SELECT *
         FROM (
-          SELECT *
+          SELECT repositories.*
           FROM repositories
           JOIN languages USING(language_name)
           WHERE
             owner_login = '${parent.login}'
             ${startFrom}
-          ORDER BY id ${pagination.order}
+          ORDER BY created_at ${pagination.order}
           LIMIT ${pagination.limit}
-        ) as repositories
-        ORDER BY id ASC
+        ) AS repositories
+        ORDER BY created_at ASC
       `;
 
       const pageInfoFnQuery = (queryArgs: TPageInfoFnQueryArgs) => `
@@ -72,12 +76,10 @@ export const Repository = {
         FROM repositories
         WHERE
           owner_login = '${parent.login}'
-          AND id ${queryArgs.operator} ${queryArgs.reference}
-        ORDER BY id ${queryArgs.order}
+          AND created_at ${queryArgs.operator} TIMESTAMP WITH TIME ZONE '${queryArgs.reference}'
+        ORDER BY created_at ${queryArgs.order}
         LIMIT 1
       `;
-
-      const referenceFrom = (item: TRepository) => String(item.id);
 
       const { rows: items } = await find<TRepository>(itemsQuery);
 
@@ -92,8 +94,10 @@ export const Repository = {
     }
   },
 
-  starredRepositories: async (parent: { login: string }, args: TPaginationArgs) => {
+  starredRepositories: async (parent: TRepositoryOwner, args: TPaginationArgs) => {
     try {
+      const referenceFrom = (item: TStarredRepository) => item.starred_at.toISOString();
+
       const pagination = paginationArgsToQueryArgs(args);
       const startFrom = pagination.reference && isISOString(pagination.reference)
         ? `AND starred.created_at ${pagination.operator} TIMESTAMP WITH TIME ZONE '${pagination.reference}'`
@@ -124,8 +128,6 @@ export const Repository = {
         ORDER BY starred.created_at ${queryArgs.order}
         LIMIT 1
       `;
-
-      const referenceFrom = (item: TStarredRepository) => item.starred_at.toISOString();
 
       const { rows: items } = await find<TStarredRepository>(itemsQuery);
 

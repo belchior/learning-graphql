@@ -10,6 +10,7 @@ export type TUser = {
   avatar_url: string
   bio?: string
   company?: string
+  created_at: Date
   email: string
   id: number
   location?: string
@@ -22,6 +23,7 @@ export type TUser = {
 export type TOrganization = {
   __typename: 'Organization'
   avatar_url: string
+  created_at: Date
   description?: string
   email?: string
   id: number
@@ -47,6 +49,7 @@ export type TOwnerIdentifier = {
 
 export type TRepository = {
   __typename: 'Repository'
+  created_at: Date
   description?: string
   fork_count: number
   id: number

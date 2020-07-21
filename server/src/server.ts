@@ -17,7 +17,9 @@ const startServer = (client: PoolClient) => {
   client.release();
   if (NODE_ENV === 'development' && debug.query) debugGraphqlQuery(server);
 
-  server.use(cors({ origin: CLIENT_URL }));
+  server.disable('x-powered-by');
+  server.use(cors({ methods: 'GET,POST', origin: CLIENT_URL, }));
+
   server.use('/graphql', graphqlHTTP(() => {
     const graphqlHTTPOptions: Options = {
       schema: schema,
@@ -28,6 +30,7 @@ const startServer = (client: PoolClient) => {
     };
     return graphqlHTTPOptions;
   }));
+
   server.listen(SERVER_PORT, () => {
     console.log(`Running a GraphQL API server at ${SERVER_URL}/graphql`);
     console.log(`Accepting requests from ${CLIENT_URL}`);

@@ -28,18 +28,18 @@ const fulfilledValues = <T>(result: PromiseSettledResult<T>[]): T[] => {
 
 export const findRepositoryOwners = async (serializedOwners: readonly string[]) => {
   try {
-    const usersQuery = 'SELECT * FROM users WHERE login IN ($1)';
-    const organizationsQuery = 'SELECT * FROM organizations WHERE login IN ($1)';
+    const usersQuery = 'SELECT * FROM users WHERE login = ANY($1)';
+    const organizationsQuery = 'SELECT * FROM organizations WHERE login = ANY($1)';
 
     const owners = serializedOwners.map<TOwnerIdentifier>(deserialize);
     const logins = groupByRef(owners);
 
     const usersPromise = logins.users.length > 0
-      ? find<TUser>(usersQuery, [logins.users.join()])
+      ? find<TUser>(usersQuery, [logins.users])
       : Promise.resolve({ rows: [] });
 
     const organiztionsPromise = logins.organizations.length > 0
-      ? find<TOrganization>(organizationsQuery, [logins.organizations.join()])
+      ? find<TOrganization>(organizationsQuery, [logins.organizations])
       : Promise.resolve({ rows: [] });
 
     const settledResult = await Promise.allSettled([usersPromise, organiztionsPromise]);
