@@ -24,8 +24,6 @@ The `client` is based on
 - [Material-UI](https://github.com/mui-org/material-ui)
 - [Create React App](https://github.com/facebook/create-react-app)
 
-Both server and client are hosted by [AWS](https://aws.amazon.com/pt/).
-
 The server implement the [GraphQL Cursor Connections Specification](https://relay.dev/graphql/connections.htm) to handle paginated list and are compliance with [Relay GraphQL Server Specification](https://relay.dev/docs/en/graphql-server-specification.html) to take's advantages of Relay Modern features.
 
 ## Development
@@ -34,17 +32,39 @@ The server implement the [GraphQL Cursor Connections Specification](https://rela
 
 The data used by this server is strongly based on the [GraphQL API of Github](https://developer.github.com/v4/explorer/), I don't know if I have legal right to share the data that I copy to develop this project, so you must provide your on data.
 
-After clone this repo you can enter in server directory and then install all dependencies
+The better way to run the server is using [docker-compose](https://docs.docker.com/compose/). First create a `.env` file using the command below in root directory.
 
 ```shell
-cd ./server
-npm ci
+#!/usr/bin/env bash
+
+cat << EOF > ./.env
+# Client
+CLIENT_PORT=3000
+CLIENT_URL=http://localhost:3000
+
+# Server
+NODE_ENV=development
+SERVER_PORT=4000
+SERVER_HOST=localhost
+DEBUG=db
+
+# Database
+PGHOST=database
+PGUSER=postgres
+PGDATABASE=learning_graphql
+PGPASSWORD=secret
+PGPORT=5432
+PGDBPATH=/path/to/postgresql/data
+POSTGRES_PASSWORD="$PGPASSWORD"
+EOF
 ```
 
-start server in develop mode
+You must change the env variable `PGDBPATH` to a valid path.
+
+Then start de server in development mode executing the compose command
 
 ```shell
-npm run start:ts
+docker-compose -f docker-compose.dev.yml up
 ```
 
 #### Debug
@@ -59,7 +79,7 @@ You can use the environment variable `DEBUG` to enable some level of debug, it's
 
 ### Client
 
-In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency to enable the `--watch` feature, you must install it first and make it available at `PATH` environment variable after that you are ready to install client dependencies.
+In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency to enable the `--watch` feature, you must install it first and make it available at `PATH` environment variable, after that you are ready to install client dependencies.
 
 ```shell
 cd ./client
@@ -97,6 +117,7 @@ Some links that have somehow helped to develop this project or influenced my dec
 - [DataLoader](https://github.com/graphql/dataloader)
 - [GraphQL Foundation](https://foundation.graphql.org/)
 - [The TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/)
+- [PostgreSQL UUID](https://www.postgresql.org/docs/9.1/uuid-ossp.html)
 
 ### Articles
 
@@ -107,7 +128,6 @@ Some links that have somehow helped to develop this project or influenced my dec
 - [Five ways to paginate in Postgres, from the basic to the exotic](https://www.citusdata.com/blog/2016/03/30/five-ways-to-paginate/)
 - [Debugging complex GraphQL queries with shortlinks to GraphiQL](https://nilsnh.no/2018/08/04/debugging-complex-graphql-queries-with-shortlinks-to-graphiql/)
 - [React+TypeScript Cheatsheets](https://github.com/typescript-cheatsheets/react-typescript-cheatsheet)
-- [React.ComponentType](https://flow.org/en/docs/react/types/#toc-react-componenttype)
 - [Modularizing your GraphQL schema code](https://www.apollographql.com/blog/modularizing-your-graphql-schema-code-d7f71d5ed5f2)
 - [stackoverflow - TypeScript: Interfaces vs Types](https://stackoverflow.com/questions/37233735/typescript-interfaces-vs-types#answer-52682220)
 
