@@ -61,7 +61,7 @@ EOF
 
 You must change the env variable `PGDBPATH` to a valid path.
 
-Then start de server in development mode executing the compose command
+Then start the server in development mode executing the compose command
 
 ```shell
 docker-compose -f docker-compose.dev.yml up
