@@ -5,21 +5,18 @@ networks:
     driver: bridge
 
 services:
-  client:
-    build:
-      context: ./client
-      args:
-        - SERVER_PROXY_PASS=location /graphql { proxy_pass http://learning-graphql-server:${SERVER_PORT}/graphql; }
+  database:
+    image: postgres:11
 
-    container_name: learning-graphql-client
-    depends_on:
-      - server
+    container_name: postgres
     env_file:
       - ./.env
     ports:
-      - "${CLIENT_PORT}:80"
+      - ${PGPORT}:${PGPORT}
     networks:
       - myNetwork
+    volumes:
+      - ${POSTGRES_HOSTDATA}:/var/lib/postgresql/data
     restart: always
 
   server:
@@ -36,16 +33,20 @@ services:
       - myNetwork
     restart: always
 
-  database:
-    image: postgres:12
-
-    container_name: postgres
+  client:
     env_file:
       - ./.env
+
+    build:
+      context: ./client
+      args:
+        - SERVER_PROXY_PASS=${SERVER_PROXY_PASS}
+
+    container_name: learning-graphql-client
+    depends_on:
+      - server
     ports:
-      - ${PGPORT}:${PGPORT}
+      - "${CLIENT_PORT}:80"
     networks:
       - myNetwork
-    volumes:
-      - ${PGDBPATH}:/var/lib/postgresql/data
     restart: always

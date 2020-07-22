@@ -5,6 +5,21 @@ networks:
     driver: bridge
 
 services:
+  database:
+    image: postgres:11
+
+    container_name: postgres.dev
+    env_file:
+      - ./.env
+    ports:
+      - ${PGPORT}:${PGPORT}
+    networks:
+      - myNetwork
+    volumes:
+      - ${POSTGRES_HOSTDATA}:/var/lib/postgresql/data
+    restart: always
+
+
   server:
     build:
       context: ./server
@@ -20,19 +35,6 @@ services:
     networks:
       - myNetwork
     volumes:
-      - ./server:/usr/app
-    restart: always
-
-  database:
-    image: postgres:12
-
-    container_name: postgres.dev
-    env_file:
-      - ./.env
-    ports:
-      - ${PGPORT}:${PGPORT}
-    networks:
-      - myNetwork
-    volumes:
-      - ${PGDBPATH}:/var/lib/postgresql/data
+      - ./server/src:/usr/app/src
+      - ./server/tsconfig.json:/usr/app/tsconfig.json
     restart: always
