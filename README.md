@@ -32,34 +32,38 @@ The server implement the [GraphQL Cursor Connections Specification](https://rela
 
 The data used by this server is strongly based on the [GraphQL API of Github](https://developer.github.com/v4/explorer/), I don't know if I have legal right to share the data that I copy to develop this project, so you must provide your on data.
 
-The better way to run the server is using [docker-compose](https://docs.docker.com/compose/). First create a `.env` file using the command below in root directory.
+The better way to run the server is using [docker-compose](https://docs.docker.com/compose/). First you will need to create a `.env` file using the command below at root directory.
 
 ```shell
 #!/usr/bin/env bash
 
 cat << EOF > ./.env
-# Client
-CLIENT_PORT=3000
-CLIENT_URL=http://localhost:3000
-
-# Server
-NODE_ENV=development
-SERVER_PORT=4000
-SERVER_HOST=localhost
-DEBUG=db
-
-# Database
-PGHOST=database
-PGUSER=postgres
+# Shared
 PGDATABASE=learning_graphql
 PGPASSWORD=secret
 PGPORT=5432
-PGDBPATH=/path/to/postgresql/data
-POSTGRES_PASSWORD="$PGPASSWORD"
+PGUSER=learning_graphql
+POSTGRES_PASSWORD=secret
+POSTGRES_USER=learning_graphql
+
+# Database
+POSTGRES_HOSTDATA=/path/to/postgresql/data
+
+# Server
+CLIENT_URL=http://localhost:3000
+DATABASE_HOST=database
+DEBUG=db
+NODE_ENV=development
+SERVER_HOST=localhost
+SERVER_PORT=4000
+
+# Client
+CLIENT_PORT=3000
+SERVER_PROXY_PASS=location /graphql { proxy_pass http://learning-graphql-server:4000/graphql; }
 EOF
 ```
 
-You must change the env variable `PGDBPATH` to a valid path.
+You must change the env variable `POSTGRES_HOSTDATA` to a valid path.
 
 Then start the server in development mode executing the compose command
 
@@ -79,14 +83,14 @@ You can use the environment variable `DEBUG` to enable some level of debug, it's
 
 ### Client
 
-In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency to enable the `--watch` feature, you must install it first and make it available at `PATH` environment variable, after that you are ready to install client dependencies.
+In development mode relay has [watchman](https://github.com/facebook/watchman) as dependency to enable the `--watch` feature, you must install it first and make it available at `PATH` environment variable, after that you will be ready to install client dependencies.
 
 ```shell
 cd ./client
 npm ci
 ```
 
-start client in development mode
+Start client in development mode
 
 ```shell
 npm run start
@@ -94,7 +98,7 @@ npm run start
 
 ### Integration between server and client
 
-After change some definition inside `server/src/graphql` the client must run the script below to update the `client/src/schema.graphql`.
+After change some definition inside `server/src/graphql/` the client must run the script below to update the schema located at `client/src/schema.graphql`.
 
 ```shell
 npm run get-schema
