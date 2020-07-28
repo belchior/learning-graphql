@@ -1,52 +1,33 @@
 version: '3.0'
 
 networks:
-  myNetwork:
+  mynetwork:
     driver: bridge
 
 services:
-  database:
-    image: postgres:11
-
-    container_name: postgres
-    env_file:
-      - ./.env
-    ports:
-      - ${PGPORT}:${PGPORT}
-    networks:
-      - myNetwork
-    volumes:
-      - ${POSTGRES_HOSTDATA}:/var/lib/postgresql/data
-    restart: always
-
   server:
-    build: ./server
+    image: learning-graphql-server:latest
 
     container_name: learning-graphql-server
-    depends_on:
-      - database
     env_file:
       - ./.env
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     networks:
-      - myNetwork
+      - mynetwork
     restart: always
 
+
   client:
+    image: learning-graphql-client:latest
+
     env_file:
       - ./.env
-
-    build:
-      context: ./client
-      args:
-        - SERVER_PROXY_PASS=${SERVER_PROXY_PASS}
-
     container_name: learning-graphql-client
     depends_on:
       - server
     ports:
-      - "${CLIENT_PORT}:80"
+      - "80:80"
     networks:
-      - myNetwork
+      - mynetwork
     restart: always

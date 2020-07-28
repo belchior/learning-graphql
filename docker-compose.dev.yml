@@ -1,7 +1,7 @@
 version: '3.0'
 
 networks:
-  myNetwork:
+  mynetwork:
     driver: bridge
 
 services:
@@ -14,7 +14,7 @@ services:
     ports:
       - ${PGPORT}:${PGPORT}
     networks:
-      - myNetwork
+      - mynetwork
     volumes:
       - ${POSTGRES_HOSTDATA}:/var/lib/postgresql/data
     restart: always
@@ -33,7 +33,7 @@ services:
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     networks:
-      - myNetwork
+      - mynetwork
     volumes:
       - ./server/src:/usr/app/src
       - ./server/tsconfig.json:/usr/app/tsconfig.json
