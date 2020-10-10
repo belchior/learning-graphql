@@ -1,3 +1,5 @@
+# Development environment
+
 version: '3.0'
 
 networks:
@@ -5,29 +7,36 @@ networks:
     driver: bridge
 
 services:
-  server:
-    image: learning-graphql-server:latest
+  database:
+    image: postgres:11
 
-    container_name: learning-graphql-server
+    container_name: postgres.dev
+    env_file:
+      - ./.env
+    ports:
+      - ${PGPORT}:${PGPORT}
+    networks:
+      - mynetwork
+    volumes:
+      - ${POSTGRES_HOSTDATA}:/var/lib/postgresql/data
+    restart: always
+
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+
+    container_name: server.dev
+    depends_on:
+      - database
     env_file:
       - ./.env
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     networks:
       - mynetwork
-    restart: always
-
-
-  client:
-    image: learning-graphql-client:latest
-
-    env_file:
-      - ./.env
-    container_name: learning-graphql-client
-    depends_on:
-      - server
-    ports:
-      - "80:80"
-    networks:
-      - mynetwork
+    volumes:
+      - ./server/src:/usr/app/src
+      - ./server/tsconfig.json:/usr/app/tsconfig.json
     restart: always

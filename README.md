@@ -66,7 +66,7 @@ You must change the env variable `POSTGRES_HOSTDATA` to a valid path.
 Then start the server in development mode executing the compose command
 
 ```shell
-docker-compose -f docker-compose.dev.yml up
+docker-compose up
 ```
 
 #### Debug
